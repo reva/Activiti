@@ -18,24 +18,23 @@ import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class AcquiredJobEntities {
 
-	protected Map<String, JobEntity> acquiredJobs = new HashMap<String, JobEntity>();
-	
-	public void addJob(JobEntity job) {
+  protected Map<String, JobEntity> acquiredJobs = new HashMap<String, JobEntity>();
+
+  public void addJob(JobEntity job) {
     acquiredJobs.put(job.getId(), job);
   }
-	
-	public Collection<JobEntity> getJobs() {
-	  return acquiredJobs.values();
-	}
-  
+
+  public Collection<JobEntity> getJobs() {
+    return acquiredJobs.values();
+  }
+
   public boolean contains(String jobId) {
-    return acquiredJobs.containsKey(jobId);    
+    return acquiredJobs.containsKey(jobId);
   }
 
   public int size() {

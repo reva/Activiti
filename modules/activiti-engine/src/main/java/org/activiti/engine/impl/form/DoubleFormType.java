@@ -15,13 +15,11 @@ package org.activiti.engine.impl.form;
 
 import org.activiti.engine.form.AbstractFormType;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public class DoubleFormType extends AbstractFormType {
-	
+
   private static final long serialVersionUID = 1L;
 
   public String getName() {
@@ -33,14 +31,14 @@ public class DoubleFormType extends AbstractFormType {
   }
 
   public Object convertFormValueToModelValue(String propertyValue) {
-    if (propertyValue==null || "".equals(propertyValue)) {
+    if (propertyValue == null || "".equals(propertyValue)) {
       return null;
     }
     return new Double(propertyValue);
   }
 
   public String convertModelValueToFormValue(Object modelValue) {
-    if (modelValue==null) {
+    if (modelValue == null) {
       return null;
     }
     return modelValue.toString();

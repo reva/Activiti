@@ -15,7 +15,6 @@ package org.activiti.rest.service.api.engine.variable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -27,14 +26,14 @@ public class StringRestVariableConverter implements RestVariableConverter {
   }
 
   @Override
-  public Class< ? > getVariableType() {
+  public Class<?> getVariableType() {
     return String.class;
   }
 
   @Override
   public Object getVariableValue(RestVariable result) {
-    if(result.getValue() != null) {
-      if(!(result.getValue() instanceof String)) {
+    if (result.getValue() != null) {
+      if (!(result.getValue() instanceof String)) {
         throw new ActivitiIllegalArgumentException("Converter can only convert strings");
       }
       return (String) result.getValue();
@@ -44,8 +43,8 @@ public class StringRestVariableConverter implements RestVariableConverter {
 
   @Override
   public void convertVariableValue(Object variableValue, RestVariable result) {
-    if(variableValue != null) {
-      if(!(variableValue instanceof String)) {
+    if (variableValue != null) {
+      if (!(variableValue instanceof String)) {
         throw new ActivitiIllegalArgumentException("Converter can only convert strings");
       }
       result.setValue(variableValue);

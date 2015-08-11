@@ -22,7 +22,6 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -95,13 +94,13 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   public String getProcessBusinessKey() {
     return processBusinessKey;
   }
-  
+
   public String getProcessBusinessKeyLike() {
-	  return processBusinessKeyLike;
+    return processBusinessKeyLike;
   }
-  
+
   public void setProcessBusinessKeyLike(String processBusinessKeyLike) {
-	  this.processBusinessKeyLike = processBusinessKeyLike;
+    this.processBusinessKeyLike = processBusinessKeyLike;
   }
 
   public void setProcessBusinessKey(String processBusinessKey) {
@@ -123,13 +122,13 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   public void setProcessDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
   }
-  
+
   public String getProcessDefinitionKeyLike() {
-	  return processDefinitionKeyLike;
+    return processDefinitionKeyLike;
   }
-  
+
   public void setProcessDefinitionKeyLike(String processDefinitionKeyLike) {
-	  this.processDefinitionKeyLike = processDefinitionKeyLike;
+    this.processDefinitionKeyLike = processDefinitionKeyLike;
   }
 
   public String getProcessDefinitionName() {
@@ -141,15 +140,15 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   }
 
   public String getProcessDefinitionNameLike() {
-	  return processDefinitionNameLike;
+    return processDefinitionNameLike;
   }
-  
+
   public String getExecutionId() {
     return executionId;
   }
-  
+
   public void setProcessDefinitionNameLike(String processDefinitionNameLike) {
-	  this.processDefinitionNameLike = processDefinitionNameLike;
+    this.processDefinitionNameLike = processDefinitionNameLike;
   }
 
   public void setExecutionId(String executionId) {
@@ -197,13 +196,13 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   }
 
   public String getTaskDefinitionKeyLike() {
-	  return taskDefinitionKeyLike;
+    return taskDefinitionKeyLike;
   }
-  
+
   public void setTaskDefinitionKeyLike(String taskDefinitionKeyLike) {
-	  this.taskDefinitionKeyLike = taskDefinitionKeyLike;
+    this.taskDefinitionKeyLike = taskDefinitionKeyLike;
   }
-  
+
   public String getTaskDeleteReason() {
     return taskDeleteReason;
   }
@@ -267,21 +266,21 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   public void setTaskPriority(Integer taskPriority) {
     this.taskPriority = taskPriority;
   }
-  
+
   public Integer getTaskMaxPriority() {
-	  return taskMaxPriority;
+    return taskMaxPriority;
   }
-  
+
   public void setTaskMaxPriority(Integer taskMaxPriority) {
-	  this.taskMaxPriority = taskMaxPriority;
+    this.taskMaxPriority = taskMaxPriority;
   }
-  
+
   public Integer getTaskMinPriority() {
-	  return taskMinPriority;
+    return taskMinPriority;
   }
-  
+
   public void setTaskMinPriority(Integer taskMinPriority) {
-	  this.taskMinPriority = taskMinPriority;
+    this.taskMinPriority = taskMinPriority;
   }
 
   public Boolean getFinished() {
@@ -331,13 +330,13 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   public void setDueDateBefore(Date dueDateBefore) {
     this.dueDateBefore = dueDateBefore;
   }
-  
+
   public Boolean getWithoutDueDate() {
-	  return withoutDueDate;
+    return withoutDueDate;
   }
-  
+
   public void setWithoutDueDate(Boolean withoutDueDate) {
-	  this.withoutDueDate = withoutDueDate;
+    this.withoutDueDate = withoutDueDate;
   }
 
   public Date getTaskCreatedOn() {
@@ -347,45 +346,45 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   public void setTaskCreatedOn(Date taskCreatedOn) {
     this.taskCreatedOn = taskCreatedOn;
   }
-  
+
   public void setTaskCreatedAfter(Date taskCreatedAfter) {
-	  this.taskCreatedAfter = taskCreatedAfter;
+    this.taskCreatedAfter = taskCreatedAfter;
   }
-  
+
   public Date getTaskCompletedAfter() {
-	  return taskCompletedAfter;
+    return taskCompletedAfter;
   }
-  
+
   public void setTaskCompletedAfter(Date taskCompletedAfter) {
-	  this.taskCompletedAfter = taskCompletedAfter;
+    this.taskCompletedAfter = taskCompletedAfter;
   }
-  
+
   public Date getTaskCompletedBefore() {
-	  return taskCompletedBefore;
+    return taskCompletedBefore;
   }
-  
+
   public void setTaskCompletedBefore(Date taskCompletedBefore) {
-	  this.taskCompletedBefore = taskCompletedBefore;
+    this.taskCompletedBefore = taskCompletedBefore;
   }
-  
+
   public Date getTaskCompletedOn() {
-	  return taskCompletedOn;
+    return taskCompletedOn;
   }
-  
+
   public void setTaskCompletedOn(Date taskCompletedOn) {
-	  this.taskCompletedOn = taskCompletedOn;
+    this.taskCompletedOn = taskCompletedOn;
   }
-  
+
   public Date getTaskCreatedAfter() {
-	  return taskCreatedAfter;
+    return taskCreatedAfter;
   }
-  
+
   public void setTaskCreatedBefore(Date taskCreatedBefore) {
-	  this.taskCreatedBefore = taskCreatedBefore;
+    this.taskCreatedBefore = taskCreatedBefore;
   }
-  
+
   public Date getTaskCreatedBefore() {
-	  return taskCreatedBefore;
+    return taskCreatedBefore;
   }
 
   public Boolean getIncludeTaskLocalVariables() {
@@ -404,47 +403,47 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
     this.includeProcessVariables = includeProcessVariables;
   }
 
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
   public List<QueryVariable> getTaskVariables() {
     return taskVariables;
   }
-  
+
   public void setTaskVariables(List<QueryVariable> taskVariables) {
     this.taskVariables = taskVariables;
   }
-  
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
+
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
   public List<QueryVariable> getProcessVariables() {
     return processVariables;
   }
-  
+
   public void setProcessVariables(List<QueryVariable> processVariables) {
     this.processVariables = processVariables;
   }
 
-	public String getTenantId() {
-		return tenantId;
-	}
+  public String getTenantId() {
+    return tenantId;
+  }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
 
-	public String getTenantIdLike() {
-		return tenantIdLike;
-	}
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
 
-	public void setTenantIdLike(String tenantIdLike) {
-		this.tenantIdLike = tenantIdLike;
-	}
+  public void setTenantIdLike(String tenantIdLike) {
+    this.tenantIdLike = tenantIdLike;
+  }
 
-	public Boolean getWithoutTenantId() {
-		return withoutTenantId;
-	}
+  public Boolean getWithoutTenantId() {
+    return withoutTenantId;
+  }
 
-	public void setWithoutTenantId(Boolean withoutTenantId) {
-		this.withoutTenantId = withoutTenantId;
-	}
+  public void setWithoutTenantId(Boolean withoutTenantId) {
+    this.withoutTenantId = withoutTenantId;
+  }
 
   public String getTaskCandidateGroup() {
     return taskCandidateGroup;

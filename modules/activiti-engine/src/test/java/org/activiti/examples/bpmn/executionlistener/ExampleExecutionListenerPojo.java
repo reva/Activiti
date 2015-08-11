@@ -25,7 +25,7 @@ public class ExampleExecutionListenerPojo implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private String receivedEventName;
-  
+
   public void myMethod(String eventName) {
     this.receivedEventName = eventName;
   }

@@ -24,16 +24,16 @@ import org.activiti.bpmn.model.EventGateway;
  * @author Tijs Rademakers
  */
 public class EventGatewayXMLConverter extends BaseBpmnXMLConverter {
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return EventGateway.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_GATEWAY_EVENT;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     EventGateway gateway = new EventGateway();
@@ -45,9 +45,9 @@ public class EventGatewayXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    
+
   }
 }

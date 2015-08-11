@@ -20,16 +20,15 @@ import java.util.Map;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 
-
 /**
  * @author Tom Baeyens
  */
 public class IdentityInfoEntity implements PersistentObject, HasRevision, Serializable {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   public static final String TYPE_USERINFO = "userinfo";
-  
+
   protected String id;
   protected int revision;
   protected String type;
@@ -47,11 +46,11 @@ public class IdentityInfoEntity implements PersistentObject, HasRevision, Serial
     persistentState.put("password", passwordBytes);
     return persistentState;
   }
-  
+
   public int getRevisionNext() {
-    return revision+1;
+    return revision + 1;
   }
-  
+
   public String getId() {
     return id;
   }
@@ -59,7 +58,7 @@ public class IdentityInfoEntity implements PersistentObject, HasRevision, Serial
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public int getRevision() {
     return revision;
   }
@@ -71,19 +70,19 @@ public class IdentityInfoEntity implements PersistentObject, HasRevision, Serial
   public String getType() {
     return type;
   }
-  
+
   public void setType(String type) {
     this.type = type;
   }
-  
+
   public String getUserId() {
     return userId;
   }
-  
+
   public void setUserId(String userId) {
     this.userId = userId;
   }
-  
+
   public String getKey() {
     return key;
   }
@@ -107,11 +106,11 @@ public class IdentityInfoEntity implements PersistentObject, HasRevision, Serial
   public void setPasswordBytes(byte[] passwordBytes) {
     this.passwordBytes = passwordBytes;
   }
-  
+
   public String getPassword() {
     return password;
   }
-  
+
   public void setPassword(String password) {
     this.password = password;
   }
@@ -131,11 +130,11 @@ public class IdentityInfoEntity implements PersistentObject, HasRevision, Serial
   public void setParentId(String parentId) {
     this.parentId = parentId;
   }
-  
+
   public Map<String, String> getDetails() {
     return details;
   }
-  
+
   public void setDetails(Map<String, String> details) {
     this.details = details;
   }

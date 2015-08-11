@@ -23,7 +23,7 @@ import org.junit.Test;
  * @see <a href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1847</a>
  */
 public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConverterTest {
-  
+
   protected static final String YOURCO_EXTENSIONS_NAMESPACE = "http://yourco/bpmn";
   protected static final String YOURCO_EXTENSIONS_PREFIX = "yourco";
 
@@ -44,7 +44,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
    * Inner class used to hold localization DataObject extension values
    */
   public class Localization {
-    
+
     private String resourceBundleKeyForName;
     private String resourceBundleKeyForDescription;
     private String labeledEntityIdForName;
@@ -94,6 +94,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
       return sb.toString();
     }
   }
+
   /*
    * End of inner classes
    */
@@ -137,7 +138,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
     assertEquals("xsd:string", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof String);
     assertEquals("Testing123", dataObj.getValue());
-    
+
     /*
      * Verify DataObject attributes extension
      */
@@ -152,7 +153,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
         fail("Unknown key value");
       }
     }
-    
+
     /*
      * Verify DataObject localization extension
      */
@@ -199,7 +200,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
         fail("Unknown key value");
       }
     }
-    
+
     /*
      * Verify DataObject localization extension
      */
@@ -208,7 +209,7 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
     assertEquals("rbkfd-2", localization.getResourceBundleKeyForDescription());
     assertEquals("leifn-2", localization.getLabeledEntityIdForName());
     assertEquals("leifd-2", localization.getLabeledEntityIdForDescription());
-}
+  }
 
   protected static String getExtensionValue(String key, ValuedDataObject dataObj) {
     Map<String, List<ExtensionElement>> extensionElements = dataObj.getExtensionElements();
@@ -236,12 +237,10 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
 
       if (null != attributesExtension && !attributesExtension.isEmpty()) {
         attributes = new HashMap<String, String>();
-        List<ExtensionElement> attributeExtensions =
-                attributesExtension.get(0).getChildElements().get(ELEMENT_DATA_ATTRIBUTE);
-        
+        List<ExtensionElement> attributeExtensions = attributesExtension.get(0).getChildElements().get(ELEMENT_DATA_ATTRIBUTE);
+
         for (ExtensionElement attributeExtension : attributeExtensions) {
-          attributes.put(attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME),
-                  attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_VALUE));
+          attributes.put(attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME), attributeExtension.getAttributeValue(YOURCO_EXTENSIONS_NAMESPACE, ATTRIBUTE_VALUE));
         }
       }
     }
@@ -253,14 +252,10 @@ public class ValuedDataObjectWithExtensionsConverterTest extends AbstractConvert
 
     if (!i18lnExtension.isEmpty()) {
       Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension.get(0).getAttributes();
-      localization.setLabeledEntityIdForName(extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME)
-              .get(0).getValue());
-      localization.setLabeledEntityIdForDescription(extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION)
-              .get(0).getValue());
-      localization.setResourceBundleKeyForName(extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME)
-              .get(0).getValue());
-      localization.setResourceBundleKeyForDescription(extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION)
-              .get(0).getValue());
+      localization.setLabeledEntityIdForName(extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_NAME).get(0).getValue());
+      localization.setLabeledEntityIdForDescription(extensionAttributes.get(ATTRIBUTE_DATA_LABELED_ENTITY_ID_FOR_DESCRIPTION).get(0).getValue());
+      localization.setResourceBundleKeyForName(extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_NAME).get(0).getValue());
+      localization.setResourceBundleKeyForDescription(extensionAttributes.get(ATTRIBUTE_DATA_RESOURCE_BUNDLE_KEY_FOR_DESCRIPTION).get(0).getValue());
     }
     return localization;
   }

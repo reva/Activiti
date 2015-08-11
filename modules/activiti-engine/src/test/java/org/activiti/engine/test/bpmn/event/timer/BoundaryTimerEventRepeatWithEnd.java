@@ -38,12 +38,12 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     Date baseTime = calendar.getTime();
 
     calendar.add(Calendar.MINUTE, 20);
-    //expect to stop boundary jobs after 20 minutes
+    // expect to stop boundary jobs after 20 minutes
     DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
     DateTime dt = new DateTime(calendar.getTime());
     String dateStr = fmt.print(dt);
 
-    //reset the timer
+    // reset the timer
     Calendar nextTimeCal = Calendar.getInstance();
     nextTimeCal.setTime(baseTime);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
@@ -58,32 +58,35 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-    //Test Boundary Events
+    // Test Boundary Events
     // complete will cause timer to be created
     taskService.complete(task.getId());
 
     List<Job> jobs = managementService.createJobQuery().list();
     assertEquals(1, jobs.size());
-    //boundary events
+    // boundary events
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 200);
       fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
     } catch (Exception ex) {
-      //expected exception because a new job is prepared
+      // expected exception because a new job is prepared
     }
 
-    nextTimeCal.add(Calendar.MINUTE, 15); //after 15 minutes
+    nextTimeCal.add(Calendar.MINUTE, 15); // after 15 minutes
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 200);
       fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
     } catch (Exception ex) {
-      //expected exception because a new job is prepared
+      // expected exception because a new job is prepared
     }
 
-    nextTimeCal.add(Calendar.MINUTE, 5); //after another 5 minutes (20 minutes and 1 second from the baseTime) the BoundaryEndTime is reached
+    nextTimeCal.add(Calendar.MINUTE, 5); // after another 5 minutes (20
+                                         // minutes and 1 second from the
+                                         // baseTime) the BoundaryEndTime is
+                                         // reached
     nextTimeCal.add(Calendar.SECOND, 1);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 

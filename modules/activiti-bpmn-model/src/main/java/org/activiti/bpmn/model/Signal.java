@@ -21,12 +21,12 @@ public class Signal extends BaseElement {
   public static final String SCOPE_PROCESS_INSTANCE = "processInstance";
 
   protected String name;
-  
+
   protected String scope;
 
   public Signal() {
   }
-  
+
   public Signal(String id, String name) {
     this.id = id;
     this.name = name;
@@ -39,7 +39,7 @@ public class Signal extends BaseElement {
   public void setName(String name) {
     this.name = name;
   }
-  
+
   public String getScope() {
     return scope;
   }
@@ -47,13 +47,13 @@ public class Signal extends BaseElement {
   public void setScope(String scope) {
     this.scope = scope;
   }
-  
+
   public Signal clone() {
     Signal clone = new Signal();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(Signal otherElement) {
     super.setValues(otherElement);
     setName(otherElement.getName());

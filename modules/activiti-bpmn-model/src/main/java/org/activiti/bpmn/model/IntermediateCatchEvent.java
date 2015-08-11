@@ -22,7 +22,7 @@ public class IntermediateCatchEvent extends Event {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(IntermediateCatchEvent otherEvent) {
     super.setValues(otherEvent);
   }

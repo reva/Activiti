@@ -70,9 +70,9 @@ public class WSDLImporter implements XMLImporter {
   protected Map<String, StructureDefinition> structures = new HashMap<String, StructureDefinition>();
 
   protected String wsdlLocation;
-  
+
   protected String namespace;
-  
+
   public WSDLImporter() {
     this.namespace = "";
   }
@@ -119,7 +119,7 @@ public class WSDLImporter implements XMLImporter {
       Service service = (Service) serviceObject;
       WSService wsService = this.importService(service);
       this.wsServices.put(this.namespace + wsService.getName(), wsService);
-      
+
       Port port = (Port) service.getPorts().values().iterator().next();
       for (Object bindOperationObject : port.getBinding().getBindingOperations()) {
         BindingOperation bindOperation = (BindingOperation) bindOperationObject;
@@ -130,7 +130,7 @@ public class WSDLImporter implements XMLImporter {
       }
     }
   }
-  
+
   /**
    * Imports the service from the WSDL service definition
    */
@@ -138,7 +138,7 @@ public class WSDLImporter implements XMLImporter {
     String name = service.getQName().getLocalPart();
     Port port = (Port) service.getPorts().values().iterator().next();
     String location = "";
-    
+
     List extensionElements = port.getExtensibilityElements();
     for (Object extension : extensionElements) {
       if (extension instanceof SOAPAddress) {
@@ -157,8 +157,7 @@ public class WSDLImporter implements XMLImporter {
   }
 
   /**
-   * Import the Types from the WSDL definition using the same strategy that
-   * Cxf uses taking advantage of JAXB
+   * Import the Types from the WSDL definition using the same strategy that Cxf uses taking advantage of JAXB
    */
   private void importTypes(Types types) {
     SchemaCompiler compiler = XJC.createSchemaCompiler();
@@ -168,11 +167,10 @@ public class WSDLImporter implements XMLImporter {
     Element rootTypes = this.getRootTypes();
     this.createDefaultStructures(rootTypes);
 
-    
     S2JJAXBModel intermediateModel = this.compileModel(types, compiler, rootTypes);
     Collection<? extends Mapping> mappings = intermediateModel.getMappings();
 
-    for (Mapping mapping : mappings){
+    for (Mapping mapping : mappings) {
       this.importStructure(mapping);
     }
   }
@@ -181,7 +179,7 @@ public class WSDLImporter implements XMLImporter {
     QName qname = mapping.getElement();
     JDefinedClass theClass = (JDefinedClass) mapping.getType().getTypeClass();
     SimpleStructureDefinition structure = (SimpleStructureDefinition) this.structures.get(this.namespace + qname.getLocalPart());
-    
+
     Map<String, JFieldVar> fields = theClass.fields();
     int index = 0;
     for (Entry<String, JFieldVar> entry : fields.entrySet()) {

@@ -23,21 +23,20 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CommentEntity implements Comment, Event, PersistentObject, Serializable {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   public static final String TYPE_EVENT = "event";
   public static final String TYPE_COMMENT = "comment";
-  
+
   protected String id;
-  
-  // If comments would be removeable, revision needs to be added!
-  
+
+  // If comments would be removable, revision needs to be added!
+
   protected String type;
   protected String userId;
   protected Date time;
@@ -46,26 +45,26 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
   protected String action;
   protected String message;
   protected String fullMessage;
-  
+
   public Object getPersistentState() {
     return CommentEntity.class;
   }
 
   public byte[] getFullMessageBytes() {
-    return (fullMessage!=null ? fullMessage.getBytes() : null);
+    return (fullMessage != null ? fullMessage.getBytes() : null);
   }
 
   public void setFullMessageBytes(byte[] fullMessageBytes) {
-    fullMessage = (fullMessageBytes!=null ? new String(fullMessageBytes) : null );
+    fullMessage = (fullMessageBytes != null ? new String(fullMessageBytes) : null);
   }
-  
+
   public static String MESSAGE_PARTS_MARKER = "_|_";
   public static Pattern MESSAGE_PARTS_MARKER_REGEX = Pattern.compile("_\\|_");
-  
+
   public void setMessage(String[] messageParts) {
     StringBuilder stringBuilder = new StringBuilder();
-    for (String part: messageParts) {
-      if (part!=null) {
+    for (String part : messageParts) {
+      if (part != null) {
         stringBuilder.append(part.replace(MESSAGE_PARTS_MARKER, " | "));
         stringBuilder.append(MESSAGE_PARTS_MARKER);
       } else {
@@ -73,20 +72,20 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
         stringBuilder.append(MESSAGE_PARTS_MARKER);
       }
     }
-    for (int i=0; i<MESSAGE_PARTS_MARKER.length(); i++) {
-      stringBuilder.deleteCharAt(stringBuilder.length()-1);
+    for (int i = 0; i < MESSAGE_PARTS_MARKER.length(); i++) {
+      stringBuilder.deleteCharAt(stringBuilder.length() - 1);
     }
     message = stringBuilder.toString();
   }
-  
+
   public List<String> getMessageParts() {
-    if (message==null) {
+    if (message == null) {
       return null;
     }
     List<String> messageParts = new ArrayList<String>();
-    
+
     String[] parts = MESSAGE_PARTS_MARKER_REGEX.split(message);
-    for(String part : parts) {
+    for (String part : parts) {
       if ("null".equals(part)) {
         messageParts.add(null);
       } else {
@@ -95,53 +94,54 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
     }
     return messageParts;
   }
-  
-  // getters and setters //////////////////////////////////////////////////////
+
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
   public String getId() {
     return id;
   }
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getUserId() {
     return userId;
   }
-  
+
   public void setUserId(String userId) {
     this.userId = userId;
   }
-  
+
   public String getTaskId() {
     return taskId;
   }
-  
+
   public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
-  
+
   public String getMessage() {
     return message;
   }
-  
+
   public void setMessage(String message) {
     this.message = message;
   }
-  
+
   public Date getTime() {
     return time;
   }
-  
+
   public void setTime(Date time) {
     this.time = time;
   }
-  
+
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  
+
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
@@ -149,7 +149,7 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
   public String getType() {
     return type;
   }
-  
+
   public void setType(String type) {
     this.type = type;
   }
@@ -165,7 +165,7 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
   public String getAction() {
     return action;
   }
-  
+
   public void setAction(String action) {
     this.action = action;
   }

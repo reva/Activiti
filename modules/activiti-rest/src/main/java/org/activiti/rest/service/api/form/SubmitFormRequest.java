@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.form;
 
-
 import java.util.List;
 
 import org.activiti.rest.service.api.RestActionRequest;
@@ -30,29 +29,36 @@ public class SubmitFormRequest extends RestActionRequest {
   protected String taskId;
   protected String businessKey;
   protected List<RestFormProperty> properties;
-  
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }
+
   public String getTaskId() {
     return taskId;
   }
+
   public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
+
   public String getBusinessKey() {
     return businessKey;
   }
+
   public void setBusinessKey(String businessKey) {
     this.businessKey = businessKey;
   }
+
   public void setProperties(List<RestFormProperty> properties) {
     this.properties = properties;
   }
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=RestFormProperty.class)
+
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = RestFormProperty.class)
   public List<RestFormProperty> getProperties() {
     return properties;
   }

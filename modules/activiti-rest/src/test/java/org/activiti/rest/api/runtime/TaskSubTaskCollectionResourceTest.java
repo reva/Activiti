@@ -22,46 +22,43 @@ import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-
 /**
  * Test for all REST-operations related to sub tasks.
  * 
  * @author Tijs Rademakers
  */
 public class TaskSubTaskCollectionResourceTest extends BaseSpringRestTestCase {
-  
+
   /**
-   * Test getting all sub tasks.
-   * GET runtime/tasks/{taskId}/subtasks
+   * Test getting all sub tasks. GET runtime/tasks/{taskId}/subtasks
    */
   public void testGetSubTasks() throws Exception {
-   
+
     Task parentTask = taskService.newTask();
     parentTask.setName("parent task");
     taskService.saveTask(parentTask);
-    
+
     Task subTask = taskService.newTask();
     subTask.setName("sub task 1");
     subTask.setParentTaskId(parentTask.getId());
     taskService.saveTask(subTask);
-    
+
     Task subTask2 = taskService.newTask();
     subTask2.setName("sub task 2");
     subTask2.setParentTaskId(parentTask.getId());
     taskService.saveTask(subTask2);
 
     // Request all sub tasks
-    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_SUBTASKS_COLLECTION, parentTask.getId())), HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_SUBTASKS_COLLECTION, parentTask.getId())), HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(2, responseNode.size());
-    
+
     boolean foundSubtask1 = false;
     boolean foundSubtask2 = false;
-    for (int i=0; i< responseNode.size(); i++) {
+    for (int i = 0; i < responseNode.size(); i++) {
       JsonNode var = responseNode.get(i);
       if ("sub task 1".equals(var.get("name").asText())) {
         foundSubtask1 = true;
@@ -73,11 +70,11 @@ public class TaskSubTaskCollectionResourceTest extends BaseSpringRestTestCase {
     }
     assertTrue(foundSubtask1);
     assertTrue(foundSubtask2);
-    
+
     taskService.deleteTask(parentTask.getId());
     taskService.deleteTask(subTask.getId());
     taskService.deleteTask(subTask2.getId());
-    
+
     historyService.deleteHistoricTaskInstance(parentTask.getId());
     historyService.deleteHistoricTaskInstance(subTask.getId());
     historyService.deleteHistoricTaskInstance(subTask2.getId());

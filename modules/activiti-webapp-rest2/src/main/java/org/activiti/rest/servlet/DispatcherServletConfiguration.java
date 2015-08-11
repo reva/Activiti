@@ -23,7 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@ComponentScan({"org.activiti.rest.exception", "org.activiti.rest.service.api"})
+@ComponentScan({ "org.activiti.rest.exception", "org.activiti.rest.service.api" })
 @EnableAsync
 public class DispatcherServletConfiguration extends WebMvcConfigurationSupport {
 
@@ -31,7 +31,7 @@ public class DispatcherServletConfiguration extends WebMvcConfigurationSupport {
 
   @Autowired
   private ObjectMapper objectMapper;
-  
+
   @Autowired
   private Environment environment;
 
@@ -59,15 +59,15 @@ public class DispatcherServletConfiguration extends WebMvcConfigurationSupport {
     log.debug("Creating requestMappingHandlerMapping");
     RequestMappingHandlerMapping requestMappingHandlerMapping = new RequestMappingHandlerMapping();
     requestMappingHandlerMapping.setUseSuffixPatternMatch(false);
-    Object[] interceptors = {localeChangeInterceptor()};
+    Object[] interceptors = { localeChangeInterceptor() };
     requestMappingHandlerMapping.setInterceptors(interceptors);
     return requestMappingHandlerMapping;
   }
-  
+
   @Override
   public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
     addDefaultHttpMessageConverters(converters);
-    for (HttpMessageConverter<?> converter: converters) {
+    for (HttpMessageConverter<?> converter : converters) {
       if (converter instanceof MappingJackson2HttpMessageConverter) {
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = (MappingJackson2HttpMessageConverter) converter;
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
@@ -80,5 +80,5 @@ public class DispatcherServletConfiguration extends WebMvcConfigurationSupport {
   protected void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
     configurer.favorPathExtension(false);
   }
-  
+
 }

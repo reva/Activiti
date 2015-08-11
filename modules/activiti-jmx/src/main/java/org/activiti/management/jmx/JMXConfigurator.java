@@ -23,15 +23,15 @@ import org.slf4j.LoggerFactory;
  */
 
 public class JMXConfigurator extends AbstractProcessEngineConfigurator {
-  
+
   public static final String DEFAUL_JMX_DOMAIN = "DefaultDomain";
-  
-  //jmx (rmi server connection) port
+
+  // jmx (rmi server connection) port
   protected Integer connectorPort = -1;
 
   // jmx domain name
   protected String domain = "org.activiti.jmx.Mbeans";
-  
+
   // the domain name for the activiti mbeans
   protected String mbeanDomain = DEFAUL_JMX_DOMAIN;
 

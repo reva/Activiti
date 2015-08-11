@@ -28,12 +28,12 @@ public class ActivitiEntityWithVariablesEventImpl extends ActivitiEntityEventImp
 
   protected Map variables;
   protected boolean localScope;
-  
+
   public ActivitiEntityWithVariablesEventImpl(Object entity, Map variables, boolean localScope, ActivitiEventType type) {
-		super(entity, type);
-		
-		this.variables = variables;
-		this.localScope = localScope;
+    super(entity, type);
+
+    this.variables = variables;
+    this.localScope = localScope;
   }
 
   @Override

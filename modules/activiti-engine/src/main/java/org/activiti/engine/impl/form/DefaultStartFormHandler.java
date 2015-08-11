@@ -23,12 +23,11 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DefaultStartFormHandler extends DefaultFormHandler implements StartFormHandler {
-  
+
   @Override
   public void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
     super.parseConfiguration(formProperties, formKey, deployment, processDefinition);

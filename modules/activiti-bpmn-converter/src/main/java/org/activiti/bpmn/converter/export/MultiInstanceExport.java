@@ -25,10 +25,9 @@ public class MultiInstanceExport implements BpmnXMLConstants {
   public static void writeMultiInstance(Activity activity, XMLStreamWriter xtw) throws Exception {
     if (activity.getLoopCharacteristics() != null) {
       MultiInstanceLoopCharacteristics multiInstanceObject = activity.getLoopCharacteristics();
-      if (StringUtils.isNotEmpty(multiInstanceObject.getLoopCardinality()) ||
-          StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem()) ||
-          StringUtils.isNotEmpty(multiInstanceObject.getCompletionCondition())) {
-        
+      if (StringUtils.isNotEmpty(multiInstanceObject.getLoopCardinality()) || StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem())
+          || StringUtils.isNotEmpty(multiInstanceObject.getCompletionCondition())) {
+
         xtw.writeStartElement(ELEMENT_MULTIINSTANCE);
         BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_MULTIINSTANCE_SEQUENTIAL, String.valueOf(multiInstanceObject.isSequential()).toLowerCase(), xtw);
         if (StringUtils.isNotEmpty(multiInstanceObject.getInputDataItem())) {

@@ -13,7 +13,6 @@
 
 package org.activiti.rest.common.api;
 
-
 /**
  * Used for creating a response that represent an error that occurred.
  * 
@@ -23,16 +22,19 @@ public class RestError {
 
   private String errorMessage;
   private Integer statusCode;
-  
+
   public String getErrorMessage() {
     return errorMessage;
   }
+
   public void setErrorMessage(String errorMessage) {
     this.errorMessage = errorMessage;
   }
+
   public Integer getStatusCode() {
     return statusCode;
   }
+
   public void setStatusCode(Integer statusCode) {
     this.statusCode = statusCode;
   }

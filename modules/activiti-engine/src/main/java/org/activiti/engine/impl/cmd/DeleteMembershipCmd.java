@@ -18,7 +18,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -32,20 +31,18 @@ public class DeleteMembershipCmd implements Command<Void>, Serializable {
     this.userId = userId;
     this.groupId = groupId;
   }
-  
+
   public Void execute(CommandContext commandContext) {
-    if(userId == null) {
+    if (userId == null) {
       throw new ActivitiIllegalArgumentException("userId is null");
     }
-    if(groupId == null) {
+    if (groupId == null) {
       throw new ActivitiIllegalArgumentException("groupId is null");
     }
-    
-    commandContext
-      .getMembershipIdentityManager()
-      .deleteMembership(userId, groupId);
-    
-    return null;    
+
+    commandContext.getMembershipIdentityManager().deleteMembership(userId, groupId);
+
+    return null;
   }
 
 }

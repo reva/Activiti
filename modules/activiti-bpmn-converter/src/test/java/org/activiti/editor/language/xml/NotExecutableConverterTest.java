@@ -12,7 +12,7 @@ public class NotExecutableConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
@@ -20,11 +20,11 @@ public class NotExecutableConverterTest extends AbstractConverterTest {
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "notexecutablemodel.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     assertEquals("simpleProcess", model.getMainProcess().getId());
     assertEquals("Simple process", model.getMainProcess().getName());

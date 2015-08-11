@@ -14,14 +14,14 @@ package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-
 public class DeleteTaskLiteral extends AnnotationLiteral<DeleteTask> implements DeleteTask {
-  
-  protected final String activityId;   
-  
+
+  protected final String activityId;
+
   public DeleteTaskLiteral(String activityId) {
     this.activityId = activityId;
   }
+
   @Override
   public String value() {
     return activityId != null ? activityId : "";

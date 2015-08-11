@@ -27,11 +27,11 @@ public class DataStateParser extends BaseChildElementParser {
   public String getElementName() {
     return ELEMENT_DATA_STATE;
   }
-  
+
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof DataStore) {
       ((DataStore) parentElement).setDataState(xtr.getElementText());
-    
+
     } else if (parentElement instanceof DataStoreReference) {
       ((DataStoreReference) parentElement).setDataState(xtr.getElementText());
     }

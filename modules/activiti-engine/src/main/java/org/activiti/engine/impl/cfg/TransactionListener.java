@@ -14,7 +14,6 @@ package org.activiti.engine.impl.cfg;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */

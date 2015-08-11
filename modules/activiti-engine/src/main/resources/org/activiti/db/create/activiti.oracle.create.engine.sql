@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.18.0.0', 1);
+values ('schema.version', '6.0.0.0', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.18.0.0)', 1);
+values ('schema.history', 'create(6.0.0.0)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -30,6 +30,7 @@ create table ACT_RE_DEPLOYMENT (
     CATEGORY_ NVARCHAR2(255),
     TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     DEPLOY_TIME_ TIMESTAMP(6),
+    ENGINE_VERSION_ NVARCHAR2(255),
     primary key (ID_)
 );
 
@@ -58,6 +59,7 @@ create table ACT_RU_EXECUTION (
     PARENT_ID_ NVARCHAR2(64),
     PROC_DEF_ID_ NVARCHAR2(64),
     SUPER_EXEC_ NVARCHAR2(64),
+    ROOT_PROC_INST_ID_ NVARCHAR2(64),
     ACT_ID_ NVARCHAR2(255),
     IS_ACTIVE_ NUMBER(1,0) CHECK (IS_ACTIVE_ IN (1,0)),
     IS_CONCURRENT_ NUMBER(1,0) CHECK (IS_CONCURRENT_ IN (1,0)),
@@ -107,6 +109,7 @@ create table ACT_RE_PROCDEF (
     HAS_GRAPHICAL_NOTATION_ NUMBER(1,0) CHECK (HAS_GRAPHICAL_NOTATION_ IN (1,0)),
     SUSPENSION_STATE_ INTEGER,
     TENANT_ID_ NVARCHAR2(255) DEFAULT '',
+    ENGINE_VERSION_ NVARCHAR2(255),
     primary key (ID_)
 );
 
@@ -195,6 +198,7 @@ create table ACT_EVT_LOG (
 create sequence act_evt_log_seq;
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
+create index ACT_IDX_EXEC_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);

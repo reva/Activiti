@@ -15,8 +15,7 @@ package org.activiti.engine.impl.transformer;
 import org.activiti.engine.ActivitiException;
 
 /**
- * A Transformer is responsible of transforming an object into a different
- * object
+ * A Transformer is responsible of transforming an object into a different object
  * 
  * @author Esteban Robles Luna
  */
@@ -29,7 +28,7 @@ public abstract class AbstractTransformer implements Transformer {
     try {
       return this.primTransform(anObject);
     } catch (Exception e) {
-      
+
       throw new ActivitiException("Error while executing transformation from object: " + anObject + " using transformer " + this);
     }
   }
@@ -37,7 +36,8 @@ public abstract class AbstractTransformer implements Transformer {
   /**
    * Transforms anObject into a different object
    * 
-   * @param anObject the object to be transformed
+   * @param anObject
+   *          the object to be transformed
    * @return the transformed object
    */
   protected abstract Object primTransform(Object anObject) throws Exception;

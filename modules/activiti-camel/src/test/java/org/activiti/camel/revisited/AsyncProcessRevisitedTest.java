@@ -34,21 +34,21 @@ public class AsyncProcessRevisitedTest extends SpringActivitiTestCase {
   @Autowired
   protected CamelContext camelContext;
 
-  public void  setUp() throws Exception {
+  public void setUp() throws Exception {
     camelContext.addRoutes(new RouteBuilder() {
 
-  		@Override
-  		public void configure() throws Exception {
-  		  from("activiti:asyncCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep").to("seda:continueAsync1");
-  		  from("seda:continueAsync1").to("activiti:asyncCamelProcessRevisited:receive1");
-  		    
-  		  from("activiti:asyncCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep").to("bean:sleepBean?method=sleep").to("seda:continueAsync2");    
+      @Override
+      public void configure() throws Exception {
+        from("activiti:asyncCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep").to("seda:continueAsync1");
+        from("seda:continueAsync1").to("activiti:asyncCamelProcessRevisited:receive1");
+
+        from("activiti:asyncCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep").to("bean:sleepBean?method=sleep").to("seda:continueAsync2");
         from("seda:continueAsync2").to("activiti:asyncCamelProcessRevisited:receive2");
-  		}
-  	});
+      }
+    });
   }
 
-  @Deployment(resources = {"process/revisited/async-revisited.bpmn20.xml"})
+  @Deployment(resources = { "process/revisited/async-revisited.bpmn20.xml" })
   public void testRunProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncCamelProcessRevisited");
     List<Execution> executionList = runtimeService.createExecutionQuery().list();

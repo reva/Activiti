@@ -18,7 +18,6 @@ import java.util.Random;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-
 /**
  * Tasklistener that sets some random process and task-variables.
  * 
@@ -31,19 +30,19 @@ public class SetRandomVariablesTaskListener implements TaskListener {
   @Override
   public void notify(DelegateTask delegateTask) {
     String varName;
-    for(int i=0; i<5; i++) {
+    for (int i = 0; i < 5; i++) {
       varName = "variable-" + new Random().nextInt(10);
       delegateTask.getExecution().setVariable(varName, getRandomValue());
     }
-    
-    for(int i=0; i<5; i++) {
+
+    for (int i = 0; i < 5; i++) {
       varName = "task-variable-" + new Random().nextInt(10);
       delegateTask.setVariableLocal(varName, getRandomValue());
     }
   }
 
   protected Object getRandomValue() {
-    switch(new Random().nextInt(4)) {
+    switch (new Random().nextInt(4)) {
     case 0:
       return new Random().nextLong();
     case 1:

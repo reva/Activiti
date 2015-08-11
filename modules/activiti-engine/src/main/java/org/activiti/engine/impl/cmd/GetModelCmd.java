@@ -19,7 +19,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -27,7 +26,7 @@ public class GetModelCmd implements Command<ModelEntity>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String modelId;
-  
+
   public GetModelCmd(String modelId) {
     this.modelId = modelId;
   }

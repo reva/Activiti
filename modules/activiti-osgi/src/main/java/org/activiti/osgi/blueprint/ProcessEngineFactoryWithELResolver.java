@@ -36,8 +36,7 @@ public class ProcessEngineFactoryWithELResolver extends ProcessEngineFactory {
       resolverFactories.add(new BeansResolverFactory());
     }
 
-    configImpl.setScriptingEngines(new OsgiScriptingEngines(
-        new ScriptBindingsFactory(resolverFactories)));
+    configImpl.setScriptingEngines(new OsgiScriptingEngines(new ScriptBindingsFactory(resolverFactories)));
     super.init();
   }
 

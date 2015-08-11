@@ -30,15 +30,13 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
-
 
 /**
  * @author Tom Baeyens
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class UserEntityManager extends AbstractManager implements UserIdentityManager {
+public class UserEntityManager extends AbstractEntityManager<UserEntity> implements UserIdentityManager {
 
   public User createNewUser(String userId) {
     return new UserEntity(userId);
@@ -46,23 +44,20 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
 
   public void insertUser(User user) {
     getDbSqlSession().insert((PersistentObject) user);
-    
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
+
+    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
     }
   }
-  
+
   public void updateUser(User updatedUser) {
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.update((PersistentObject) updatedUser);
-    
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
+
+    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
     }
   }
 
@@ -75,29 +70,28 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
     UserEntity user = (UserEntity) findUserById(userId);
     if (user != null) {
       List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
-      for (IdentityInfoEntity identityInfo: identityInfos) {
+      for (IdentityInfoEntity identityInfo : identityInfos) {
         getIdentityInfoManager().deleteIdentityInfo(identityInfo);
       }
       getDbSqlSession().delete("deleteMembershipsByUserId", userId);
 
       user.delete();
-      
-      if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, user));
+
+      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, user));
       }
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page) {
     return getDbSqlSession().selectList("selectUserByQueryCriteria", query, page);
   }
-  
+
   public long findUserCountByQueryCriteria(UserQueryImpl query) {
     return (Long) getDbSqlSession().selectOne("selectUserCountByQueryCriteria", query);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Group> findGroupsByUser(String userId) {
     return getDbSqlSession().selectList("selectGroupsByUserId", userId);
@@ -121,7 +115,7 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
     parameters.put("type", type);
     return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
   }
-  
+
   public Boolean checkPassword(String userId, String password) {
     User user = findUserById(userId);
     if ((user != null) && (password != null) && (password.equals(user.getPassword()))) {
@@ -129,13 +123,13 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
     }
     return false;
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<User> findPotentialStarterUsers(String proceDefId) {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("procDefId", proceDefId);
-    return  (List<User>) getDbSqlSession().selectOne("selectUserByQueryCriteria", parameters);
-    
+    return (List<User>) getDbSqlSession().selectOne("selectUserByQueryCriteria", parameters);
+
   }
 
   @SuppressWarnings("unchecked")
@@ -146,26 +140,26 @@ public class UserEntityManager extends AbstractManager implements UserIdentityMa
   public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectUserCountByNativeQuery", parameterMap);
   }
-  
+
   @Override
   public boolean isNewUser(User user) {
-  	return ((UserEntity) user).getRevision() == 0;
+    return ((UserEntity) user).getRevision() == 0;
   }
-  
+
   @Override
   public Picture getUserPicture(String userId) {
-  	UserEntity user = (UserEntity) findUserById(userId);
+    UserEntity user = (UserEntity) findUserById(userId);
     return user.getPicture();
   }
-  
+
   @Override
   public void setUserPicture(String userId, Picture picture) {
-  	UserEntity user = (UserEntity) findUserById(userId);
-  	if(user == null) {
-  		throw new ActivitiObjectNotFoundException("user "+userId+" doesn't exist", User.class);
-  	}
-  		
+    UserEntity user = (UserEntity) findUserById(userId);
+    if (user == null) {
+      throw new ActivitiObjectNotFoundException("user " + userId + " doesn't exist", User.class);
+    }
+
     user.setPicture(picture);
   }
-  
+
 }

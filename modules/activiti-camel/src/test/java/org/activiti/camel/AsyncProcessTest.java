@@ -35,32 +35,31 @@ public class AsyncProcessTest extends SpringActivitiTestCase {
   @Autowired
   protected CamelContext camelContext;
 
-  public void  setUp() throws Exception {
+  public void setUp() throws Exception {
     camelContext.addRoutes(new RouteBuilder() {
 
-       @Override
-       public void configure() throws Exception {
-    	    from("activiti:asyncCamelProcess:serviceTaskAsync1").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
-    	    from("activiti:asyncCamelProcess:serviceTaskAsync2").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
-    	    from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    	    
-    	    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
-    	    
-    	    from("seda:receiveQueue").recipientList(header("destination"));
-       }
-		});
-	}
-   
+      @Override
+      public void configure() throws Exception {
+        from("activiti:asyncCamelProcess:serviceTaskAsync1").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
+        from("activiti:asyncCamelProcess:serviceTaskAsync2").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
+        from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+
+        from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+
+        from("seda:receiveQueue").recipientList(header("destination"));
+      }
+    });
+  }
+
   public void tearDown() throws Exception {
     List<Route> routes = camelContext.getRoutes();
-    for (Route r: routes) {       
+    for (Route r : routes) {
       camelContext.stopRoute(r.getId());
       camelContext.removeRoute(r.getId());
     }
   }
 
-
-  @Deployment(resources = {"process/async.bpmn20.xml"})
+  @Deployment(resources = { "process/async.bpmn20.xml" })
   public void testRunProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncCamelProcess");
     List<Execution> executionList = runtimeService.createExecutionQuery().list();

@@ -17,14 +17,13 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
-
 /**
  * @author Tom Baeyens
  */
 public class Picture implements Serializable {
 
   private static final long serialVersionUID = 2384375526314443322L;
-  
+
   protected byte[] bytes;
   protected String mimeType;
 
@@ -36,7 +35,7 @@ public class Picture implements Serializable {
   public byte[] getBytes() {
     return bytes;
   }
-  
+
   public InputStream getInputStream() {
     return new ByteArrayInputStream(bytes);
   }

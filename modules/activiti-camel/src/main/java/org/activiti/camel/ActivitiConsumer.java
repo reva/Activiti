@@ -26,7 +26,7 @@ public class ActivitiConsumer extends DefaultConsumer {
     super.doStart();
     ((ActivitiEndpoint) getEndpoint()).addConsumer(this);
   }
-  
+
   @Override
   protected void doStop() throws Exception {
     super.doStop();

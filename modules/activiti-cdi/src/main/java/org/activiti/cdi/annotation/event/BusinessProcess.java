@@ -33,6 +33,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface BusinessProcess {
-  /** the key of the process */  
+  /** the key of the process */
   String value() default "";
 }

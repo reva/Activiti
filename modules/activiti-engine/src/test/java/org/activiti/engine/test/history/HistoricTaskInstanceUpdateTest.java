@@ -19,25 +19,23 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Frederik Heremans
  */
 public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
 
-  
   @Deployment
   public void testHistoricTaskInstanceUpdate() {
     runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
-    
+
     Task task = taskService.createTaskQuery().singleResult();
-    
+
     // Update and save the task's fields before it is finished
     task.setPriority(12345);
     task.setDescription("Updated description");
     task.setName("Updated name");
     task.setAssignee("gonzo");
-    taskService.saveTask(task);   
+    taskService.saveTask(task);
 
     taskService.complete(task.getId());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
@@ -48,16 +46,16 @@ public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
     assertEquals("gonzo", historicTaskInstance.getAssignee());
     assertEquals("task", historicTaskInstance.getTaskDefinitionKey());
 
-    
-    // Validate fix of ACT-1923: updating assignee to null should be reflected in history
+    // Validate fix of ACT-1923: updating assignee to null should be
+    // reflected in history
     ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
-    
+
     task = taskService.createTaskQuery().singleResult();
-    
+
     task.setDescription(null);
     task.setName(null);
     task.setAssignee(null);
-    taskService.saveTask(task);   
+    taskService.saveTask(task);
 
     taskService.complete(task.getId());
     assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count());

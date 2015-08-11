@@ -24,10 +24,10 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class MessageParser implements BpmnXMLConstants {
-  
+
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-      String messageId   = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+      String messageId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
       String messageName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
       String itemRef = parseItemRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_REF), model);
       Message message = new Message(messageId, messageName, itemRef);
@@ -36,7 +36,7 @@ public class MessageParser implements BpmnXMLConstants {
       model.addMessage(message);
     }
   }
-  
+
   protected String parseItemRef(String itemRef, BpmnModel model) {
     String result = null;
     if (StringUtils.isNotEmpty(itemRef)) {

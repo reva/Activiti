@@ -16,7 +16,6 @@ package org.activiti.engine.impl.scripting;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
 
-
 /**
  * @author Tom Baeyens
  */

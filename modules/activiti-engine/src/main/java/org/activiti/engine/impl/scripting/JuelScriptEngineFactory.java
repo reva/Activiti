@@ -14,7 +14,6 @@
 package org.activiti.engine.impl.scripting;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class JuelScriptEngineFactory implements ScriptEngineFactory {
   private static List<String> mimeTypes;
 
   static {
-    names = Collections.unmodifiableList(Arrays.asList("juel"));
+    names = Collections.unmodifiableList(Collections.singletonList("juel"));
     extensions = names;
     mimeTypes = Collections.unmodifiableList(new ArrayList<String>(0));
   }
@@ -74,7 +73,7 @@ public class JuelScriptEngineFactory implements ScriptEngineFactory {
     // We will use out:print function to output statements
     StringBuilder stringBuffer = new StringBuilder();
     stringBuffer.append("out:print(\"");
-    
+
     int length = toDisplay.length();
     for (int i = 0; i < length; i++) {
       char c = toDisplay.charAt(i);

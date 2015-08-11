@@ -25,7 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * @author Joram Barrez
  */
 public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements GroupQuery {
-  
+
   private static final long serialVersionUID = 1L;
   protected String id;
   protected String name;
@@ -33,7 +33,6 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
   protected String type;
   protected String userId;
   protected String procDefId;
-  
 
   public GroupQueryImpl() {
   }
@@ -53,7 +52,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     this.id = id;
     return this;
   }
-  
+
   public GroupQuery groupName(String name) {
     if (name == null) {
       throw new ActivitiIllegalArgumentException("Provided name is null");
@@ -61,7 +60,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     this.name = name;
     return this;
   }
-  
+
   public GroupQuery groupNameLike(String nameLike) {
     if (nameLike == null) {
       throw new ActivitiIllegalArgumentException("Provided nameLike is null");
@@ -69,7 +68,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     this.nameLike = nameLike;
     return this;
   }
-  
+
   public GroupQuery groupType(String type) {
     if (type == null) {
       throw new ActivitiIllegalArgumentException("Provided type is null");
@@ -77,7 +76,7 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     this.type = type;
     return this;
   }
-  
+
   public GroupQuery groupMember(String userId) {
     if (userId == null) {
       throw new ActivitiIllegalArgumentException("Provided userId is null");
@@ -92,56 +91,55 @@ public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements 
     }
     this.procDefId = procDefId;
     return this;
-    
+
   }
-  
-  //sorting ////////////////////////////////////////////////////////
-  
+
+  // sorting ////////////////////////////////////////////////////////
+
   public GroupQuery orderByGroupId() {
     return orderBy(GroupQueryProperty.GROUP_ID);
   }
-  
+
   public GroupQuery orderByGroupName() {
     return orderBy(GroupQueryProperty.NAME);
   }
-  
+
   public GroupQuery orderByGroupType() {
     return orderBy(GroupQueryProperty.TYPE);
   }
-  
-  //results ////////////////////////////////////////////////////////
-  
+
+  // results ////////////////////////////////////////////////////////
+
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext
-      .getGroupIdentityManager()
-      .findGroupCountByQueryCriteria(this);
+    return commandContext.getGroupIdentityManager().findGroupCountByQueryCriteria(this);
   }
-  
+
   public List<Group> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext
-      .getGroupIdentityManager()
-      .findGroupByQueryCriteria(this, page);
+    return commandContext.getGroupIdentityManager().findGroupByQueryCriteria(this, page);
   }
-  
-  //getters ////////////////////////////////////////////////////////
-  
+
+  // getters ////////////////////////////////////////////////////////
+
   public String getId() {
     return id;
   }
+
   public String getName() {
     return name;
   }
+
   public String getNameLike() {
     return nameLike;
   }
+
   public String getType() {
     return type;
   }
+
   public String getUserId() {
     return userId;
   }
 
-  
 }

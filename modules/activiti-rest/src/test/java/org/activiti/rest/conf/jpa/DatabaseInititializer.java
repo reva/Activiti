@@ -19,7 +19,7 @@ public class DatabaseInititializer {
 
   @Value("classpath:org/activiti/rest/api/jpa/data.sql")
   private Resource dataScript;
-  
+
   @Autowired
   protected DataSource dataSource;
 

@@ -25,15 +25,13 @@ import org.junit.Test;
  * @author Tijs Rademakers
  */
 public class MuleHttpTest extends AbstractMuleTest {
-  
+
   @Test
   public void http() throws Exception {
     Assert.assertTrue(muleContext.isStarted());
-    
+
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    Deployment deployment = processEngine.getRepositoryService().createDeployment()
-        .addClasspathResource("org/activiti/mule/testHttp.bpmn20.xml")
-        .deploy();
+    Deployment deployment = processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/mule/testHttp.bpmn20.xml").deploy();
     RuntimeService runtimeService = processEngine.getRuntimeService();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
     Assert.assertFalse(processInstance.isEnded());
@@ -45,7 +43,7 @@ public class MuleHttpTest extends AbstractMuleTest {
     assertAndEnsureCleanDb(processEngine);
     ProcessEngines.destroy();
   }
-  
+
   @Override
   protected String getConfigResources() {
     return "mule-http-config.xml";

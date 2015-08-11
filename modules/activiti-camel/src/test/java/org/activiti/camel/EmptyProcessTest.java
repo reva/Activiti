@@ -32,29 +32,29 @@ public class EmptyProcessTest extends SpringActivitiTestCase {
 
   @Autowired
   protected CamelContext camelContext;
-  	
+
   @BeforeClass
   public void setUp() throws Exception {
-	  camelContext.addRoutes(new RouteBuilder() {
+    camelContext.addRoutes(new RouteBuilder() {
 
-	    @Override
-	    public void configure() throws Exception {
-	      from("direct:startEmpty").to("activiti:emptyProcess");
-	      from("direct:startEmptyWithHeader").setHeader("MyVar", constant("Foo")).to("activiti:emptyProcess?copyVariablesFromHeader=true");
-	      from("direct:startEmptyBodyAsString").to("activiti:emptyProcess?copyBodyToCamelBodyAsString=true");
-	    }
-	  });
+      @Override
+      public void configure() throws Exception {
+        from("direct:startEmpty").to("activiti:emptyProcess");
+        from("direct:startEmptyWithHeader").setHeader("MyVar", constant("Foo")).to("activiti:emptyProcess?copyVariablesFromHeader=true");
+        from("direct:startEmptyBodyAsString").to("activiti:emptyProcess?copyBodyToCamelBodyAsString=true");
+      }
+    });
   }
-  
+
   public void tearDown() throws Exception {
     List<Route> routes = camelContext.getRoutes();
-    for (Route r: routes) {
+    for (Route r : routes) {
       camelContext.stopRoute(r.getId());
       camelContext.removeRoute(r.getId());
     }
   }
-  
-  @Deployment(resources = {"process/empty.bpmn20.xml"})
+
+  @Deployment(resources = { "process/empty.bpmn20.xml" })
   public void testRunProcessWithHeader() throws Exception {
     ProducerTemplate tpl = camelContext.createProducerTemplate();
     String body = "body text";
@@ -67,32 +67,32 @@ public class EmptyProcessTest extends SpringActivitiTestCase {
     assertNotNull(var);
     assertEquals("Foo", var.getValue());
   }
-  
-  @Deployment(resources = {"process/empty.bpmn20.xml"})
+
+  @Deployment(resources = { "process/empty.bpmn20.xml" })
   public void testObjectAsVariable() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
     ProducerTemplate tpl = ctx.createProducerTemplate();
     Object expectedObj = new Long(99);
     Exchange exchange = ctx.getEndpoint("direct:startEmpty").createExchange();
     exchange.getIn().setBody(expectedObj);
-    tpl.send("direct:startEmpty", exchange);    
+    tpl.send("direct:startEmpty", exchange);
     String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
     assertProcessEnded(instanceId);
     HistoricVariableInstance var = processEngine.getHistoryService().createHistoricVariableInstanceQuery().variableName("camelBody").singleResult();
     assertNotNull(var);
     assertEquals(expectedObj, var.getValue());
   }
-  
-  @Deployment(resources = {"process/empty.bpmn20.xml"})
+
+  @Deployment(resources = { "process/empty.bpmn20.xml" })
   public void testObjectAsStringVariable() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
     ProducerTemplate tpl = ctx.createProducerTemplate();
     Object expectedObj = new Long(99);
-    
+
     Exchange exchange = ctx.getEndpoint("direct:startEmptyBodyAsString").createExchange();
     exchange.getIn().setBody(expectedObj);
     tpl.send("direct:startEmptyBodyAsString", exchange);
-    
+
     String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
 
     assertProcessEnded(instanceId);

@@ -19,7 +19,10 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Annotation for a test method to create and delete a deployment around a test method.
  * 
- * <p>Usage:</p>
+ * <p>
+ * Usage:
+ * </p>
+ * 
  * <pre>
  * package org.example;
  * 
@@ -51,5 +54,5 @@ public @interface Deployment {
 
   /** Specify resources that make up the process definition. */
   public String[] resources() default {};
-  
+
 }

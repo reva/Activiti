@@ -15,14 +15,13 @@ package org.activiti.engine.test.history;
 
 import java.io.Serializable;
 
-
 /**
  * @author Tom Baeyens
  */
 public class SerializableVariable implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   public String text;
 
   public SerializableVariable(String text) {

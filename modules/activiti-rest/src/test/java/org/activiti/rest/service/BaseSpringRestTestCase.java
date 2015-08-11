@@ -80,20 +80,18 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 public class BaseSpringRestTestCase extends PvmTestCase {
 
   private static Logger log = LoggerFactory.getLogger(BaseSpringRestTestCase.class);
-  
+
   protected static final int HTTP_SERVER_PORT = 9797;
   protected static final String SERVER_URL_PREFIX = "http://localhost:9797/service/";
   protected static final RestUrlBuilder URL_BUILDER = RestUrlBuilder.usingBaseUrl(SERVER_URL_PREFIX);
-  protected static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
-    "ACT_GE_PROPERTY"
-  );
-  
+  protected static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
+
   protected static Server server;
   protected static ApplicationContext appContext;
   protected ObjectMapper objectMapper = new ObjectMapper();
 
   protected static ProcessEngine processEngine;
-  
+
   protected String deploymentId;
   protected Throwable exception;
 
@@ -105,15 +103,15 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   protected static HistoryService historyService;
   protected static IdentityService identityService;
   protected static ManagementService managementService;
-  
+
   protected static CloseableHttpClient client;
   protected static LinkedList<CloseableHttpResponse> httpResponses = new LinkedList<CloseableHttpResponse>();
-  
+
   protected ISO8601DateFormat dateFormat = new ISO8601DateFormat();
-  
+
   static {
     createAndStartServer();
-    
+
     // Lookup services
     processEngine = appContext.getBean("processEngine", ProcessEngine.class);
     processEngineConfiguration = appContext.getBean(ProcessEngineConfigurationImpl.class);
@@ -124,27 +122,27 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     historyService = appContext.getBean(HistoryService.class);
     identityService = appContext.getBean(IdentityService.class);
     managementService = appContext.getBean(ManagementService.class);
-    
+
     // Create http client for all tests
     CredentialsProvider provider = new BasicCredentialsProvider();
     UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("kermit", "kermit");
     provider.setCredentials(AuthScope.ANY, credentials);
     client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
-    
+
     // Clean shutdown
     Runtime.getRuntime().addShutdownHook(new Thread() {
 
       @Override
       public void run() {
-      	
-      	if (client != null) {
-      		try {
-	          client.close();
+
+        if (client != null) {
+          try {
+            client.close();
           } catch (IOException e) {
-          	log.error("Could not close http client", e);
+            log.error("Could not close http client", e);
           }
-      	}
-      	
+        }
+
         if (server != null && server.isRunning()) {
           try {
             server.stop();
@@ -155,16 +153,15 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       }
     });
   }
-  
-  
+
   @Override
   public void runBare() throws Throwable {
     createUsers();
 
     try {
-      
+
       deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
-      
+
       super.runBare();
 
     } catch (AssertionFailedError e) {
@@ -172,13 +169,13 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       log.error("ASSERTION FAILED: {}", e, e);
       exception = e;
       throw e;
-      
+
     } catch (Throwable e) {
       log.error(EMPTY_LINE);
       log.error("EXCEPTION: {}", e, e);
       exception = e;
       throw e;
-      
+
     } finally {
       TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
       dropUsers();
@@ -187,33 +184,33 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       closeHttpConnections();
     }
   }
-  
+
   protected void createUsers() {
     User user = identityService.newUser("kermit");
     user.setFirstName("Kermit");
     user.setLastName("the Frog");
     user.setPassword("kermit");
     identityService.saveUser(user);
-    
+
     Group group = identityService.newGroup("admin");
     group.setName("Administrators");
     identityService.saveGroup(group);
-    
+
     identityService.createMembership(user.getId(), group.getId());
   }
-  
+
   public static void createAndStartServer() {
     server = new Server(HTTP_SERVER_PORT);
-      
+
     HashSessionIdManager idmanager = new HashSessionIdManager();
     server.setSessionIdManager(idmanager);
-    
+
     AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
     applicationContext.register(ApplicationConfiguration.class);
     applicationContext.refresh();
-      
+
     appContext = applicationContext;
-      
+
     try {
       server.setHandler(getServletContextHandler(applicationContext));
       server.start();
@@ -221,40 +218,40 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       log.error("Error starting server", e);
     }
   }
-  
+
   private static ServletContextHandler getServletContextHandler(AnnotationConfigWebApplicationContext context) throws IOException {
     ServletContextHandler contextHandler = new ServletContextHandler();
     WebConfigurer configurer = new WebConfigurer();
     configurer.setContext(context);
     contextHandler.addEventListener(configurer);
-    
+
     // Create the SessionHandler (wrapper) to handle the sessions
     HashSessionManager manager = new HashSessionManager();
     SessionHandler sessions = new SessionHandler(manager);
     contextHandler.setHandler(sessions);
-    
+
     return contextHandler;
-  }
-  
-  /**
-   * IMPORTANT: calling method is responsible for calling close() on returned {@link HttpResponse} to free the connection. 
-   */
-  public CloseableHttpResponse executeRequest(HttpUriRequest request, int expectedStatusCode) {
-  	return internalExecuteRequest(request, expectedStatusCode, true);
   }
 
   /**
-   * IMPORTANT: calling method is responsible for calling close() on returned {@link HttpResponse} to free the connection. 
+   * IMPORTANT: calling method is responsible for calling close() on returned {@link HttpResponse} to free the connection.
+   */
+  public CloseableHttpResponse executeRequest(HttpUriRequest request, int expectedStatusCode) {
+    return internalExecuteRequest(request, expectedStatusCode, true);
+  }
+
+  /**
+   * IMPORTANT: calling method is responsible for calling close() on returned {@link HttpResponse} to free the connection.
    */
   public CloseableHttpResponse executeBinaryRequest(HttpUriRequest request, int expectedStatusCode) {
-  	return internalExecuteRequest(request, expectedStatusCode, false);
+    return internalExecuteRequest(request, expectedStatusCode, false);
   }
-  
+
   protected CloseableHttpResponse internalExecuteRequest(HttpUriRequest request, int expectedStatusCode, boolean addJsonContentType) {
-	  CloseableHttpResponse response = null;
+    CloseableHttpResponse response = null;
     try {
       if (addJsonContentType && request.getFirstHeader(HttpHeaders.CONTENT_TYPE) == null) {
-        // Revert to default content-type 
+        // Revert to default content-type
         request.addHeader(new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"));
       }
       response = client.execute(request);
@@ -262,37 +259,37 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
       httpResponses.add(response);
       return response;
-      
+
     } catch (ClientProtocolException e) {
       Assert.fail(e.getMessage());
     } catch (IOException e) {
       Assert.fail(e.getMessage());
-    } 
+    }
     return null;
   }
-  
+
   public void closeResponse(CloseableHttpResponse response) {
-  	if (response != null) {
-  		try {
-  			response.close();
-	    } catch (IOException e) {
-	      fail("Could not close http connection");
-	    }
-	  }
+    if (response != null) {
+      try {
+        response.close();
+      } catch (IOException e) {
+        fail("Could not close http connection");
+      }
+    }
   }
-  
+
   protected void dropUsers() {
     IdentityService identityService = processEngine.getIdentityService();
-    
+
     identityService.deleteUser("kermit");
     identityService.deleteGroup("admin");
     identityService.deleteMembership("kermit", "admin");
   }
-  
-  /** Each test is assumed to clean up all DB content it entered.
-   * After a test method executed, this method scans all tables to see if the DB is completely clean. 
-   * It throws AssertionFailed in case the DB is not clean.
-   * If the DB is not clean, it is cleaned by performing a create a drop. */
+
+  /**
+   * Each test is assumed to clean up all DB content it entered. After a test method executed, this method scans all tables to see if the DB is completely clean. It throws AssertionFailed in case the
+   * DB is not clean. If the DB is not clean, it is cleaned by performing a create a drop.
+   */
   protected void assertAndEnsureCleanDb() throws Throwable {
     log.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = managementService.getTableCount();
@@ -301,8 +298,8 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       String tableNameWithoutPrefix = tableName.replace(processEngineConfiguration.getDatabaseTablePrefix(), "");
       if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableNameWithoutPrefix)) {
         Long count = tableCounts.get(tableName);
-        if (count!=0L) {
-          outputMessage.append("  "+tableName + ": " + count + " record(s) ");
+        if (count != 0L) {
+          outputMessage.append("  " + tableName + ": " + count + " record(s) ");
         }
       }
     }
@@ -310,10 +307,10 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
       log.error(EMPTY_LINE);
       log.error(outputMessage.toString());
-      
+
       log.info("dropping and recreating db");
-      
-      CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutor();
+
+      CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
       commandExecutor.execute(new Command<Object>() {
         public Object execute(CommandContext commandContext) {
           DbSqlSession session = commandContext.getSession(DbSqlSession.class);
@@ -323,7 +320,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
         }
       });
 
-      if (exception!=null) {
+      if (exception != null) {
         throw exception;
       } else {
         Assert.fail(outputMessage.toString());
@@ -332,20 +329,20 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       log.info("database was clean");
     }
   }
-  
+
   protected void closeHttpConnections() {
-  	for (CloseableHttpResponse response : httpResponses) {
-  		if (response != null) {
-  			try {
-	        response.close();
+    for (CloseableHttpResponse response : httpResponses) {
+      if (response != null) {
+        try {
+          response.close();
         } catch (IOException e) {
-        	log.error("Could not close http connection", e);
+          log.error("Could not close http connection", e);
         }
-  		}
-  	}
-  	httpResponses.clear();
+      }
+    }
+    httpResponses.clear();
   }
-  
+
   protected String encode(String string) {
     if (string != null) {
       try {
@@ -356,16 +353,12 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     }
     return null;
   }
-  
+
   public void assertProcessEnded(final String processInstanceId) {
-    ProcessInstance processInstance = processEngine
-      .getRuntimeService()
-      .createProcessInstanceQuery()
-      .processInstanceId(processInstanceId)
-      .singleResult();
-    
-    if (processInstance!=null) {
-      throw new AssertionFailedError("Expected finished process instance '"+processInstanceId+"' but it was still in the db"); 
+    ProcessInstance processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+
+    if (processInstance != null) {
+      throw new AssertionFailedError("Expected finished process instance '" + processInstanceId + "' but it was still in the db");
     }
   }
 
@@ -375,7 +368,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
       jobExecutor = processEngineConfiguration.getJobExecutor();
       jobExecutor.start();
-      
+
     } else {
       asyncExecutor = processEngineConfiguration.getAsyncExecutor();
       asyncExecutor.start();
@@ -414,7 +407,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
       jobExecutor = processEngineConfiguration.getJobExecutor();
       jobExecutor.start();
-      
+
     } else {
       asyncExecutor = processEngineConfiguration.getAsyncExecutor();
       asyncExecutor.start();
@@ -432,7 +425,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
         }
       } catch (InterruptedException e) {
       } catch (Exception e) {
-        throw new ActivitiException("Exception while waiting on condition: "+e.getMessage(), e);
+        throw new ActivitiException("Exception while waiting on condition: " + e.getMessage(), e);
       } finally {
         timer.cancel();
       }
@@ -450,37 +443,36 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   }
 
   public boolean areJobsAvailable() {
-    return !managementService
-      .createJobQuery()
-      .list()
-      .isEmpty();
+    return !managementService.createJobQuery().list().isEmpty();
   }
 
   private static class InteruptTask extends TimerTask {
     protected boolean timeLimitExceeded = false;
     protected Thread thread;
+
     public InteruptTask(Thread thread) {
       this.thread = thread;
     }
+
     public boolean isTimeLimitExceeded() {
       return timeLimitExceeded;
     }
+
     public void run() {
       timeLimitExceeded = true;
       thread.interrupt();
     }
   }
-  
+
   /**
-   * Checks if the returned "data" array (child-node of root-json node returned by invoking a GET on the given url) 
-   * contains entries with the given ID's.
+   * Checks if the returned "data" array (child-node of root-json node returned by invoking a GET on the given url) contains entries with the given ID's.
    */
   protected void assertResultsPresentInDataResponse(String url, String... expectedResourceIds) throws JsonProcessingException, IOException {
     int numberOfResultsExpected = expectedResourceIds.length;
-    
+
     // Do the actual call
     CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
-    
+
     // Check status and size
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     closeResponse(response);
@@ -489,64 +481,63 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     // Check presence of ID's
     List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
     Iterator<JsonNode> it = dataNode.iterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       String id = it.next().get("id").textValue();
       toBeFound.remove(id);
     }
     assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
   }
-  
+
   /**
-   * Checks if the returned "data" array (child-node of root-json node returned by invoking a POST on the given url) 
-   * contains entries with the given ID's.
+   * Checks if the returned "data" array (child-node of root-json node returned by invoking a POST on the given url) contains entries with the given ID's.
    */
   protected void assertResultsPresentInPostDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
     assertResultsPresentInPostDataResponseWithStatusCheck(url, body, HttpStatus.SC_OK, expectedResourceIds);
   }
-  
+
   protected void assertResultsPresentInPostDataResponseWithStatusCheck(String url, ObjectNode body, int expectedStatusCode, String... expectedResourceIds) throws JsonProcessingException, IOException {
     int numberOfResultsExpected = 0;
     if (expectedResourceIds != null) {
       numberOfResultsExpected = expectedResourceIds.length;
     }
-    
+
     // Do the actual call
     HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
     post.setEntity(new StringEntity(body.toString()));
     CloseableHttpResponse response = executeRequest(post, expectedStatusCode);
-    
+
     if (expectedStatusCode == HttpStatus.SC_OK) {
       // Check status and size
       JsonNode rootNode = objectMapper.readTree(response.getEntity().getContent());
       JsonNode dataNode = rootNode.get("data");
       assertEquals(numberOfResultsExpected, dataNode.size());
-  
+
       // Check presence of ID's
       if (expectedResourceIds != null) {
         List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
         Iterator<JsonNode> it = dataNode.iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
           String id = it.next().get("id").textValue();
           toBeFound.remove(id);
         }
         assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
       }
     }
-    
+
     closeResponse(response);
   }
-  
+
   /**
-   * Checks if the rest operation returns an error as expected 
+   * Checks if the rest operation returns an error as expected
    */
   protected void assertErrorResult(String url, ObjectNode body, int statusCode) throws IOException {
-    
+
     // Do the actual call
     HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
     post.setEntity(new StringEntity(body.toString()));
     closeResponse(executeRequest(post, statusCode));
   }
-  
+
   /**
    * Extract a date from the given string. Assertion fails when invalid date has been provided.
    */
@@ -554,17 +545,17 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     DateTimeFormatter dateFormat = ISODateTimeFormat.dateTime();
     try {
       return dateFormat.parseDateTime(isoString).toDate();
-    } catch(IllegalArgumentException iae) {
-      fail("Illegal date provided: "+ isoString);
+    } catch (IllegalArgumentException iae) {
+      fail("Illegal date provided: " + isoString);
       return null;
     }
   }
-  
+
   protected String getISODateString(Date time) {
     return dateFormat.format(time);
   }
-  
-  protected String buildUrl(String[] fragments, Object ... arguments){
+
+  protected String buildUrl(String[] fragments, Object... arguments) {
     return URL_BUILDER.buildUrl(fragments, arguments);
   }
 }

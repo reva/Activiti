@@ -22,7 +22,7 @@ public class ManualTask extends Task {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(ManualTask otherElement) {
     super.setValues(otherElement);
   }

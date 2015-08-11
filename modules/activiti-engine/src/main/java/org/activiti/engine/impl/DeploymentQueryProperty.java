@@ -32,8 +32,6 @@ import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.DeploymentQuery;
 
-
-
 /**
  * Contains the possible properties that can be used in a {@link DeploymentQuery}.
  * 
@@ -49,7 +47,7 @@ public class DeploymentQueryProperty implements QueryProperty {
   public static final DeploymentQueryProperty DEPLOYMENT_NAME = new DeploymentQueryProperty("RES.NAME_");
   public static final DeploymentQueryProperty DEPLOYMENT_TENANT_ID = new DeploymentQueryProperty("RES.TENANT_ID_");
   public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty("RES.DEPLOY_TIME_");
-  
+
   private String name;
 
   public DeploymentQueryProperty(String name) {
@@ -60,10 +58,9 @@ public class DeploymentQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static DeploymentQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
 
-  
 }

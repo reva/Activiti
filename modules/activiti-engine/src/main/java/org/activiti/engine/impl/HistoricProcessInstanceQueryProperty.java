@@ -18,14 +18,13 @@ import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
 
-
 /**
  * Contains the possible properties which can be used in a {@link HistoricProcessInstanceQueryProperty}.
  * 
  * @author Joram Barrez
  */
 public class HistoricProcessInstanceQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, HistoricProcessInstanceQueryProperty> properties = new HashMap<String, HistoricProcessInstanceQueryProperty>();
@@ -37,9 +36,9 @@ public class HistoricProcessInstanceQueryProperty implements QueryProperty {
   public static final HistoricProcessInstanceQueryProperty END_TIME = new HistoricProcessInstanceQueryProperty("RES.END_TIME_");
   public static final HistoricProcessInstanceQueryProperty DURATION = new HistoricProcessInstanceQueryProperty("RES.DURATION_");
   public static final HistoricProcessInstanceQueryProperty TENANT_ID = new HistoricProcessInstanceQueryProperty("RES.TENANT_ID_");
-  
+
   public static final HistoricProcessInstanceQueryProperty INCLUDED_VARIABLE_TIME = new HistoricProcessInstanceQueryProperty("VAR.LAST_UPDATED_TIME_");
-  
+
   private String name;
 
   public HistoricProcessInstanceQueryProperty(String name) {
@@ -50,7 +49,7 @@ public class HistoricProcessInstanceQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static HistoricProcessInstanceQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

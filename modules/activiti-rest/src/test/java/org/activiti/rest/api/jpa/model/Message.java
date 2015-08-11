@@ -12,12 +12,12 @@ import javax.persistence.Table;
 public class Message {
 
   @Id
-  @GeneratedValue(strategy=GenerationType.AUTO)
-  @Column(name = "id", unique=true, nullable=false)
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "id", unique = true, nullable = false)
   private Long id;
-  
+
   private String text;
-  
+
   public Long getId() {
     return id;
   }

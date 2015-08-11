@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.query.QueryProperty;
 
-
 /**
  * Contains the possible properties which can be used in a {@link HistoricVariableInstanceQuery}.
  * 
@@ -33,7 +32,7 @@ public class HistoricVariableInstanceQueryProperty implements QueryProperty {
 
   public static final HistoricVariableInstanceQueryProperty PROCESS_INSTANCE_ID = new HistoricVariableInstanceQueryProperty("PROC_INST_ID_");
   public static final HistoricVariableInstanceQueryProperty VARIABLE_NAME = new HistoricVariableInstanceQueryProperty("NAME_");
-  
+
   private String name;
 
   public HistoricVariableInstanceQueryProperty(String name) {
@@ -44,7 +43,7 @@ public class HistoricVariableInstanceQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static HistoricVariableInstanceQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

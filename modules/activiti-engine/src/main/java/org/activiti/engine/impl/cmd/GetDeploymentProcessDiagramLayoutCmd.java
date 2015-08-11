@@ -22,12 +22,11 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.DiagramLayout;
 
-
 /**
- * Provides positions and dimensions of elements in a process diagram as
- * provided by {@link GetDeploymentProcessDiagramCmd}.
- *
+ * Provides positions and dimensions of elements in a process diagram as provided by {@link GetDeploymentProcessDiagramCmd}.
+ * 
  * This command requires a process model and a diagram image to be deployed.
+ * 
  * @author Falko Menge
  */
 public class GetDeploymentProcessDiagramLayoutCmd implements Command<DiagramLayout>, Serializable {
@@ -43,12 +42,8 @@ public class GetDeploymentProcessDiagramLayoutCmd implements Command<DiagramLayo
   }
 
   public DiagramLayout execute(CommandContext commandContext) {
-    InputStream processModelStream =
-            new GetDeploymentProcessModelCmd(processDefinitionId)
-            .execute(commandContext);
-    InputStream processDiagramStream =
-            new GetDeploymentProcessDiagramCmd(processDefinitionId)
-            .execute(commandContext);
+    InputStream processModelStream = new GetDeploymentProcessModelCmd(processDefinitionId).execute(commandContext);
+    InputStream processDiagramStream = new GetDeploymentProcessDiagramCmd(processDefinitionId).execute(commandContext);
     return new ProcessDiagramLayoutFactory().getProcessDiagramLayout(processModelStream, processDiagramStream);
   }
 

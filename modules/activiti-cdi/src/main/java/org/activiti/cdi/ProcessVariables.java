@@ -25,8 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Allows to access the process variables of a managed process instance.
- * A process instance can be managed, using the {@link BusinessProcess}-bean.
+ * Allows to access the process variables of a managed process instance. A process instance can be managed, using the {@link BusinessProcess}-bean.
  * 
  * @author Daniel Meyer
  */
@@ -34,8 +33,10 @@ public class ProcessVariables {
 
   private Logger logger = LoggerFactory.getLogger(ProcessVariables.class);
 
-  @Inject private BusinessProcess businessProcess;
-  @Inject private ProcessVariableMap processVariableMap;
+  @Inject
+  private BusinessProcess businessProcess;
+  @Inject
+  private ProcessVariableMap processVariableMap;
 
   protected String getVariableName(InjectionPoint ip) {
     String variableName = ip.getAnnotated().getAnnotation(ProcessVariable.class).value();
@@ -60,8 +61,7 @@ public class ProcessVariables {
   @Produces
   @Named
   protected Map<String, Object> processVariables() {
-    return processVariableMap;     
+    return processVariableMap;
   }
-  
 
 }

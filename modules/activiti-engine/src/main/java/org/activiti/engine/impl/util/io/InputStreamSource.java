@@ -53,7 +53,7 @@ public class InputStreamSource implements StreamSource {
     return "InputStream";
   }
 
-  public  byte[] getBytesFromInputStream(InputStream inStream) throws IOException {
+  public byte[] getBytesFromInputStream(InputStream inStream) throws IOException {
     long length = inStream.available();
     byte[] bytes = new byte[(int) length];
 

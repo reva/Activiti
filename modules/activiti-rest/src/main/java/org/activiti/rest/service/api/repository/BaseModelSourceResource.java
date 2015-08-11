@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @author Tijs Rademakers
  */
 public abstract class BaseModelSourceResource extends BaseModelResource {
-    
+
   public byte[] getFileBytes(MultipartFile file) {
     byte[] byteArray = null;
     try {

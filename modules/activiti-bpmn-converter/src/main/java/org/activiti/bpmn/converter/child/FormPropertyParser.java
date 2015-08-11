@@ -27,15 +27,14 @@ public class FormPropertyParser extends BaseChildElementParser {
     return ELEMENT_FORMPROPERTY;
   }
 
-
-  public boolean accepts(BaseElement element){
-    return ((element instanceof UserTask)
-        || (element instanceof StartEvent));
+  public boolean accepts(BaseElement element) {
+    return ((element instanceof UserTask) || (element instanceof StartEvent));
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
 
-    if (!accepts(parentElement)) return;
+    if (!accepts(parentElement))
+      return;
 
     FormProperty property = new FormProperty();
     BpmnXMLUtil.addXMLLocation(property, xtr);
@@ -55,7 +54,7 @@ public class FormPropertyParser extends BaseChildElementParser {
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE))) {
       property.setWriteable(Boolean.valueOf(xtr.getAttributeValue(null, ATTRIBUTE_FORM_WRITABLE)));
     }
-    
+
     boolean readyWithFormProperty = false;
     try {
       while (readyWithFormProperty == false && xtr.hasNext()) {
@@ -74,7 +73,7 @@ public class FormPropertyParser extends BaseChildElementParser {
     } catch (Exception e) {
       LOGGER.warn("Error parsing form properties child elements", e);
     }
-    
+
     if (parentElement instanceof UserTask) {
       ((UserTask) parentElement).getFormProperties().add(property);
     } else {

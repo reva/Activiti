@@ -12,9 +12,9 @@ public interface ClockReader {
   Date getCurrentTime();
 
   Calendar getCurrentCalendar();
-  
+
   Calendar getCurrentCalendar(TimeZone timeZone);
-  
+
   TimeZone getCurrentTimeZone();
 
 }

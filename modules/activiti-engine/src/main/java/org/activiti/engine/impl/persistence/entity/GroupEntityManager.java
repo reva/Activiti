@@ -26,15 +26,13 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
-
 
 /**
  * @author Tom Baeyens
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class GroupEntityManager extends AbstractManager implements GroupIdentityManager {
+public class GroupEntityManager extends AbstractEntityManager<GroupEntity> implements GroupIdentityManager {
 
   public Group createNewGroup(String groupId) {
     return new GroupEntity(groupId);
@@ -42,12 +40,10 @@ public class GroupEntityManager extends AbstractManager implements GroupIdentity
 
   public void insertGroup(Group group) {
     getDbSqlSession().insert((PersistentObject) group);
-    
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, group));
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, group));
+
+    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, group));
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, group));
     }
   }
 
@@ -55,29 +51,26 @@ public class GroupEntityManager extends AbstractManager implements GroupIdentity
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.update((GroupEntity) updatedGroup);
-    
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedGroup));
+
+    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedGroup));
     }
   }
 
   public void deleteGroup(String groupId) {
     GroupEntity group = getDbSqlSession().selectById(GroupEntity.class, groupId);
-    
-    if(group != null) {
-    	if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIPS_DELETED, groupId, null));
+
+    if (group != null) {
+      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createMembershipEvent(ActivitiEventType.MEMBERSHIPS_DELETED, groupId, null));
       }
-    	
-    	getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
-    	getDbSqlSession().delete(group);
-    	
-    	if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    		getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    				ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, group));
-    	}
+
+      getDbSqlSession().delete("deleteMembershipsByGroupId", groupId);
+      getDbSqlSession().delete(group);
+
+      if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, group));
+      }
     }
   }
 
@@ -89,7 +82,7 @@ public class GroupEntityManager extends AbstractManager implements GroupIdentity
   public List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page) {
     return getDbSqlSession().selectList("selectGroupByQueryCriteria", query, page);
   }
-  
+
   public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
     return (Long) getDbSqlSession().selectOne("selectGroupCountByQueryCriteria", query);
   }
@@ -107,10 +100,10 @@ public class GroupEntityManager extends AbstractManager implements GroupIdentity
   public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
     return (Long) getDbSqlSession().selectOne("selectGroupCountByNativeQuery", parameterMap);
   }
-  
+
   @Override
   public boolean isNewGroup(Group group) {
     return ((GroupEntity) group).getRevision() == 0;
   }
-  
+
 }

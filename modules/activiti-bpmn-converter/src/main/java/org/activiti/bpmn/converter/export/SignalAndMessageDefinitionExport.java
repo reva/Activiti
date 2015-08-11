@@ -17,7 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
 
   public static void writeSignalsAndMessages(BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    
+
     for (Process process : model.getProcesses()) {
       for (FlowElement flowElement : process.findFlowElementsOfType(Event.class)) {
         Event event = (Event) flowElement;
@@ -40,7 +40,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
         }
       }
     }
-    
+
     for (Signal signal : model.getSignals()) {
       xtw.writeStartElement(ELEMENT_SIGNAL);
       xtw.writeAttribute(ATTRIBUTE_ID, signal.getId());
@@ -50,7 +50,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
       }
       xtw.writeEndElement();
     }
-    
+
     for (Message message : model.getMessages()) {
       xtw.writeStartElement(ELEMENT_MESSAGE);
       String messageId = message.getId();
@@ -75,15 +75,15 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
         // replace the namespace by the right prefix
         String itemRef = message.getItemRef();
         for (String prefix : model.getNamespaces().keySet()) {
-            String namespace = model.getNamespace(prefix);
-            if (itemRef.startsWith(namespace)) {
-                if (prefix.isEmpty()) {
-                    itemRef = itemRef.replace(namespace + ":", "");
-                } else {
-                    itemRef = itemRef.replace(namespace, prefix);
-                }
-                break;
+          String namespace = model.getNamespace(prefix);
+          if (itemRef.startsWith(namespace)) {
+            if (prefix.isEmpty()) {
+              itemRef = itemRef.replace(namespace + ":", "");
+            } else {
+              itemRef = itemRef.replace(namespace, prefix);
             }
+            break;
+          }
         }
         xtw.writeAttribute(ATTRIBUTE_ITEM_REF, itemRef);
       }

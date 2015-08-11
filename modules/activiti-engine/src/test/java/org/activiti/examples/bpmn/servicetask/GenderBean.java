@@ -15,7 +15,6 @@ package org.activiti.examples.bpmn.servicetask;
 
 import java.io.Serializable;
 
-
 /**
  * Simple class for testing purposes.
  * 

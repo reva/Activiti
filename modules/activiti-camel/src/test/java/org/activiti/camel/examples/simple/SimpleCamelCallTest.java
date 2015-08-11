@@ -22,11 +22,11 @@ import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class SimpleCamelCallTest extends SpringActivitiTestCase {
-  
+
   @Autowired
   protected CamelContext camelContext;
-  
-  public void  setUp() throws Exception {
+
+  public void setUp() throws Exception {
     camelContext.addRoutes(new RouteBuilder() {
 
       @Override
@@ -35,10 +35,10 @@ public class SimpleCamelCallTest extends SpringActivitiTestCase {
       }
     });
   }
-	  
+
   @Deployment
   public void testSimpleCamelCall() {
-	  runtimeService.startProcessInstanceByKey("SimpleCamelCallProcess");
+    runtimeService.startProcessInstanceByKey("SimpleCamelCallProcess");
   }
 
 }

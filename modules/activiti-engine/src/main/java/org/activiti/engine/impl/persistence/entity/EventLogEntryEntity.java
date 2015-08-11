@@ -23,137 +23,139 @@ import org.activiti.engine.impl.db.PersistentObject;
  * @author Joram Barrez
  */
 public class EventLogEntryEntity implements PersistentObject, EventLogEntry {
-	
-	protected long logNumber; // cant use id here, it would clash with persistentObject
-	protected String type;
-	protected String processDefinitionId;
-	protected String processInstanceId;
-	protected String executionId;
-	protected String taskId;
-	protected Date timeStamp;
-	protected String userId;
-	protected byte[] data;
-	protected String lockOwner;
-	protected String lockTime;
-	protected int isProcessed;
+
+  protected long logNumber; // cant use id here, it would clash with
+                            // persistentObject
+  protected String type;
+  protected String processDefinitionId;
+  protected String processInstanceId;
+  protected String executionId;
+  protected String taskId;
+  protected Date timeStamp;
+  protected String userId;
+  protected byte[] data;
+  protected String lockOwner;
+  protected String lockTime;
+  protected int isProcessed;
 
   public EventLogEntryEntity() {
   }
-  
+
   @Override
   public String getId() {
-    return "event-log-" + logNumber; // To avoid clashed, prefixing it (it shouldnt be used)
+    return "event-log-" + logNumber; // To avoid clashed, prefixing it (it
+                                     // shouldn't be used)
   }
-  
+
   @Override
   public void setId(String id) {
-  	// Set id doesn't do anything: auto incremented column
+    // Set id doesn't do anything: auto incremented column
   }
-  
+
   @Override
   public Object getPersistentState() {
     return null; // Not updateable
   }
-  
-	public long getLogNumber() {
-		return logNumber;
-	}
 
-	public void setLogNumber(long logNumber) {
-		this.logNumber = logNumber;
-	}
+  public long getLogNumber() {
+    return logNumber;
+  }
 
-	public String getType() {
-		return type;
-	}
+  public void setLogNumber(long logNumber) {
+    this.logNumber = logNumber;
+  }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+  public String getType() {
+    return type;
+  }
 
-	public String getProcessDefinitionId() {
-		return processDefinitionId;
-	}
+  public void setType(String type) {
+    this.type = type;
+  }
 
-	public void setProcessDefinitionId(String processDefinitionId) {
-		this.processDefinitionId = processDefinitionId;
-	}
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
 
-	public String getProcessInstanceId() {
-		return processInstanceId;
-	}
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
 
-	public void setProcessInstanceId(String processInstanceId) {
-		this.processInstanceId = processInstanceId;
-	}
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-	public String getExecutionId() {
-		return executionId;
-	}
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-	public void setExecutionId(String executionId) {
-		this.executionId = executionId;
-	}
+  public String getExecutionId() {
+    return executionId;
+  }
 
-	public String getTaskId() {
-		return taskId;
-	}
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
 
-	public void setTaskId(String taskId) {
-		this.taskId = taskId;
-	}
+  public String getTaskId() {
+    return taskId;
+  }
 
-	public Date getTimeStamp() {
-		return timeStamp;
-	}
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
 
-	public void setTimeStamp(Date timeStamp) {
-		this.timeStamp = timeStamp;
-	}
-	
-	public String getUserId() {
-		return userId;
-	}
+  public Date getTimeStamp() {
+    return timeStamp;
+  }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+  public void setTimeStamp(Date timeStamp) {
+    this.timeStamp = timeStamp;
+  }
 
-	public byte[] getData() {
-		return data;
-	}
+  public String getUserId() {
+    return userId;
+  }
 
-	public void setData(byte[] data) {
-		this.data = data;
-	}
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-	public String getLockOwner() {
-		return lockOwner;
-	}
+  public byte[] getData() {
+    return data;
+  }
 
-	public void setLockOwner(String lockOwner) {
-		this.lockOwner = lockOwner;
-	}
+  public void setData(byte[] data) {
+    this.data = data;
+  }
 
-	public String getLockTime() {
-		return lockTime;
-	}
+  public String getLockOwner() {
+    return lockOwner;
+  }
 
-	public void setLockTime(String lockTime) {
-		this.lockTime = lockTime;
-	}
-	
-	public int getProcessed() {
-		return isProcessed;
-	}
+  public void setLockOwner(String lockOwner) {
+    this.lockOwner = lockOwner;
+  }
 
-	public void setProcessed(int isProcessed) {
-		this.isProcessed = isProcessed;
-	}
+  public String getLockTime() {
+    return lockTime;
+  }
 
-	@Override
-	public String toString() {
-	  return timeStamp.toString() + " : " + type;
-	}
+  public void setLockTime(String lockTime) {
+    this.lockTime = lockTime;
+  }
+
+  public int getProcessed() {
+    return isProcessed;
+  }
+
+  public void setProcessed(int isProcessed) {
+    this.isProcessed = isProcessed;
+  }
+
+  @Override
+  public String toString() {
+    return timeStamp.toString() + " : " + type;
+  }
 
 }

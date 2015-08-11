@@ -16,18 +16,18 @@ package org.activiti.engine.impl.form;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.ProcessDefinition;
 
-
 /**
  * @author Tom Baeyens
  */
 public class StartFormDataImpl extends FormDataImpl implements StartFormData {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   protected ProcessDefinition processDefinition;
 
-  // getters and setters //////////////////////////////////////////////////////
-  
+  // getters and setters
+  // //////////////////////////////////////////////////////
+
   public ProcessDefinition getProcessDefinition() {
     return processDefinition;
   }

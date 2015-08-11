@@ -31,10 +31,8 @@ public class ScriptCondition implements Condition {
   }
 
   public boolean evaluate(DelegateExecution execution) {
-    ScriptingEngines scriptingEngines = Context
-      .getProcessEngineConfiguration()
-      .getScriptingEngines();
-    
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+
     Object result = scriptingEngines.evaluate(expression, language, execution);
     if (result == null) {
       throw new ActivitiException("condition script returns null: " + expression);

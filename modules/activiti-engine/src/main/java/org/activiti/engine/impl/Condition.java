@@ -16,8 +16,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-
-
 /**
  * @author Tom Baeyens
  */

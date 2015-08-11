@@ -27,13 +27,10 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class DefinitionsParser implements BpmnXMLConstants {
-  
-  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(
-      new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), 
-      new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE), 
-      new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE)
-  );
-  
+
+  protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
+      new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
+
   @SuppressWarnings("unchecked")
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     model.setTargetNamespace(xtr.getAttributeValue(null, TARGET_NAMESPACE_ATTRIBUTE));
@@ -43,7 +40,7 @@ public class DefinitionsParser implements BpmnXMLConstants {
         model.addNamespace(prefix, xtr.getNamespaceURI(i));
       }
     }
-    
+
     for (int i = 0; i < xtr.getAttributeCount(); i++) {
       ExtensionAttribute extensionAttribute = new ExtensionAttribute();
       extensionAttribute.setName(xtr.getAttributeLocalName(i));

@@ -23,10 +23,8 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Gives access to a deployed process diagram, e.g., a PNG image, through a
- * stream of bytes.
+ * Gives access to a deployed process diagram, e.g., a PNG image, through a stream of bytes.
  * 
  * @author Falko Menge
  */
@@ -34,7 +32,7 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
 
   private static final long serialVersionUID = 1L;
   private static Logger log = LoggerFactory.getLogger(GetDeploymentProcessDiagramCmd.class);
-  
+
   protected String processDefinitionId;
 
   public GetDeploymentProcessDiagramCmd(String processDefinitionId) {
@@ -45,19 +43,14 @@ public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Ser
   }
 
   public InputStream execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .findDeployedProcessDefinitionById(processDefinitionId);
+    ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
     String deploymentId = processDefinition.getDeploymentId();
     String resourceName = processDefinition.getDiagramResourceName();
-    if (resourceName == null ) {
+    if (resourceName == null) {
       log.info("Resource name is null! No process diagram stream exists.");
       return null;
     } else {
-      InputStream processDiagramStream =
-              new GetDeploymentResourceCmd(deploymentId, resourceName)
-              .execute(commandContext);
+      InputStream processDiagramStream = new GetDeploymentResourceCmd(deploymentId, resourceName).execute(commandContext);
       return processDiagramStream;
     }
   }

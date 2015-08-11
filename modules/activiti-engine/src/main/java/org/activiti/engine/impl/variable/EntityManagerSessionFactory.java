@@ -29,19 +29,19 @@ public class EntityManagerSessionFactory implements SessionFactory {
   protected boolean closeEntityManager;
 
   public EntityManagerSessionFactory(Object entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
-    if(entityManagerFactory == null) {
+    if (entityManagerFactory == null) {
       throw new ActivitiIllegalArgumentException("entityManagerFactory is null");
     }
-    if(!(entityManagerFactory instanceof EntityManagerFactory)) {
+    if (!(entityManagerFactory instanceof EntityManagerFactory)) {
       throw new ActivitiIllegalArgumentException("EntityManagerFactory must implement 'javax.persistence.EntityManagerFactory'");
     }
-    
+
     this.entityManagerFactory = (EntityManagerFactory) entityManagerFactory;
     this.handleTransactions = handleTransactions;
     this.closeEntityManager = closeEntityManager;
   }
 
-  public Class< ? > getSessionType() {
+  public Class<?> getSessionType() {
     return EntityManagerSession.class;
   }
 

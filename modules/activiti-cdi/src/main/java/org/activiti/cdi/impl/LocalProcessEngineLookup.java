@@ -17,21 +17,17 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 
 /**
- * {@link ProcessEngineLookup} for looking up or building a local
- * {@link ProcessEngine} using the provided processEngineName (
- * {@link ProcessEngines#NAME_DEFAULT} is used as default value). Can be used
- * for looking up existing {@link ProcessEngine}s in the same ClassLoader as
- * this Class.
+ * {@link ProcessEngineLookup} for looking up or building a local {@link ProcessEngine} using the provided processEngineName ( {@link ProcessEngines#NAME_DEFAULT} is used as default value). Can be
+ * used for looking up existing {@link ProcessEngine}s in the same ClassLoader as this Class.
  * <p />
- * Use this Strategy if you want to build and manage a {@link ProcessEngine}
- * local to your application.
+ * Use this Strategy if you want to build and manage a {@link ProcessEngine} local to your application.
  * <p />
  * Note: Requires an "activiti.cfg.xml" to be available on the classpath.
  * 
  * @author Daniel Meyer
  */
 public class LocalProcessEngineLookup implements org.activiti.cdi.spi.ProcessEngineLookup {
-  
+
   public int getPrecedence() {
     return 10;
   }

@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class ItemDefinitionParser implements BpmnXMLConstants {
-  
+
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
       String itemDefinitionId = model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID);
@@ -33,7 +33,7 @@ public class ItemDefinitionParser implements BpmnXMLConstants {
         ItemDefinition item = new ItemDefinition();
         item.setId(itemDefinitionId);
         BpmnXMLUtil.addXMLLocation(item, xtr);
-        
+
         int indexOfP = structureRef.indexOf(':');
         if (indexOfP != -1) {
           String prefix = structureRef.substring(0, indexOfP);
@@ -42,7 +42,7 @@ public class ItemDefinitionParser implements BpmnXMLConstants {
         } else {
           structureRef = model.getTargetNamespace() + ":" + structureRef;
         }
-        
+
         item.setStructureRef(structureRef);
         item.setItemKind(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_KIND));
         BpmnXMLUtil.parseChildElements(ELEMENT_ITEM_DEFINITION, item, xtr, model);

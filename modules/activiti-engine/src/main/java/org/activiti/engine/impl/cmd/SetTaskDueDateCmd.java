@@ -17,7 +17,6 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import java.util.Date;
 
-
 /**
  * @author Brian Showers
  */
@@ -31,7 +30,7 @@ public class SetTaskDueDateCmd extends NeedsActiveTaskCmd<Void> {
     super(taskId);
     this.dueDate = dueDate;
   }
-  
+
   protected Void execute(CommandContext commandContext, TaskEntity task) {
     task.setDueDate(dueDate, true);
     return null;

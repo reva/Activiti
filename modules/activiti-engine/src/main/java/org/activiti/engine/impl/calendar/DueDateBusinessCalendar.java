@@ -15,10 +15,10 @@ package org.activiti.engine.impl.calendar;
 import java.util.Date;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.runtime.ClockReader;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-
 
 public class DueDateBusinessCalendar extends BusinessCalendarImpl {
 
@@ -32,8 +32,9 @@ public class DueDateBusinessCalendar extends BusinessCalendarImpl {
   public Date resolveDuedate(String duedate, int maxIterations) {
     try {
       // check if due period was specified
-      if(duedate.startsWith("P")){
-        return DateTime.now().plus(Period.parse(duedate)).toDate();
+      if (duedate.startsWith("P")) {
+        DateTime dateTime = new DateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime());
+        return dateTime.plus(Period.parse(duedate)).toDate();
       }
 
       return DateTime.parse(duedate).toDate();

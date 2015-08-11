@@ -24,7 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class InitiatorCamelCallTest extends SpringActivitiTestCase {
-  
+
   @Autowired
   protected CamelContext camelContext;
 
@@ -33,30 +33,27 @@ public class InitiatorCamelCallTest extends SpringActivitiTestCase {
 
       @Override
       public void configure() throws Exception {
-        from("direct:startWithInitiatorHeader")
-          .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
-          .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
-        }
+        from("direct:startWithInitiatorHeader").setHeader("CamelProcessInitiatorHeader", constant("kermit")).to(
+            "activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
+      }
     });
   }
-	
+
   @Deployment
   public void testInitiatorCamelCall() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
     ProducerTemplate tpl = ctx.createProducerTemplate();
     String body = "body text";
-    
+
     Exchange exchange = ctx.getEndpoint("direct:startWithInitiatorHeader").createExchange();
     exchange.getIn().setBody(body);
     tpl.send("direct:startWithInitiatorHeader", exchange);
-    
-    String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
 
-    
+    String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
 
     String initiator = (String) runtimeService.getVariable(instanceId, "initiator");
     assertEquals("kermit", initiator);
-    
+
     Object camelInitiatorHeader = runtimeService.getVariable(instanceId, "CamelProcessInitiatorHeader");
     assertNull(camelInitiatorHeader);
   }

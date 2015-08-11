@@ -64,7 +64,7 @@ public class ProcessDefinitionsTest {
 
   @Mock
   protected DeploymentQuery deploymentQuery;
-  
+
   @Mock
   protected DeploymentBuilder deploymentBuilder;
 

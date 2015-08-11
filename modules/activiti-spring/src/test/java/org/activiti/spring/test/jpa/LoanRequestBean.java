@@ -20,26 +20,25 @@ import javax.persistence.PersistenceContext;
 
 /**
  * Service bean that handles loan requests.
- *
+ * 
  * @author Frederik Heremans
  */
 public class LoanRequestBean {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+  @PersistenceContext
+  private EntityManager entityManager;
 
+  @Transactional
+  public LoanRequest newLoanRequest(String customerName, Long amount) {
+    LoanRequest lr = new LoanRequest();
+    lr.setCustomerName(customerName);
+    lr.setAmount(amount);
+    lr.setApproved(false);
+    entityManager.persist(lr);
+    return lr;
+  }
 
-    @Transactional
-    public LoanRequest newLoanRequest(String customerName, Long amount) {
-        LoanRequest lr = new LoanRequest();
-        lr.setCustomerName(customerName);
-        lr.setAmount(amount);
-        lr.setApproved(false);
-        entityManager.persist(lr);
-        return lr;
-    }
-
-    public LoanRequest getLoanRequest(Long id) {
-        return entityManager.find(LoanRequest.class, id);
-    }
+  public LoanRequest getLoanRequest(Long id) {
+    return entityManager.find(LoanRequest.class, id);
+  }
 }

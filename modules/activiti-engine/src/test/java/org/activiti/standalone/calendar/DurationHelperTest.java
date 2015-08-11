@@ -52,7 +52,6 @@ public class DurationHelperTest {
     testingClock.setCurrentTime(parse("19700101-00:00:15"));
     assertEquals(parse("19700101-00:00:20"), dh.getDateAfter());
 
-
     testingClock.setCurrentTime(parse("19700101-00:00:30"));
     assertEquals(parse("19700101-00:00:30"), dh.getDateAfter());
   }
@@ -65,7 +64,6 @@ public class DurationHelperTest {
 
     testingClock.setCurrentTime(parse("19700101-00:00:20"));
     assertEquals(parse("19700101-00:00:30"), dh.getDateAfter());
-
 
     testingClock.setCurrentTime(parse("19700101-00:00:35"));
 
@@ -84,7 +82,7 @@ public class DurationHelperTest {
     testingClock.setCurrentCalendar(parseCalendar("20131103-05:45:00", TimeZone.getTimeZone("UTC")));
 
     assertEquals(parseCalendar("20131103-06:45:00", TimeZone.getTimeZone("UTC")), dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern"))));
-}
+  }
 
   @Test
   public void daylightSavingFallFirstHour() throws Exception {
@@ -107,7 +105,6 @@ public class DurationHelperTest {
 
     assertEquals(parseCalendar("20131103-07:45:00", TimeZone.getTimeZone("UTC")), dh.getCalendarAfter(easternTime));
   }
-
 
   @Test
   public void daylightSavingFallObservedFirstHour() throws Exception {
@@ -139,7 +136,7 @@ public class DurationHelperTest {
     DurationHelper dh = new DurationHelper("R2/2014-03-09T00:45:00-05:00/PT1H", testingClock);
 
     assertEquals(parseCalendar("20140309-06:45:00", TimeZone.getTimeZone("UTC")), dh.getCalendarAfter(testingClock.getCurrentCalendar(TimeZone.getTimeZone("US/Eastern"))));
-}
+  }
 
   @Test
   public void daylightSavingSpringObserved() throws Exception {
@@ -200,7 +197,7 @@ public class DurationHelperTest {
   private Calendar parseCalendarWithOffset(String str, TimeZone timeZone) throws Exception {
 
     Calendar cal = Calendar.getInstance();
-      cal.setTime(DateUtils.parseDate(str, "yyyyMMdd-HH:mm:ssZZ" ));
+    cal.setTime(DateUtils.parseDate(str, "yyyyMMdd-HH:mm:ssZZ"));
     return cal;
   }
 

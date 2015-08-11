@@ -32,14 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TableResource {
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected ManagementService managementService;
-  
-  @RequestMapping(value="/management/tables/{tableName}", method = RequestMethod.GET, produces = "application/json")
+
+  @RequestMapping(value = "/management/tables/{tableName}", method = RequestMethod.GET, produces = "application/json")
   public TableResponse getTable(@PathVariable String tableName, HttpServletRequest request) {
     Map<String, Long> tableCounts = managementService.getTableCount();
 
@@ -50,7 +50,7 @@ public class TableResource {
         break;
       }
     }
-   
+
     if (response == null) {
       throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
     }

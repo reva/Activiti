@@ -22,7 +22,7 @@ public class ExclusiveGateway extends Gateway {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(ExclusiveGateway otherElement) {
     super.setValues(otherElement);
   }

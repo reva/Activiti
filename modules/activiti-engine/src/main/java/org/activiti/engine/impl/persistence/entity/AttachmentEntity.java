@@ -22,14 +22,13 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.task.Attachment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class AttachmentEntity implements Attachment, PersistentObject, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String id;
   protected int revision;
   protected String name;
@@ -43,6 +42,9 @@ public class AttachmentEntity implements Attachment, PersistentObject, HasRevisi
   protected String userId;
   protected Date time;
 
+  public AttachmentEntity() {
+  }
+
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("name", name);
@@ -51,90 +53,73 @@ public class AttachmentEntity implements Attachment, PersistentObject, HasRevisi
   }
 
   public int getRevisionNext() {
-    return revision+1;
+    return revision + 1;
   }
-  
-  
+
   public String getId() {
     return id;
   }
 
-  
   public void setId(String id) {
     this.id = id;
   }
 
-  
   public int getRevision() {
     return revision;
   }
 
-  
   public void setRevision(int revision) {
     this.revision = revision;
   }
 
-  
   public String getName() {
     return name;
   }
 
-  
   public void setName(String name) {
     this.name = name;
   }
 
-  
   public String getDescription() {
     return description;
   }
 
-  
   public void setDescription(String description) {
     this.description = description;
   }
 
-  
   public String getType() {
     return type;
   }
 
-  
   public void setType(String type) {
     this.type = type;
   }
 
-  
   public String getTaskId() {
     return taskId;
   }
 
-  
   public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
 
-  
   public String getProcessInstanceId() {
     return processInstanceId;
   }
 
-  
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
 
-  
   public String getUrl() {
     return url;
   }
 
-  
   public void setUrl(String url) {
     this.url = url;
   }
 
-  
   public String getContentId() {
     return contentId;
   }
@@ -142,7 +127,7 @@ public class AttachmentEntity implements Attachment, PersistentObject, HasRevisi
   public void setContentId(String contentId) {
     this.contentId = contentId;
   }
-  
+
   public ByteArrayEntity getContent() {
     return content;
   }
@@ -150,21 +135,21 @@ public class AttachmentEntity implements Attachment, PersistentObject, HasRevisi
   public void setContent(ByteArrayEntity content) {
     this.content = content;
   }
-  
+
   public void setUserId(String userId) {
-	this.userId = userId;
+    this.userId = userId;
   }
-  
+
   public String getUserId() {
-	return userId;
+    return userId;
   }
-  
+
   public Date getTime() {
     return time;
   }
-  
+
   public void setTime(Date time) {
     this.time = time;
   }
-  
+
 }

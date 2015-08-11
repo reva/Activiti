@@ -55,7 +55,7 @@ public class ProcessDefinitionsMBean {
     return result;
 
   }
-  
+
   @ManagedOperation(description = "get a specific process definition")
   public List<String> getProcessDefinitionById(String id) {
     ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
@@ -65,11 +65,10 @@ public class ProcessDefinitionsMBean {
     item.add(Integer.toString(pd.getVersion()));
     item.add(Boolean.toString(pd.isSuspended()));
     item.add(pd.getDescription());
-    
+
     return item;
 
   }
-
 
   @ManagedAttribute(description = "List of deployed Processes")
   public List<List<String>> getDeployments() {
@@ -113,10 +112,8 @@ public class ProcessDefinitionsMBean {
 
   @ManagedOperation(description = "Deploy Process Definition")
   public void deployProcessDefinition(String resourceName, String processDefinitionFile) throws FileNotFoundException {
-    DeploymentBuilder deploymentBuilder =  repositoryService.createDeployment();
+    DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
     Deployment deployment = deploymentBuilder.addInputStream(resourceName, new FileInputStream(processDefinitionFile)).deploy();
   }
-  
-  
 
 }

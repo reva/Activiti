@@ -21,9 +21,8 @@ import javax.persistence.Id;
 
 import org.activiti.engine.ActivitiException;
 
-
 /**
- * Scans class and creates {@link EntityMetaData} based on it. 
+ * Scans class and creates {@link EntityMetaData} based on it.
  * 
  * @author Frederik Heremans
  */
@@ -34,7 +33,7 @@ public class JPAEntityScanner {
     // in case with JPA Enhancement
     // method should iterate over superclasses list
     // to find @Entity and @Id annotations
-    while(clazz != null && !clazz.equals(Object.class)) {
+    while (clazz != null && !clazz.equals(Object.class)) {
 
       // Class should have @Entity annotation
       boolean isEntity = isEntityAnnotationPresent(clazz);
@@ -52,8 +51,7 @@ public class JPAEntityScanner {
           if (idMethod != null) {
             metaData.setIdMethod(idMethod);
           } else {
-            throw new ActivitiException("Cannot find field or method with annotation @Id on class '" +
-                    clazz.getName() + "', only single-valued primary keys are supported on JPA-enities");
+            throw new ActivitiException("Cannot find field or method with annotation @Id on class '" + clazz.getName() + "', only single-valued primary keys are supported on JPA-entities");
           }
         }
         break;
@@ -63,15 +61,16 @@ public class JPAEntityScanner {
     return metaData;
   }
 
-  private Method getIdMethod(Class< ? > clazz) {
+  private Method getIdMethod(Class<?> clazz) {
     Method idMethod = null;
-    // Get all public declared methods on the class. According to spec, @Id should only be 
+    // Get all public declared methods on the class. According to spec, @Id
+    // should only be
     // applied to fields and property get methods
     Method[] methods = clazz.getMethods();
     Id idAnnotation = null;
-    for(Method method : methods) {
+    for (Method method : methods) {
       idAnnotation = method.getAnnotation(Id.class);
-      if(idAnnotation != null) {
+      if(idAnnotation != null && !method.isBridge()) {
         idMethod = method;
         break;
       }
@@ -80,27 +79,28 @@ public class JPAEntityScanner {
   }
 
   private Field getIdField(Class<?> clazz) {
-   Field idField = null;
-   Field[] fields = clazz.getDeclaredFields();
-   Id idAnnotation = null;
-   for(Field field : fields) {
-     idAnnotation = field.getAnnotation(Id.class);
-     if(idAnnotation != null) {
-       idField = field;
-       break;
-     }
-   }
-   
-   if(idField == null) {
-     // Check superClass for fields with @Id, since getDeclaredFields does
-     // not return superclass-fields.
-     Class<?> superClass = clazz.getSuperclass();
-     if(superClass != null && !superClass.equals(Object.class)) {
-       // Recursively go up class hierarchy
-       idField = getIdField(superClass);
-     }
-   }
-   return idField;
+    Field idField = null;
+    Field[] fields = clazz.getDeclaredFields();
+    Id idAnnotation = null;
+    for (Field field : fields) {
+      idAnnotation = field.getAnnotation(Id.class);
+      if (idAnnotation != null) {
+        idField = field;
+        break;
+      }
+    }
+
+    if (idField == null) {
+      // Check superClass for fields with @Id, since getDeclaredFields
+      // does
+      // not return superclass-fields.
+      Class<?> superClass = clazz.getSuperclass();
+      if (superClass != null && !superClass.equals(Object.class)) {
+        // Recursively go up class hierarchy
+        idField = getIdField(superClass);
+      }
+    }
+    return idField;
   }
 
   private boolean isEntityAnnotationPresent(Class<?> clazz) {

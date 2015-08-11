@@ -15,7 +15,6 @@ package org.activiti.rest.service.api.identity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -25,43 +24,46 @@ public class UserRequest extends UserResponse {
   protected boolean lastNameChanged = false;
   protected boolean passwordChanged = false;
   protected boolean emailChanged = false;
-  
+
   @Override
   public void setEmail(String email) {
     super.setEmail(email);
     emailChanged = true;
   }
-  
+
   @Override
   public void setFirstName(String firstName) {
     super.setFirstName(firstName);
     firstNameChanged = true;
   }
-  
+
   @Override
   public void setLastName(String lastName) {
     super.setLastName(lastName);
     lastNameChanged = true;
   }
-  
+
   @Override
   public void setPassword(String passWord) {
     super.setPassword(passWord);
     passwordChanged = true;
   }
-  
+
   @JsonIgnore
   public boolean isEmailChanged() {
     return emailChanged;
   }
+
   @JsonIgnore
   public boolean isFirstNameChanged() {
     return firstNameChanged;
   }
+
   @JsonIgnore
   public boolean isLastNameChanged() {
     return lastNameChanged;
   }
+
   @JsonIgnore
   public boolean isPasswordChanged() {
     return passwordChanged;

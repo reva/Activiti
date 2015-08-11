@@ -40,27 +40,27 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
     Job job = managementService.createJobQuery().singleResult();
     assertEquals(3, job.getRetries());
-    
+
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
-    
+
     job = managementService.createJobQuery().singleResult();
     assertEquals(2, job.getRetries());
-    
+
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
-    
+
     job = managementService.createJobQuery().singleResult();
     assertEquals(1, job.getRetries());
-    
+
     managementService.executeJob(job.getId());
   }
 
@@ -78,37 +78,37 @@ public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 
     Job job = managementService.createJobQuery().singleResult();
     assertEquals(3, job.getRetries());
-    
+
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
-    
+
     job = managementService.createJobQuery().singleResult();
     assertEquals(2, job.getRetries());
-    
+
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
-    
+
     job = managementService.createJobQuery().singleResult();
     assertEquals(1, job.getRetries());
-    
+
     try {
       managementService.executeJob(job.getId());
       fail("exception expected");
     } catch (Exception e) {
       // exception expected;
     }
-    
+
     job = managementService.createJobQuery().singleResult();
     assertEquals(0, job.getRetries());
-    
+
     managementService.deleteJob(job.getId());
   }
 

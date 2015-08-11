@@ -34,7 +34,7 @@ public class TaskDefinition implements Serializable {
   private static final long serialVersionUID = 1L;
 
   protected String key;
-  
+
   // assignment fields
   protected Expression nameExpression;
   protected Expression ownerExpression;
@@ -45,22 +45,23 @@ public class TaskDefinition implements Serializable {
   protected Expression dueDateExpression;
   protected Expression priorityExpression;
   protected Expression categoryExpression;
-  protected Map<String, Set<Expression>> customUserIdentityLinkExpressions = new HashMap<String, Set<Expression>>(); 
+  protected Map<String, Set<Expression>> customUserIdentityLinkExpressions = new HashMap<String, Set<Expression>>();
   protected Map<String, Set<Expression>> customGroupIdentityLinkExpressions = new HashMap<String, Set<Expression>>();
   protected Expression skipExpression;
-  
+
   // form fields
   protected TaskFormHandler taskFormHandler;
   protected Expression formKeyExpression;
-  
+
   // task listeners
   protected Map<String, List<TaskListener>> taskListeners = new HashMap<String, List<TaskListener>>();
-  
+
   public TaskDefinition(TaskFormHandler taskFormHandler) {
     this.taskFormHandler = taskFormHandler;
   }
 
-  // getters and setters //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
   public Expression getNameExpression() {
     return nameExpression;
@@ -69,11 +70,11 @@ public class TaskDefinition implements Serializable {
   public void setNameExpression(Expression nameExpression) {
     this.nameExpression = nameExpression;
   }
-  
+
   public Expression getOwnerExpression() {
     return ownerExpression;
   }
-  
+
   public void setOwnerExpression(Expression ownerExpression) {
     this.ownerExpression = ownerExpression;
   }
@@ -115,7 +116,7 @@ public class TaskDefinition implements Serializable {
   }
 
   public void addCustomUserIdentityLinkExpression(String identityLinkType, Set<Expression> idList) {
-  	customUserIdentityLinkExpressions.put(identityLinkType, idList);
+    customUserIdentityLinkExpressions.put(identityLinkType, idList);
   }
 
   public Map<String, Set<Expression>> getCustomGroupIdentityLinkExpressions() {
@@ -123,7 +124,7 @@ public class TaskDefinition implements Serializable {
   }
 
   public void addCustomGroupIdentityLinkExpression(String identityLinkType, Set<Expression> idList) {
-  	customGroupIdentityLinkExpressions.put(identityLinkType, idList);
+    customGroupIdentityLinkExpressions.put(identityLinkType, idList);
   }
 
   public Expression getPriorityExpression() {
@@ -141,60 +142,62 @@ public class TaskDefinition implements Serializable {
   public void setTaskFormHandler(TaskFormHandler taskFormHandler) {
     this.taskFormHandler = taskFormHandler;
   }
-  
+
   public Expression getFormKeyExpression() {
-		return formKeyExpression;
-	}
+    return formKeyExpression;
+  }
 
-	public void setFormKeyExpression(Expression formKeyExpression) {
-		this.formKeyExpression = formKeyExpression;
-	}
+  public void setFormKeyExpression(Expression formKeyExpression) {
+    this.formKeyExpression = formKeyExpression;
+  }
 
-	public String getKey() {
+  public String getKey() {
     return key;
   }
 
   public void setKey(String key) {
     this.key = key;
   }
-  
+
   public Expression getDueDateExpression() {
     return dueDateExpression;
   }
-  
+
   public void setDueDateExpression(Expression dueDateExpression) {
     this.dueDateExpression = dueDateExpression;
   }
-  
+
   public Expression getCategoryExpression() {
-		return categoryExpression;
-	}
+    return categoryExpression;
+  }
 
-	public void setCategoryExpression(Expression categoryExpression) {
-		this.categoryExpression = categoryExpression;
-	}
+  public void setCategoryExpression(Expression categoryExpression) {
+    this.categoryExpression = categoryExpression;
+  }
 
-	public Map<String, List<TaskListener>> getTaskListeners() {
+  public Map<String, List<TaskListener>> getTaskListeners() {
     return taskListeners;
   }
 
   public void setTaskListeners(Map<String, List<TaskListener>> taskListeners) {
     this.taskListeners = taskListeners;
   }
-  
+
   public List<TaskListener> getTaskListener(String eventName) {
     return taskListeners.get(eventName);
   }
-  
+
   public void addTaskListener(String eventName, TaskListener taskListener) {
-    if(TaskListener.EVENTNAME_ALL_EVENTS.equals(eventName)) {
-      // In order to prevent having to merge the "all" tasklisteners with the ones for a specific eventName,
-      // every time "getTaskListener()" is called, we add the listener explicitally to the individual lists
+    if (TaskListener.EVENTNAME_ALL_EVENTS.equals(eventName)) {
+      // In order to prevent having to merge the "all" tasklisteners with
+      // the ones for a specific eventName,
+      // every time "getTaskListener()" is called, we add the listener
+      // explicitly to the individual lists
       this.addTaskListener(TaskListener.EVENTNAME_CREATE, taskListener);
       this.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, taskListener);
       this.addTaskListener(TaskListener.EVENTNAME_COMPLETE, taskListener);
       this.addTaskListener(TaskListener.EVENTNAME_DELETE, taskListener);
-      
+
     } else {
       List<TaskListener> taskEventListeners = taskListeners.get(eventName);
       if (taskEventListeners == null) {
@@ -204,12 +207,11 @@ public class TaskDefinition implements Serializable {
       taskEventListeners.add(taskListener);
     }
   }
-  
+
   public Expression getSkipExpression() {
     return skipExpression;
   }
 
-  
   public void setSkipExpression(Expression skipExpression) {
     this.skipExpression = skipExpression;
   }

@@ -19,14 +19,13 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.json.JSONArray;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JsonListConverter<T> {
 
   JsonObjectConverter<T> jsonObjectConverter;
-  
+
   public JsonListConverter(JsonObjectConverter<T> jsonObjectConverter) {
     this.jsonObjectConverter = jsonObjectConverter;
   }
@@ -38,14 +37,14 @@ public class JsonListConverter<T> {
   public String toJson(List<T> list) {
     return toJsonArray(list).toString();
   }
-  
+
   public String toJson(List<T> list, int indentFactor) {
     return toJsonArray(list).toString(indentFactor);
   }
-  
+
   private JSONArray toJsonArray(List<T> objects) {
     JSONArray jsonArray = new JSONArray();
-    for (T object: objects) {
+    for (T object : objects) {
       jsonArray.put(jsonObjectConverter.toJsonObject(object));
     }
     return jsonArray;
@@ -54,10 +53,11 @@ public class JsonListConverter<T> {
   public List<T> toObject(Reader reader) {
     throw new ActivitiException("not yet implemented");
   }
-  
+
   public JsonObjectConverter<T> getJsonObjectConverter() {
     return jsonObjectConverter;
   }
+
   public void setJsonObjectConverter(JsonObjectConverter<T> jsonObjectConverter) {
     this.jsonObjectConverter = jsonObjectConverter;
   }

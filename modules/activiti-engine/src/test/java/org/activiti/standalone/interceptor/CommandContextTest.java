@@ -18,7 +18,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -31,12 +30,12 @@ public class CommandContextTest extends PluggableActivitiTestCase {
           throw new IllegalStateException("here i come!");
         }
       });
-   
+
       fail("expected exception");
     } catch (IllegalStateException e) {
       // OK
     }
-    
+
     assertNull(Context.getCommandContext());
   }
 }

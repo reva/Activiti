@@ -20,7 +20,6 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -82,11 +81,11 @@ public class HistoricVariableInstanceQueryRequest {
     this.variableNameLike = variableNameLike;
   }
 
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
   public List<QueryVariable> getVariables() {
     return variables;
   }
-  
+
   public void setVariables(List<QueryVariable> variables) {
     this.variables = variables;
   }

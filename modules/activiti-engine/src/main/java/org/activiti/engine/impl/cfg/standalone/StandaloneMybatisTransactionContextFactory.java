@@ -16,7 +16,6 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */

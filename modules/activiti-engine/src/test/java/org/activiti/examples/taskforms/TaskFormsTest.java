@@ -38,18 +38,15 @@ public class TaskFormsTest extends PluggableActivitiTestCase {
     identityService.deleteUser("fozzie");
   }
 
-  @Deployment(resources = { 
-    "org/activiti/examples/taskforms/VacationRequest_deprecated_forms.bpmn20.xml", 
-    "org/activiti/examples/taskforms/approve.form", 
-    "org/activiti/examples/taskforms/request.form", 
-    "org/activiti/examples/taskforms/adjustRequest.form" })
+  @Deployment(resources = { "org/activiti/examples/taskforms/VacationRequest_deprecated_forms.bpmn20.xml", "org/activiti/examples/taskforms/approve.form",
+      "org/activiti/examples/taskforms/request.form", "org/activiti/examples/taskforms/adjustRequest.form" })
   public void testTaskFormsWithVacationRequestProcess() {
 
     // Get start form
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     Object startForm = formService.getRenderedStartForm(procDefId);
     assertNotNull(startForm);
-    
+
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     String processDefinitionId = processDefinition.getId();
     assertEquals("org/activiti/examples/taskforms/request.form", formService.getStartFormData(processDefinitionId).getFormKey());

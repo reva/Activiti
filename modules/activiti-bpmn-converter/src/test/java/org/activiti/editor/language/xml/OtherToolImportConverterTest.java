@@ -14,7 +14,7 @@ public class OtherToolImportConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
@@ -22,11 +22,11 @@ public class OtherToolImportConverterTest extends AbstractConverterTest {
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "othertoolimport.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     org.activiti.bpmn.model.Process process = model.getProcess("_GQ4P0PUQEeK4teimjV5_yg");
     assertNotNull(process);

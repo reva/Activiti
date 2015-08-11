@@ -17,23 +17,21 @@ import javax.naming.directory.InitialDirContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Internal class used to simplify ldap calls by wrapping the
- * actual ldap logic in a {@link LDAPCallBack}.
+ * Internal class used to simplify ldap calls by wrapping the actual ldap logic in a {@link LDAPCallBack}.
  * 
  * @author Joram Barrez
  */
 public class LDAPTemplate {
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(LDAPTemplate.class);
-  
+
   protected LDAPConfigurator ldapConfigurator;
-  
+
   public LDAPTemplate(LDAPConfigurator ldapConfigurator) {
     this.ldapConfigurator = ldapConfigurator;
   }
-  
+
   public <T> T execute(LDAPCallBack<T> ldapCallBack) {
     InitialDirContext initialDirContext = null;
     try {
@@ -46,7 +44,6 @@ public class LDAPTemplate {
     return result;
   }
 
-  
   public LDAPConfigurator getLdapConfigurator() {
     return ldapConfigurator;
   }

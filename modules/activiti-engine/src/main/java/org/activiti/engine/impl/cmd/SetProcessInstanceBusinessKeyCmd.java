@@ -23,10 +23,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.runtime.ProcessInstance;
 
-
 /**
- * {@link Command} that changes the business key of an existing
- * process instance.
+ * {@link Command} that changes the business key of an existing process instance.
  * 
  * @author Tijs Rademakers
  */
@@ -44,7 +42,7 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
     if (businessKey == null) {
       throw new ActivitiIllegalArgumentException("The business key is mandatory, but 'null' has been provided.");
     }
-    
+
     this.processInstanceId = processInstanceId;
     this.businessKey = businessKey;
   }
@@ -55,16 +53,12 @@ public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializ
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id = '" + processInstanceId + "'.", ProcessInstance.class);
     } else if (!processInstance.isProcessInstanceType()) {
-      throw new ActivitiIllegalArgumentException(
-        "A process instance id is required, but the provided id " +
-        "'"+processInstanceId+"' " +
-        "points to a child execution of process instance " +
-        "'"+processInstance.getProcessInstanceId()+"'. " +
-        "Please invoke the "+getClass().getSimpleName()+" with a root execution id.");
+      throw new ActivitiIllegalArgumentException("A process instance id is required, but the provided id " + "'" + processInstanceId + "' " + "points to a child execution of process instance " + "'"
+          + processInstance.getProcessInstanceId() + "'. " + "Please invoke the " + getClass().getSimpleName() + " with a root execution id.");
     }
-    
+
     processInstance.updateProcessBusinessKey(businessKey);
-    
+
     return null;
   }
 }

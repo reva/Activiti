@@ -19,7 +19,6 @@ import org.activiti.engine.test.Deployment;
 
 import java.util.Date;
 
-
 public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -33,7 +32,8 @@ public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
     JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     assertEquals(3, jobQuery.count());
 
-    // After setting the clock to time '50minutes and 5 seconds', the timers should fire
+    // After setting the clock to time '50minutes and 5 seconds', the timers
+    // should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
     waitForJobExecutorToProcessAllJobs(5000L, 100L);
 

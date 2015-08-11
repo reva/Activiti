@@ -47,7 +47,7 @@ public class MBeanInfoAssembler {
 
   private static final Logger LOG = LoggerFactory.getLogger(MBeanInfoAssembler.class);
 
-  protected final WeakHashMap<Class< ? >, MBeanAttributesAndOperations> cache = new WeakHashMap<Class< ? >, MBeanAttributesAndOperations>(10);
+  protected final WeakHashMap<Class<?>, MBeanAttributesAndOperations> cache = new WeakHashMap<Class<?>, MBeanAttributesAndOperations>(10);
 
   public MBeanInfoAssembler() {
   }
@@ -97,7 +97,7 @@ public class MBeanInfoAssembler {
     return info;
   }
 
-  private void extractAttributesAndOperations(Class< ? > managedClass, Map<String, ManagedAttributeInfo> attributes, Set<ManagedOperationInfo> operations) {
+  private void extractAttributesAndOperations(Class<?> managedClass, Map<String, ManagedAttributeInfo> attributes, Set<ManagedOperationInfo> operations) {
     MBeanAttributesAndOperations cached = cache.get(managedClass);
     if (cached == null) {
       doExtractAttributesAndOperations(managedClass, attributes, operations);
@@ -117,13 +117,13 @@ public class MBeanInfoAssembler {
     operations.addAll(cached.operations);
   }
 
-  private void doExtractAttributesAndOperations(Class< ? > managedClass, Map<String, ManagedAttributeInfo> attributes, Set<ManagedOperationInfo> operations) {
+  private void doExtractAttributesAndOperations(Class<?> managedClass, Map<String, ManagedAttributeInfo> attributes, Set<ManagedOperationInfo> operations) {
     // extract the class
     doDoExtractAttributesAndOperations(managedClass, attributes, operations);
 
     // and then any sub classes
     if (managedClass.getSuperclass() != null) {
-      Class< ? > clazz = managedClass.getSuperclass();
+      Class<?> clazz = managedClass.getSuperclass();
       // skip any JDK classes
       if (!clazz.getName().startsWith("java")) {
         LOG.trace("Extracting attributes and operations from sub class: {}", clazz);
@@ -134,7 +134,7 @@ public class MBeanInfoAssembler {
     // and then any additional interfaces (as interfaces can be annotated as
     // well)
     if (managedClass.getInterfaces() != null) {
-      for (Class< ? > clazz : managedClass.getInterfaces()) {
+      for (Class<?> clazz : managedClass.getInterfaces()) {
         // recursive as there may be multiple interfaces
         if (clazz.getName().startsWith("java")) {
           // skip any JDK classes
@@ -161,7 +161,7 @@ public class MBeanInfoAssembler {
     return answer;
   }
 
-  private void doDoExtractAttributesAndOperations(Class< ? > managedClass, Map<String, ManagedAttributeInfo> attributes, Set<ManagedOperationInfo> operations) {
+  private void doDoExtractAttributesAndOperations(Class<?> managedClass, Map<String, ManagedAttributeInfo> attributes, Set<ManagedOperationInfo> operations) {
     LOG.trace("Extracting attributes and operations from class: {}", managedClass);
 
     for (Method method : managedClass.getMethods()) {
@@ -217,28 +217,29 @@ public class MBeanInfoAssembler {
     }
   }
 
-  private void extractMbeanAttributes(Object managedBean, Map<String, ManagedAttributeInfo> attributes, Set<ModelMBeanAttributeInfo> mBeanAttributes,
-          Set<ModelMBeanOperationInfo> mBeanOperations) throws IntrospectionException {
+  private void extractMbeanAttributes(Object managedBean, Map<String, ManagedAttributeInfo> attributes, Set<ModelMBeanAttributeInfo> mBeanAttributes, Set<ModelMBeanOperationInfo> mBeanOperations)
+      throws IntrospectionException {
 
     for (ManagedAttributeInfo info : attributes.values()) {
       ModelMBeanAttributeInfo mbeanAttribute = new ModelMBeanAttributeInfo(info.getKey(), info.getDescription(), info.getGetter(), info.getSetter());
 
-      // add missing attribute descriptors, this is needed to have attributes accessible
+      // add missing attribute descriptors, this is needed to have
+      // attributes accessible
       Descriptor desc = mbeanAttribute.getDescriptor();
 
       if (info.getGetter() != null) {
-          desc.setField("getMethod", info.getGetter().getName());
-          // attribute must also be added as mbean operation
-          ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getGetter());
-          Descriptor opDesc = mbeanOperation.getDescriptor();
-          mbeanOperation.setDescriptor(opDesc);
-          mBeanOperations.add(mbeanOperation);
+        desc.setField("getMethod", info.getGetter().getName());
+        // attribute must also be added as mbean operation
+        ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getGetter());
+        Descriptor opDesc = mbeanOperation.getDescriptor();
+        mbeanOperation.setDescriptor(opDesc);
+        mBeanOperations.add(mbeanOperation);
       }
       if (info.getSetter() != null) {
-          desc.setField("setMethod", info.getSetter().getName());
-          // attribute must also be added as mbean operation
-          ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getSetter());
-          mBeanOperations.add(mbeanOperation);
+        desc.setField("setMethod", info.getSetter().getName());
+        // attribute must also be added as mbean operation
+        ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getSetter());
+        mBeanOperations.add(mbeanOperation);
       }
       mbeanAttribute.setDescriptor(desc);
 
@@ -344,7 +345,7 @@ public class MBeanInfoAssembler {
       return "ManagedOperationInfo: [" + operation + "]";
     }
   }
-  
+
   private static final class MBeanAttributesAndOperations {
 
     private Map<String, ManagedAttributeInfo> attributes;

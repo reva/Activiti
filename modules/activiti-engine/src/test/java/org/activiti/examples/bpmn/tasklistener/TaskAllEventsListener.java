@@ -15,7 +15,6 @@ package org.activiti.examples.bpmn.tasklistener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -25,7 +24,7 @@ public class TaskAllEventsListener implements TaskListener {
 
   public void notify(DelegateTask delegateTask) {
     String events = (String) delegateTask.getVariable("events");
-    if(events == null) {
+    if (events == null) {
       events = delegateTask.getEventName();
     } else {
       events = events + " - " + delegateTask.getEventName();

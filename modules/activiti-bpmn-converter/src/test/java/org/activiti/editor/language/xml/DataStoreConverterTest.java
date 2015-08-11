@@ -18,18 +18,18 @@ public class DataStoreConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
   }
-  
+
   protected String getResource() {
     return "datastore.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     assertEquals(1, model.getDataStores().size());
     DataStore dataStore = model.getDataStore("DataStore_1");
@@ -38,11 +38,11 @@ public class DataStoreConverterTest extends AbstractConverterTest {
     assertEquals("test", dataStore.getDataState());
     assertEquals("Test Database", dataStore.getName());
     assertEquals("test", dataStore.getItemSubjectRef());
-    
+
     FlowElement refElement = model.getFlowElement("DataStoreReference_1");
     assertNotNull(refElement);
     assertTrue(refElement instanceof DataStoreReference);
-    
+
     assertEquals(1, model.getPools().size());
     Pool pool = model.getPools().get(0);
     assertEquals("pool1", pool.getId());

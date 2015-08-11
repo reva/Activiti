@@ -73,7 +73,7 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.commandExecutor = processEngineConfiguration.getCommandExecutor();
     this.sessionFactories = processEngineConfiguration.getSessionFactories();
     this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
-    
+
     commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
 
     if (name == null) {
@@ -81,46 +81,45 @@ public class ProcessEngineImpl implements ProcessEngine {
     } else {
       log.info("ProcessEngine {} created", name);
     }
-    
+
     ProcessEngines.registerProcessEngine(this);
 
     if (jobExecutor != null && jobExecutor.isAutoActivate()) {
       jobExecutor.start();
     }
-    
+
     if (asyncExecutor != null && asyncExecutor.isAutoActivate()) {
       asyncExecutor.start();
     }
-     
+
     if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
     }
-    
-    processEngineConfiguration.getEventDispatcher().dispatchEvent(
-    		ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
+
+    processEngineConfiguration.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
   }
-  
+
   public void close() {
     ProcessEngines.unregister(this);
     if (jobExecutor != null && jobExecutor.isActive()) {
       jobExecutor.shutdown();
     }
-    
+
     if (asyncExecutor != null && asyncExecutor.isActive()) {
       asyncExecutor.shutdown();
     }
 
     commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationProcessEngineClose());
-    
+
     if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
       processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
     }
-    
-    processEngineConfiguration.getEventDispatcher().dispatchEvent(
-    		ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
+
+    processEngineConfiguration.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
   }
 
-  // getters and setters //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
   public String getName() {
     return name;
@@ -145,11 +144,11 @@ public class ProcessEngineImpl implements ProcessEngine {
   public RuntimeService getRuntimeService() {
     return runtimeService;
   }
-  
+
   public RepositoryService getRepositoryService() {
     return repositoryService;
   }
-  
+
   public FormService getFormService() {
     return formService;
   }

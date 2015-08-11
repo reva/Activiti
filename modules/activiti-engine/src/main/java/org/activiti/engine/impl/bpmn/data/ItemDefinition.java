@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.data;
 
-
-
 /**
  * Implementation of the BPMN 2.0 'itemDefinition'
  * 
@@ -22,28 +20,28 @@ package org.activiti.engine.impl.bpmn.data;
 public class ItemDefinition {
 
   protected String id;
-  
+
   protected StructureDefinition structure;
-  
+
   protected boolean isCollection;
-  
+
   protected ItemKind itemKind;
-  
+
   private ItemDefinition() {
     this.isCollection = false;
     this.itemKind = ItemKind.Information;
   }
-  
+
   public ItemDefinition(String id, StructureDefinition structure) {
     this();
     this.id = id;
     this.structure = structure;
   }
-  
+
   public ItemInstance createInstance() {
     return new ItemInstance(this, this.structure.createInstance());
   }
-  
+
   public StructureDefinition getStructureDefinition() {
     return this.structure;
   }
@@ -59,7 +57,7 @@ public class ItemDefinition {
   public ItemKind getItemKind() {
     return itemKind;
   }
-  
+
   public void setItemKind(ItemKind itemKind) {
     this.itemKind = itemKind;
   }

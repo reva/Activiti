@@ -23,7 +23,6 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -32,30 +31,29 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
   private static final long serialVersionUID = 1L;
 
   private static Logger log = LoggerFactory.getLogger(ExecuteAsyncJobCmd.class);
-  
+
   protected JobEntity job;
- 
+
   public ExecuteAsyncJobCmd(JobEntity job) {
-  	this.job = job;
+    this.job = job;
   }
 
   public Object execute(CommandContext commandContext) {
-    
+
     if (job == null) {
       throw new ActivitiIllegalArgumentException("job is null");
     }
-    
+
     if (log.isDebugEnabled()) {
       log.debug("Executing async job {}", job.getId());
     }
-    
+
     job.execute(commandContext);
-      
+
     if (commandContext.getEventDispatcher().isEnabled()) {
-    	commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-    			ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
+      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
     }
-    
+
     return null;
   }
 }

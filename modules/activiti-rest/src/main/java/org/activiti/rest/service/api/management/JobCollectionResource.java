@@ -49,17 +49,17 @@ public class JobCollectionResource {
     properties.put("retries", JobQueryProperty.RETRIES);
     properties.put("tenantId", JobQueryProperty.TENANT_ID);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected ManagementService managementService;
-  
-  @RequestMapping(value="/management/jobs", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getJobs(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+
+  @RequestMapping(value = "/management/jobs", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getJobs(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     JobQuery query = managementService.createJobQuery();
-    
+
     if (allRequestParams.containsKey("id")) {
       query.jobId(allRequestParams.get("id"));
     }
@@ -121,7 +121,6 @@ public class JobCollectionResource {
       }
     }
 
-    return new JobPaginateList(restResponseFactory)
-        .paginateList(allRequestParams, query, "id", properties);
+    return new JobPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
   }
 }

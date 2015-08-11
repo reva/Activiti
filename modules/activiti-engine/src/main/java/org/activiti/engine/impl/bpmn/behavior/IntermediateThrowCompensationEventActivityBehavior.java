@@ -13,60 +13,89 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
 public class IntermediateThrowCompensationEventActivityBehavior extends FlowNodeActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected final CompensateEventDefinition compensateEventDefinition;
 
   public IntermediateThrowCompensationEventActivityBehavior(CompensateEventDefinition compensateEventDefinition) {
     this.compensateEventDefinition = compensateEventDefinition;
   }
-  
+
   @Override
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
+    ThrowEvent throwEvent = (ThrowEvent) execution.getCurrentFlowElement();
     final String activityRef = compensateEventDefinition.getActivityRef();
-            
-    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, (ActivityImpl)execution.getActivity());
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     
-    List<CompensateEventSubscriptionEntity> eventSubscriptions;
+    List<CompensateEventSubscriptionEntity> eventSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();
+    ExecutionEntity subProcessExecution = null;
     
-    if(activityRef != null) {          
-      eventSubscriptions = scopeExecution.getCompensateEventSubscriptions(activityRef);
-    } else {
-      eventSubscriptions = scopeExecution.getCompensateEventSubscriptions();
+    List<String> rootCompensationActivities = new ArrayList<String>();
+    if (throwEvent.getSubProcess() == null) {
+      Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+      for (FlowElement flowElement : process.getFlowElements()) {
+        if (flowElement instanceof Activity) {
+          Activity activity = (Activity) flowElement;
+          if (activity.isForCompensation()) {
+            rootCompensationActivities.add(activity.getId());
+          }
+        }
+      }
     }
-        
-    if(eventSubscriptions.isEmpty()) {
+      
+    List<ExecutionEntity> processInstanceExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
+    for (ExecutionEntity childExecution : processInstanceExecutions) {
+      if (childExecution.getCurrentFlowElement() != null && childExecution.getCurrentFlowElement().getId().equals(activityRef)) {
+        subProcessExecution = childExecution;
+        break;
+      }
+    }
+    
+    if (rootCompensationActivities.isEmpty() && subProcessExecution == null) {
+      throw new ActivitiException("No compensation activities found intermediate throw event");
+    }
+    
+    for (String compensationActivity : rootCompensationActivities) {
+      eventSubscriptions.addAll(eventSubscriptionEntityManager.getCompensateEventSubscriptionsForProcessInstanceId(execution.getProcessInstanceId(), compensationActivity));
+    }
+    
+    if (subProcessExecution != null) {
+      eventSubscriptions.addAll(eventSubscriptionEntityManager.getCompensateEventSubscriptions(subProcessExecution.getParentId()));
+    }
+    
+    if (eventSubscriptions.isEmpty()) {
       leave(execution);
     } else {
       // TODO: implement async (waitForCompletion=false in bpmn)
-      ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false );
+      ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
+      if (subProcessExecution != null) {
+        executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution);
+      }
+      leave(execution);
     }
-        
   }
-  
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-   
-    // join compensating executions    
-    if(execution.getExecutions().isEmpty()) {
-      leave(execution);   
-    } else {      
-      ((ExecutionEntity)execution).forceUpdate();  
-    }
-    
-  }
-  
-
 }

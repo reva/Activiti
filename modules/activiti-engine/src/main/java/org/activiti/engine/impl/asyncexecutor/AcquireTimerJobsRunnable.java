@@ -31,11 +31,11 @@ public class AcquireTimerJobsRunnable implements Runnable {
 
   protected final AsyncExecutor asyncExecutor;
 
-  protected volatile boolean isInterrupted = false;
+  protected volatile boolean isInterrupted;
   protected final Object MONITOR = new Object();
   protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
-  
-  protected long millisToWait = 0;
+
+  protected long millisToWait;
 
   public AcquireTimerJobsRunnable(AsyncExecutor asyncExecutor) {
     this.asyncExecutor = asyncExecutor;
@@ -47,33 +47,32 @@ public class AcquireTimerJobsRunnable implements Runnable {
     final CommandExecutor commandExecutor = asyncExecutor.getCommandExecutor();
 
     while (!isInterrupted) {
-      
+
       try {
-        AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(
-            asyncExecutor.getLockOwner(), asyncExecutor.getTimerLockTimeInMillis(), 
-            asyncExecutor.getMaxTimerJobsPerAcquisition()));
-        
+        AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(asyncExecutor.getLockOwner(), asyncExecutor.getTimerLockTimeInMillis(), asyncExecutor
+            .getMaxTimerJobsPerAcquisition()));
+
         for (JobEntity job : acquiredJobs.getJobs()) {
           asyncExecutor.executeAsyncJob(job);
         }
-        
+
         // if all jobs were executed
         millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.size();
         if (jobsAcquired >= asyncExecutor.getMaxTimerJobsPerAcquisition()) {
-          millisToWait = 0; 
+          millisToWait = 0;
         }
 
-      } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
+      } catch (ActivitiOptimisticLockingException optimisticLockingException) {
         if (log.isDebugEnabled()) {
-          log.debug("Optimistic locking exception during timer job acquisition. If you have multiple timer executors running against the same database, " +
-          		"this exception means that this thread tried to acquire a timer job, which already was acquired by another timer executor acquisition thread." +
-          		"This is expected behavior in a clustered environment. " +
-          		"You can ignore this message if you indeed have multiple timer executor acquisition threads running against the same database. " +
-          		"Exception message: {}", optimisticLockingException.getMessage());
+          log.debug("Optimistic locking exception during timer job acquisition. If you have multiple timer executors running against the same database, "
+              + "this exception means that this thread tried to acquire a timer job, which already was acquired by another timer executor acquisition thread."
+              + "This is expected behavior in a clustered environment. "
+              + "You can ignore this message if you indeed have multiple timer executor acquisition threads running against the same database. " + "Exception message: {}",
+              optimisticLockingException.getMessage());
         }
       } catch (Throwable e) {
-        log.error("exception during timer job acquisition: {}", e.getMessage(), e);          
+        log.error("exception during timer job acquisition: {}", e.getMessage(), e);
         millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
       }
 
@@ -83,12 +82,12 @@ public class AcquireTimerJobsRunnable implements Runnable {
             log.debug("timer job acquisition thread sleeping for {} millis", millisToWait);
           }
           synchronized (MONITOR) {
-            if(!isInterrupted) {
+            if (!isInterrupted) {
               isWaiting.set(true);
               MONITOR.wait(millisToWait);
             }
           }
-          
+
           if (log.isDebugEnabled()) {
             log.debug("timer job acquisition thread woke up");
           }
@@ -101,23 +100,23 @@ public class AcquireTimerJobsRunnable implements Runnable {
         }
       }
     }
-    
+
     log.info("{} stopped async job due acquisition");
   }
 
   public void stop() {
     synchronized (MONITOR) {
-      isInterrupted = true; 
-      if(isWaiting.compareAndSet(true, false)) { 
-          MONITOR.notifyAll();
-        }
+      isInterrupted = true;
+      if (isWaiting.compareAndSet(true, false)) {
+        MONITOR.notifyAll();
       }
+    }
   }
 
   public long getMillisToWait() {
     return millisToWait;
   }
-  
+
   public void setMillisToWait(long millisToWait) {
     this.millisToWait = millisToWait;
   }

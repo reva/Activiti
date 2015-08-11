@@ -22,16 +22,15 @@ import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 
 /**
- * An {@link ELResolver} that exposed object values in the map, under the name of the entry's key.
- * The values in the map are only returned when requested property has no 'base', meaning
- * it's a root-object.
+ * An {@link ELResolver} that exposed object values in the map, under the name of the entry's key. The values in the map are only returned when requested property has no 'base', meaning it's a
+ * root-object.
  * 
  * @author Frederik Heremans
  */
 public class ReadOnlyMapELResolver extends ELResolver {
 
   protected Map<Object, Object> wrappedMap;
-  
+
   public ReadOnlyMapELResolver(Map<Object, Object> map) {
     this.wrappedMap = map;
   }
@@ -51,14 +50,14 @@ public class ReadOnlyMapELResolver extends ELResolver {
   }
 
   public void setValue(ELContext context, Object base, Object property, Object value) {
-    if(base == null) {
+    if (base == null) {
       if (wrappedMap.containsKey(property)) {
         throw new ActivitiException("Cannot set value of '" + property + "', it's readonly!");
       }
     }
   }
 
-  public Class< ? > getCommonPropertyType(ELContext context, Object arg) {
+  public Class<?> getCommonPropertyType(ELContext context, Object arg) {
     return Object.class;
   }
 
@@ -66,7 +65,7 @@ public class ReadOnlyMapELResolver extends ELResolver {
     return null;
   }
 
-  public Class< ? > getType(ELContext context, Object arg1, Object arg2) {
+  public Class<?> getType(ELContext context, Object arg1, Object arg2) {
     return Object.class;
   }
 }

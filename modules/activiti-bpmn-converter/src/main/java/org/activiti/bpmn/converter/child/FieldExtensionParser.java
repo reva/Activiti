@@ -32,20 +32,19 @@ public class FieldExtensionParser extends BaseChildElementParser {
     return ELEMENT_FIELD;
   }
 
-  public boolean accepts(BaseElement element){
-    return ((element instanceof ActivitiListener)
-        || (element instanceof ServiceTask)
-        || (element instanceof SendTask));
+  public boolean accepts(BaseElement element) {
+    return ((element instanceof ActivitiListener) || (element instanceof ServiceTask) || (element instanceof SendTask));
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    
-    if (!accepts(parentElement)) return;
-    
+
+    if (!accepts(parentElement))
+      return;
+
     FieldExtension extension = new FieldExtension();
     BpmnXMLUtil.addXMLLocation(extension, xtr);
     extension.setFieldName(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_NAME));
-    
+
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_STRING))) {
       extension.setStringValue(xtr.getAttributeValue(null, ATTRIBUTE_FIELD_STRING));
 
@@ -71,7 +70,7 @@ public class FieldExtensionParser extends BaseChildElementParser {
         LOGGER.warn("Error parsing field extension child elements", e);
       }
     }
-    
+
     if (parentElement instanceof ActivitiListener) {
       ((ActivitiListener) parentElement).getFieldExtensions().add(extension);
     } else if (parentElement instanceof ServiceTask) {

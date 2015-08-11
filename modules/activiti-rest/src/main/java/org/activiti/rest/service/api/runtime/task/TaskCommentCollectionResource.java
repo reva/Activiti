@@ -31,29 +31,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class TaskCommentCollectionResource extends TaskBaseResource {
 
-  @RequestMapping(value="/runtime/tasks/{taskId}/comments", method = RequestMethod.GET, produces="application/json")
+  @RequestMapping(value = "/runtime/tasks/{taskId}/comments", method = RequestMethod.GET, produces = "application/json")
   public List<CommentResponse> getComments(@PathVariable String taskId, HttpServletRequest request) {
     HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
     return restResponseFactory.createRestCommentList(taskService.getTaskComments(task.getId()));
   }
-  
-  @RequestMapping(value="/runtime/tasks/{taskId}/comments", method = RequestMethod.POST, produces="application/json")
-  public CommentResponse createComment(@PathVariable String taskId, @RequestBody CommentRequest comment, 
-      HttpServletRequest request, HttpServletResponse response) {
-    
+
+  @RequestMapping(value = "/runtime/tasks/{taskId}/comments", method = RequestMethod.POST, produces = "application/json")
+  public CommentResponse createComment(@PathVariable String taskId, @RequestBody CommentRequest comment, HttpServletRequest request, HttpServletResponse response) {
+
     Task task = getTaskFromRequest(taskId);
-    
+
     if (comment.getMessage() == null) {
       throw new ActivitiIllegalArgumentException("Comment text is required.");
     }
-    
+
     String processInstanceId = null;
     if (comment.isSaveProcessInstanceId()) {
       Task taskEntity = taskService.createTaskQuery().taskId(task.getId()).singleResult();
@@ -61,7 +59,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     }
     Comment createdComment = taskService.addComment(task.getId(), processInstanceId, comment.getMessage());
     response.setStatus(HttpStatus.CREATED.value());
-    
+
     return restResponseFactory.createRestComment(createdComment);
   }
 }

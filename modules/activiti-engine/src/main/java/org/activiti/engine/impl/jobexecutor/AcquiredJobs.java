@@ -17,32 +17,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
  */
 public class AcquiredJobs {
 
-	protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
-	protected Set<String> acquiredJobs = new HashSet<String>();
+  protected List<List<String>> acquiredJobBatches = new ArrayList<List<String>>();
+  protected Set<String> acquiredJobs = new HashSet<String>();
 
-	public List<List<String>> getJobIdBatches() {
+  public List<List<String>> getJobIdBatches() {
     return acquiredJobBatches;
   }
 
-	public void addJobIdBatch(List<String> jobIds) {
+  public void addJobIdBatch(List<String> jobIds) {
     acquiredJobBatches.add(jobIds);
     acquiredJobs.addAll(jobIds);
   }
-  
+
   public boolean contains(String jobId) {
-    return acquiredJobs.contains(jobId);    
+    return acquiredJobs.contains(jobId);
   }
 
   public int size() {
     return acquiredJobs.size();
   }
-  
-  
+
 }

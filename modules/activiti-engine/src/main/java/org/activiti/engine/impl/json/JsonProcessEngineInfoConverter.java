@@ -18,7 +18,6 @@ import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.impl.ProcessEngineInfoImpl;
 import org.activiti.engine.impl.util.json.JSONObject;
 
-
 /**
  * @author Tom Baeyens
  */

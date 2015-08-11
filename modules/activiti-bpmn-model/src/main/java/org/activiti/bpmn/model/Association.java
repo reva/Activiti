@@ -50,12 +50,12 @@ public class Association extends Artifact {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(Association otherElement) {
     super.setValues(otherElement);
     setSourceRef(otherElement.getSourceRef());
     setTargetRef(otherElement.getTargetRef());
-    
+
     if (otherElement.getAssociationDirection() != null) {
       setAssociationDirection(otherElement.getAssociationDirection());
     }

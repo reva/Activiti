@@ -22,7 +22,7 @@ public class XMLException extends RuntimeException {
   public XMLException(String message) {
     super(message);
   }
-  
+
   public XMLException(String message, Throwable t) {
     super(message, t);
   }

@@ -13,9 +13,12 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.*;
-
 import java.io.File;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import javax.activation.DataSource;
 import javax.naming.NamingException;
@@ -28,7 +31,11 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.apache.commons.mail.*;
+import org.apache.commons.mail.Email;
+import org.apache.commons.mail.EmailException;
+import org.apache.commons.mail.HtmlEmail;
+import org.apache.commons.mail.MultiPartEmail;
+import org.apache.commons.mail.SimpleEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,9 +50,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final Logger LOG = LoggerFactory.getLogger(MailActivityBehavior.class);
 
-  private static final Class<?>[] ALLOWED_ATT_TYPES = new Class<?>[]{
-      File.class, File[].class, String.class, String[].class, DataSource.class, DataSource[].class
-  };
+  private static final Class<?>[] ALLOWED_ATT_TYPES = new Class<?>[] { File.class, File[].class, String.class, String[].class, DataSource.class, DataSource[].class };
 
   protected Expression to;
   protected Expression from;
@@ -73,10 +78,8 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
       String ccStr = getStringFromField(cc, execution);
       String bccStr = getStringFromField(bcc, execution);
       String subjectStr = getStringFromField(subject, execution);
-      String textStr = textVar == null ? getStringFromField(text, execution)
-          : getStringFromField(getExpression(execution, textVar), execution);
-      String htmlStr = htmlVar == null ? getStringFromField(html, execution)
-          : getStringFromField(getExpression(execution, htmlVar), execution);
+      String textStr = textVar == null ? getStringFromField(text, execution) : getStringFromField(getExpression(execution, textVar), execution);
+      String htmlStr = htmlVar == null ? getStringFromField(html, execution) : getStringFromField(getExpression(execution, htmlVar), execution);
       String charSetStr = getStringFromField(charset, execution);
       List<File> files = new LinkedList<File>();
       List<DataSource> dataSources = new LinkedList<DataSource>();
@@ -358,7 +361,7 @@ public class MailActivityBehavior extends AbstractBpmnActivityBehavior {
         }
       }
     }
-    for (Iterator<File> it = files.iterator(); it.hasNext(); ) {
+    for (Iterator<File> it = files.iterator(); it.hasNext();) {
       File file = it.next();
       if (!fileExists(file)) {
         it.remove();

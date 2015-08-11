@@ -30,19 +30,19 @@ public class ParallelProcessRevisitedTest extends SpringActivitiTestCase {
 
   @Autowired
   protected CamelContext camelContext;
-	  
-  public void  setUp() throws Exception {
+
+  public void setUp() throws Exception {
     camelContext.addRoutes(new RouteBuilder() {
 
       @Override
       public void configure() throws Exception {
-  	    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep");    	   
-  	    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep");
+        from("activiti:parallelCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep");
+        from("activiti:parallelCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep");
       }
-	  });
+    });
   }
 
-  @Deployment(resources = {"process/revisited/parallel-revisited.bpmn20.xml"})
+  @Deployment(resources = { "process/revisited/parallel-revisited.bpmn20.xml" })
   public void testRunProcess() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parallelCamelProcessRevisited");
     Thread.sleep(4000);

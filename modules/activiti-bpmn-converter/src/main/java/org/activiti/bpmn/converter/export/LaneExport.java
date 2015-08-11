@@ -30,7 +30,7 @@ public class LaneExport implements BpmnXMLConstants {
         xtw.writeStartElement(ELEMENT_LANE);
         xtw.writeAttribute(ATTRIBUTE_ID, lane.getId());
 
-        if(StringUtils.isNotEmpty(lane.getName())) {
+        if (StringUtils.isNotEmpty(lane.getName())) {
           xtw.writeAttribute(ATTRIBUTE_NAME, lane.getName());
         }
 
@@ -44,7 +44,7 @@ public class LaneExport implements BpmnXMLConstants {
           xtw.writeCharacters(flowNodeRef);
           xtw.writeEndElement();
         }
-        
+
         xtw.writeEndElement();
       }
       xtw.writeEndElement();

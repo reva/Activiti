@@ -18,12 +18,11 @@ import java.util.Set;
 
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class FormData implements Map<String, Object> {
-  
+
   TaskEntity task;
 
   public FormData(TaskEntity task) {
@@ -61,7 +60,7 @@ public class FormData implements Map<String, Object> {
     return null;
   }
 
-  public void putAll(Map< ? extends String, ? extends Object> m) {
+  public void putAll(Map<? extends String, ? extends Object> m) {
   }
 
   public Object remove(Object key) {

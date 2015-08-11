@@ -24,7 +24,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
-
 /**
  * @author Falko Menge
  */
@@ -47,15 +46,12 @@ public class SetJobRetriesCmd implements Command<Void>, Serializable {
   }
 
   public Void execute(CommandContext commandContext) {
-    JobEntity job = commandContext
-            .getJobEntityManager()
-            .findJobById(jobId);
+    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
     if (job != null) {
       job.setRetries(retries);
-      
-      if(commandContext.getEventDispatcher().isEnabled()) {
-      	commandContext.getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
+
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
       }
     } else {
       throw new ActivitiObjectNotFoundException("No job found with id '" + jobId + "'.", Job.class);

@@ -28,20 +28,20 @@ public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
   public EventListenersConfigurationTest() {
     super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
   }
-  
+
   public void testEventListenerConfiguration() {
-  	// Fetch the listener to check received events
-  	TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
-  	assertNotNull(listener);
-  	
-  	// Clear any events received (eg. engine initialisation)
-  	listener.clearEventsReceived();
-  	
-  	// Dispath a custom event
-  	ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
-  	processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
-  	
-  	assertEquals(1, listener.getEventsReceived().size());
-  	assertEquals(event, listener.getEventsReceived().get(0));
+    // Fetch the listener to check received events
+    TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
+    assertNotNull(listener);
+
+    // Clear any events received (eg. engine initialisation)
+    listener.clearEventsReceived();
+
+    // Dispatch a custom event
+    ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
+    processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
+
+    assertEquals(1, listener.getEventsReceived().size());
+    assertEquals(event, listener.getEventsReceived().get(0));
   }
 }

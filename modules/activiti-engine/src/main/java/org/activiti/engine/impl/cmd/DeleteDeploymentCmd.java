@@ -33,15 +33,12 @@ public class DeleteDeploymentCmd implements Command<Void>, Serializable {
   }
 
   public Void execute(CommandContext commandContext) {
-    if(deploymentId == null) {
+    if (deploymentId == null) {
       throw new ActivitiIllegalArgumentException("deploymentId is null");
     }
-    
+
     // Remove process definitions from cache:
-    commandContext
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .removeDeployment(deploymentId, cascade);
+    commandContext.getProcessEngineConfiguration().getDeploymentManager().removeDeployment(deploymentId, cascade);
 
     return null;
   }

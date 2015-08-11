@@ -17,30 +17,30 @@ public class PoolConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readJsonFile();
     validateModel(bpmnModel);
   }
-  
-  @Test 
+
+  @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "test.poolmodel.json";
   }
-  
+
   private void validateModel(BpmnModel model) {
-    
+
     String idPool = "idPool";
     String idProcess = "poolProcess";
-    
+
     assertEquals(1, model.getPools().size());
-    
+
     Pool pool = model.getPool(idPool);
     assertEquals(idPool, pool.getId());
     assertEquals(idProcess, pool.getProcessRef());
     assertTrue(pool.isExecutable());
-    
+
     Process process = model.getProcess(idPool);
     assertEquals(idProcess, process.getId());
     assertTrue(process.isExecutable());
@@ -54,21 +54,21 @@ public class PoolConverterTest extends AbstractConverterTest {
     assertTrue(lane.getFlowReferences().contains("usertask1"));
     assertTrue(lane.getFlowReferences().contains("usertask6"));
     assertTrue(lane.getFlowReferences().contains("endevent"));
-    
+
     lane = process.getLanes().get(1);
     assertEquals("idLane2", lane.getId());
     assertEquals("Lane 2", lane.getName());
     assertEquals(4, lane.getFlowReferences().size());
     assertTrue(lane.getFlowReferences().contains("usertask2"));
     assertTrue(lane.getFlowReferences().contains("usertask5"));
-    
+
     lane = process.getLanes().get(2);
     assertEquals("idLane3", lane.getId());
     assertEquals("Lane 3", lane.getName());
     assertEquals(4, lane.getFlowReferences().size());
     assertTrue(lane.getFlowReferences().contains("usertask3"));
     assertTrue(lane.getFlowReferences().contains("usertask4"));
-    
+
     assertNotNull(process.getFlowElement("startevent"));
     assertNotNull(process.getFlowElement("usertask1"));
     assertNotNull(process.getFlowElement("usertask2"));
@@ -77,7 +77,7 @@ public class PoolConverterTest extends AbstractConverterTest {
     assertNotNull(process.getFlowElement("usertask5"));
     assertNotNull(process.getFlowElement("usertask6"));
     assertNotNull(process.getFlowElement("endevent"));
-    
+
     assertNotNull(process.getFlowElement("flow1"));
     assertNotNull(process.getFlowElement("flow2"));
     assertNotNull(process.getFlowElement("flow3"));

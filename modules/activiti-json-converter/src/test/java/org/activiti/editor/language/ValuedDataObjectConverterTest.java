@@ -29,24 +29,24 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readJsonFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "test.valueddataobjectmodel.json";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("start1");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof StartEvent);
     assertEquals("start1", flowElement.getId());
-    
+
     // verify main process data objects
     List<ValuedDataObject> dataObjects = model.getMainProcess().getDataObjects();
     assertEquals(6, dataObjects.size());
@@ -95,7 +95,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
         assertEquals(new Long(-123456), dObj.getValue());
       }
     }
-    
+
     flowElement = model.getMainProcess().getFlowElement("subprocess1");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SubProcess);
@@ -104,7 +104,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals(11, subProcess.getFlowElements().size());
 
     // verify subprocess data objects
-    dataObjects = ((SubProcess)flowElement).getDataObjects();
+    dataObjects = ((SubProcess) flowElement).getDataObjects();
     assertEquals(6, dataObjects.size());
     for (ValuedDataObject dObj : dataObjects) {
       if ("dObj1".equals(dObj.getId())) {

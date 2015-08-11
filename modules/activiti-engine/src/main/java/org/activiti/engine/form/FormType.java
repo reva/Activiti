@@ -15,10 +15,9 @@ package org.activiti.engine.form;
 
 import java.io.Serializable;
 
-
-
-/** 
+/**
  * Used to indicate the type on a {@link FormProperty}.
+ * 
  * @author Tom Baeyens
  */
 public interface FormType extends Serializable {
@@ -26,10 +25,9 @@ public interface FormType extends Serializable {
   /** Name for the form type. */
   String getName();
 
-  /** Retrieve type specific extra information like 
-   * the list of values for enum types or the format
-   * for date types. Look in the userguide for 
-   * which extra information keys each type provides
-   * and what return type they give. */
+  /**
+   * Retrieve type specific extra information like the list of values for enum types or the format for date types. Look in the userguide for which extra information keys each type provides and what
+   * return type they give.
+   */
   Object getInformation(String key);
 }

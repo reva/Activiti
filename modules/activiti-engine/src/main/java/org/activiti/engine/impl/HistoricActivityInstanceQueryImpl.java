@@ -21,13 +21,11 @@ import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-
 /**
  * @author Tom Baeyens
  */
-public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricActivityInstanceQuery, HistoricActivityInstance> 
-    implements HistoricActivityInstanceQuery {
-  
+public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricActivityInstanceQuery, HistoricActivityInstance> implements HistoricActivityInstanceQuery {
+
   private static final long serialVersionUID = 1L;
   protected String activityInstanceId;
   protected String processInstanceId;
@@ -45,11 +43,11 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   public HistoricActivityInstanceQueryImpl() {
   }
-  
+
   public HistoricActivityInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
-  
+
   public HistoricActivityInstanceQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
@@ -57,19 +55,15 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
   @Override
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext
-      .getHistoricActivityInstanceEntityManager()
-      .findHistoricActivityInstanceCountByQueryCriteria(this);
+    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstanceCountByQueryCriteria(this);
   }
 
   @Override
   public List<HistoricActivityInstance> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext
-      .getHistoricActivityInstanceEntityManager()
-      .findHistoricActivityInstancesByQueryCriteria(this, page);
+    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByQueryCriteria(this, page);
   }
-  
+
   public HistoricActivityInstanceQueryImpl processInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
     return this;
@@ -99,45 +93,45 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     this.activityType = activityType;
     return this;
   }
-  
+
   public HistoricActivityInstanceQueryImpl taskAssignee(String assignee) {
     this.assignee = assignee;
     return this;
   }
-  
+
   public HistoricActivityInstanceQueryImpl finished() {
     this.finished = true;
     return this;
   }
-  
+
   public HistoricActivityInstanceQueryImpl unfinished() {
     this.unfinished = true;
     return this;
   }
-  
-  public HistoricActivityInstanceQueryImpl activityTenantId(String tenantId) {
-  	if (tenantId == null) {
-  		throw new ActivitiIllegalArgumentException("activity tenant id is null");
-  	}
-  	this.tenantId = tenantId;
-  	return this;
-  }
-  
-  public HistoricActivityInstanceQueryImpl activityTenantIdLike(String tenantIdLike) {
-  	if (tenantIdLike == null) {
-  		throw new ActivitiIllegalArgumentException("activity tenant id is null");
-  	}
-  	this.tenantIdLike = tenantIdLike;
-  	return this;
-  }
-  
-  public HistoricActivityInstanceQueryImpl activityWithoutTenantId() {
-  	this.withoutTenantId = true;
-  	return this;
-  }
-  
 
-  // ordering /////////////////////////////////////////////////////////////////
+  public HistoricActivityInstanceQueryImpl activityTenantId(String tenantId) {
+    if (tenantId == null) {
+      throw new ActivitiIllegalArgumentException("activity tenant id is null");
+    }
+    this.tenantId = tenantId;
+    return this;
+  }
+
+  public HistoricActivityInstanceQueryImpl activityTenantIdLike(String tenantIdLike) {
+    if (tenantIdLike == null) {
+      throw new ActivitiIllegalArgumentException("activity tenant id is null");
+    }
+    this.tenantIdLike = tenantIdLike;
+    return this;
+  }
+
+  public HistoricActivityInstanceQueryImpl activityWithoutTenantId() {
+    this.withoutTenantId = true;
+    return this;
+  }
+
+  // ordering
+  // /////////////////////////////////////////////////////////////////
 
   public HistoricActivityInstanceQueryImpl orderByHistoricActivityInstanceDuration() {
     orderBy(HistoricActivityInstanceQueryProperty.DURATION);
@@ -188,9 +182,9 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     orderBy(HistoricActivityInstanceQueryProperty.ACTIVITY_TYPE);
     return this;
   }
-  
+
   public HistoricActivityInstanceQueryImpl orderByTenantId() {
-  	orderBy(HistoricActivityInstanceQueryProperty.TENANT_ID);
+    orderBy(HistoricActivityInstanceQueryProperty.TENANT_ID);
     return this;
   }
 
@@ -198,37 +192,46 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
     this.activityInstanceId = activityInstanceId;
     return this;
   }
-  
 
-  // getters and setters //////////////////////////////////////////////////////
-  
+  // getters and setters
+  // //////////////////////////////////////////////////////
+
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+
   public String getExecutionId() {
     return executionId;
   }
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+
   public String getActivityId() {
     return activityId;
   }
+
   public String getActivityName() {
     return activityName;
   }
+
   public String getActivityType() {
     return activityType;
   }
+
   public String getAssignee() {
     return assignee;
   }
+
   public boolean isFinished() {
     return finished;
   }
+
   public boolean isUnfinished() {
     return unfinished;
   }
+
   public String getActivityInstanceId() {
     return activityInstanceId;
   }

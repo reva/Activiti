@@ -45,8 +45,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Abstract base class for executing activiti-cdi tests in a Java SE
- * environment, using Weld-SE.
+ * Abstract base class for executing activiti-cdi tests in a Java SE environment, using Weld-SE.
  * 
  * @author Daniel Meyer
  */
@@ -54,20 +53,18 @@ import org.slf4j.LoggerFactory;
 public abstract class CdiActivitiTestCase {
 
   protected Logger logger = LoggerFactory.getLogger(getClass().getName());
-    
+
   @Deployment
   public static JavaArchive createDeployment() {
-    
-    return ShrinkWrap.create(JavaArchive.class)
-      .addPackages(true, "org.activiti.cdi")
-      .addAsManifestResource("META-INF/beans.xml", "beans.xml");
+
+    return ShrinkWrap.create(JavaArchive.class).addPackages(true, "org.activiti.cdi").addAsManifestResource("META-INF/beans.xml", "beans.xml");
   }
-  
+
   @Rule
   public ActivitiRule activitiRule = new ActivitiRule(getBeanInstance(ProcessEngine.class));
 
   protected BeanManager beanManager;
-  
+
   protected ProcessEngine processEngine;
   protected FormService formService;
   protected HistoryService historyService;
@@ -79,11 +76,11 @@ public abstract class CdiActivitiTestCase {
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
   @Before
-  public void setUp() throws Exception {    
-    
+  public void setUp() throws Exception {
+
     beanManager = ProgrammaticBeanLookup.lookup(BeanManager.class);
     processEngine = ProgrammaticBeanLookup.lookup(ProcessEngine.class);
-    processEngineConfiguration = ((ProcessEngineImpl)ProcessEngineLookupForTestsuite.processEngine).getProcessEngineConfiguration();
+    processEngineConfiguration = ((ProcessEngineImpl) ProcessEngineLookupForTestsuite.processEngine).getProcessEngineConfiguration();
     activitiRule.setProcessEngineConfiguration(processEngineConfiguration);
     formService = processEngine.getFormService();
     historyService = processEngine.getHistoryService();
@@ -91,9 +88,9 @@ public abstract class CdiActivitiTestCase {
     managementService = processEngine.getManagementService();
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
-    taskService = processEngine.getTaskService();        
+    taskService = processEngine.getTaskService();
   }
-  
+
   protected void endConversationAndBeginNew(String processInstanceId) {
     getBeanInstance(BusinessProcess.class).associateExecutionById(processInstanceId);
   }
@@ -105,9 +102,9 @@ public abstract class CdiActivitiTestCase {
   protected Object getBeanInstance(String name) {
     return ProgrammaticBeanLookup.lookup(name);
   }
-  
-  //////////////////////// copied from AbstractActivitiTestcase
-  
+
+  // ////////////////////// copied from AbstractActivitiTestcase
+
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     jobExecutor.start();
@@ -151,7 +148,7 @@ public abstract class CdiActivitiTestCase {
         }
       } catch (InterruptedException e) {
       } catch (Exception e) {
-        throw new ActivitiException("Exception while waiting on condition: "+e.getMessage(), e);
+        throw new ActivitiException("Exception while waiting on condition: " + e.getMessage(), e);
       } finally {
         timer.cancel();
       }
@@ -165,22 +162,21 @@ public abstract class CdiActivitiTestCase {
   }
 
   public boolean areJobsAvailable() {
-    return !managementService
-      .createJobQuery()
-      .executable()
-      .list()
-      .isEmpty();
+    return !managementService.createJobQuery().executable().list().isEmpty();
   }
-  
+
   private static class InteruptTask extends TimerTask {
     protected boolean timeLimitExceeded = false;
     protected Thread thread;
+
     public InteruptTask(Thread thread) {
       this.thread = thread;
     }
+
     public boolean isTimeLimitExceeded() {
       return timeLimitExceeded;
     }
+
     public void run() {
       timeLimitExceeded = true;
       thread.interrupt();

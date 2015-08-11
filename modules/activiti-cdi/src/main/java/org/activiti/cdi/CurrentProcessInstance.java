@@ -24,12 +24,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 /**
- * Allows to access executions and tasks of a managed process instance via
- * dependency injection. A process instance can be managed, using the
- * {@link BusinessProcess}-bean.
+ * Allows to access executions and tasks of a managed process instance via dependency injection. A process instance can be managed, using the {@link BusinessProcess}-bean.
  * 
- * The producer methods provided by this class have been extracted from the
- * {@link BusinessProcess}-bean in order to allow for specializing it.
+ * The producer methods provided by this class have been extracted from the {@link BusinessProcess}-bean in order to allow for specializing it.
  * 
  * @author Falko Menge
  */
@@ -42,9 +39,7 @@ public class CurrentProcessInstance {
    * Returns the {@link ProcessInstance} currently associated or 'null'
    * 
    * @throws ActivitiCdiException
-   *           if no {@link Execution} is associated. Use
-   *           {@link BusinessProcess#isAssociated()} to check whether an
-   *           association exists.
+   *           if no {@link Execution} is associated. Use {@link BusinessProcess#isAssociated()} to check whether an association exists.
    */
   /* Makes the current ProcessInstance available for injection */
   @Produces
@@ -88,9 +83,7 @@ public class CurrentProcessInstance {
    * Returns the currently associated {@link Task} or 'null'
    * 
    * @throws ActivitiCdiException
-   *           if no {@link Task} is associated. Use
-   *           {@link BusinessProcess#isTaskAssociated()} to check whether an
-   *           association exists.
+   *           if no {@link Task} is associated. Use {@link BusinessProcess#isTaskAssociated()} to check whether an association exists.
    */
   /* Makes the current Task available for injection */
   @Produces
@@ -100,8 +93,7 @@ public class CurrentProcessInstance {
   }
 
   /**
-   * Returns the id of the task associated with the current conversation or
-   * 'null'.
+   * Returns the id of the task associated with the current conversation or 'null'.
    */
   /* Makes the taskId available for injection */
   @Produces

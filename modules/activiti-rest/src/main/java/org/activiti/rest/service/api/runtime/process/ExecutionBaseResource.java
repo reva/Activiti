@@ -44,16 +44,15 @@ public class ExecutionBaseResource {
     allowedSortProperties.put("processInstanceId", ExecutionQueryProperty.PROCESS_INSTANCE_ID);
     allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected RuntimeService runtimeService;
 
-  protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest, 
-      Map<String, String> requestParams, String serverRootUrl) {
-    
+  protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest, Map<String, String> requestParams, String serverRootUrl) {
+
     ExecutionQuery query = runtimeService.createExecutionQuery();
 
     // Populate query based on request
@@ -85,28 +84,27 @@ public class ExecutionBaseResource {
       query.signalEventSubscriptionName(queryRequest.getSignalEventSubscriptionName());
     }
 
-    if(queryRequest.getVariables() != null) {
+    if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables(), false);
     }
-    
-    if(queryRequest.getProcessInstanceVariables() != null) {
+
+    if (queryRequest.getProcessInstanceVariables() != null) {
       addVariables(query, queryRequest.getProcessInstanceVariables(), true);
     }
-    
-    if(queryRequest.getTenantId() != null) {
-    	query.executionTenantId(queryRequest.getTenantId());
+
+    if (queryRequest.getTenantId() != null) {
+      query.executionTenantId(queryRequest.getTenantId());
     }
-    
-    if(queryRequest.getTenantIdLike() != null) {
-    	query.executionTenantIdLike(queryRequest.getTenantIdLike());
+
+    if (queryRequest.getTenantIdLike() != null) {
+      query.executionTenantIdLike(queryRequest.getTenantIdLike());
     }
-    
-    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
-    	query.executionWithoutTenantId();
+
+    if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+      query.executionWithoutTenantId();
     }
-    
-    return new ExecutionPaginateList(restResponseFactory)
-        .paginateList(requestParams ,queryRequest, query, "processInstanceId", allowedSortProperties);
+
+    return new ExecutionPaginateList(restResponseFactory).paginateList(requestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 
   protected void addVariables(ExecutionQuery processInstanceQuery, List<QueryVariable> variables, boolean process) {
@@ -131,13 +129,13 @@ public class ExecutionBaseResource {
 
       case EQUALS:
         if (nameLess) {
-          if(process) {
+          if (process) {
             processInstanceQuery.processVariableValueEquals(actualValue);
           } else {
             processInstanceQuery.variableValueEquals(actualValue);
           }
         } else {
-          if(process) {
+          if (process) {
             processInstanceQuery.processVariableValueEquals(variable.getName(), actualValue);
           } else {
             processInstanceQuery.variableValueEquals(variable.getName(), actualValue);
@@ -147,19 +145,18 @@ public class ExecutionBaseResource {
 
       case EQUALS_IGNORE_CASE:
         if (actualValue instanceof String) {
-          if(process) {
+          if (process) {
             processInstanceQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
           } else {
             processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
           }
         } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                  + actualValue.getClass().getName());
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
 
       case NOT_EQUALS:
-        if(process) {
+        if (process) {
           processInstanceQuery.processVariableValueNotEquals(variable.getName(), actualValue);
         } else {
           processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
@@ -168,14 +165,13 @@ public class ExecutionBaseResource {
 
       case NOT_EQUALS_IGNORE_CASE:
         if (actualValue instanceof String) {
-          if(process) {
+          if (process) {
             processInstanceQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
           } else {
             processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
           }
         } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                  + actualValue.getClass().getName());
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
       default:
@@ -193,14 +189,14 @@ public class ExecutionBaseResource {
   }
 
   protected Map<String, Object> getVariablesToSet(ExecutionActionRequest actionRequest) {
-    Map<String, Object> variablesToSet = new HashMap<String, Object>(); 
+    Map<String, Object> variablesToSet = new HashMap<String, Object>();
     for (RestVariable var : actionRequest.getVariables()) {
       if (var.getName() == null) {
         throw new ActivitiIllegalArgumentException("Variable name is required");
       }
-      
+
       Object actualVariableValue = restResponseFactory.getVariableValue(var);
-      
+
       variablesToSet.put(var.getName(), actualVariableValue);
     }
     return variablesToSet;

@@ -18,24 +18,19 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
-import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler<MessageEventDefinition> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
+
+  public Class<? extends BaseElement> getHandledType() {
     return MessageEventDefinition.class;
   }
-  
+
   protected void executeParse(BpmnParse bpmnParse, MessageEventDefinition messageDefinition) {
-    
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
     String messageRef = messageDefinition.getMessageRef();
     if (bpmnModel.containsMessageId(messageRef)) {
@@ -43,63 +38,20 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
       messageDefinition.setMessageRef(message.getName());
       messageDefinition.setExtensionElements(message.getExtensionElements());
     }
-    
-    EventSubscriptionDeclaration eventSubscription = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
 
-    ScopeImpl scope = bpmnParse.getCurrentScope();
-    ActivityImpl activity = bpmnParse.getCurrentActivity();
-    if (bpmnParse.getCurrentFlowElement() instanceof StartEvent && bpmnParse.getCurrentSubProcess() != null) {
-      
-      // the scope of the event subscription is the parent of the event
-      // subprocess (subscription must be created when parent is initialized)
-      ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
-      
-      EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
-      eventSubscriptionDeclaration.setActivityId(activity.getId());
-      eventSubscriptionDeclaration.setStartEvent(false);
-      addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, messageDefinition, catchingScope);
-      
-    } else if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
-      
-      activity.setProperty("type", "messageStartEvent");
-      eventSubscription.setStartEvent(true);
-      eventSubscription.setActivityId(activity.getId());
-      addEventSubscriptionDeclaration(bpmnParse, eventSubscription, messageDefinition, bpmnParse.getCurrentProcessDefinition());
-      
-    } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
-      
-      activity.setProperty("type", "intermediateMessageCatch");   
-      
-      if(getPrecedingEventBasedGateway(bpmnParse, (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement()) != null) {
-        eventSubscription.setActivityId(activity.getId());
-        addEventSubscriptionDeclaration(bpmnParse, eventSubscription, messageDefinition, activity.getParent());      
-      } else {
-        activity.setScope(true);
-        addEventSubscriptionDeclaration(bpmnParse, eventSubscription, messageDefinition, activity);   
-      }
-      
+    if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
+      IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+      intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchMessageEventActivityBehavior(intermediateCatchEvent, messageDefinition));
+
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-      
       BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boolean interrupting = boundaryEvent.isCancelActivity();
-      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
-      
-      activity.setProperty("type", "boundaryMessage");
-      
-      EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
-      eventSubscriptionDeclaration.setActivityId(activity.getId());
-      addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, messageDefinition, activity.getParent());
-      
-      if (activity.getParent() instanceof ActivityImpl) {     
-        ((ActivityImpl) activity.getParent()).setScope(true);
-      }
+      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryMessageEventActivityBehavior(boundaryEvent, messageDefinition, boundaryEvent.isCancelActivity()));
     }
-    
-    
+
     else {
       // What to do here?
     }
-    
+
   }
 
 }

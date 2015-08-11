@@ -38,17 +38,15 @@ import org.activiti.engine.impl.cmd.SaveUserCmd;
 import org.activiti.engine.impl.cmd.SetUserInfoCmd;
 import org.activiti.engine.impl.cmd.SetUserPictureCmd;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 
 import java.util.List;
-
 
 /**
  * @author Tom Baeyens
  */
 public class IdentityServiceImpl extends ServiceImpl implements IdentityService {
-  
+
   public Group newGroup(String groupId) {
     return commandExecutor.execute(new CreateGroupCmd(groupId));
   }
@@ -64,7 +62,7 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
   public void saveUser(User user) {
     commandExecutor.execute(new SaveUserCmd(user));
   }
-  
+
   public UserQuery createUserQuery() {
     return commandExecutor.execute(new CreateUserQueryCmd());
   }

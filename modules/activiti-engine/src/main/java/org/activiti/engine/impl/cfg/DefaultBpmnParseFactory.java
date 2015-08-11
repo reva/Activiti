@@ -15,7 +15,6 @@ package org.activiti.engine.impl.cfg;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 
-
 /**
  * @author Nico Rehwaldt
  */

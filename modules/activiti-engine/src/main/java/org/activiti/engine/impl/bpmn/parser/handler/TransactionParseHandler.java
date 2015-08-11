@@ -12,45 +12,26 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.Transaction;
-import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Transaction> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
+
+  public Class<? extends BaseElement> getHandledType() {
     return Transaction.class;
   }
-  
-  protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
-    
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, transaction, BpmnXMLConstants.ELEMENT_TRANSACTION);
-    
-    activity.setAsync(transaction.isAsynchronous());
-    activity.setExclusive(!transaction.isNotExclusive());
-    
-    activity.setScope(true);
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
-    
 
-    bpmnParse.setCurrentScope(activity);
-    
+  protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
+
+    transaction.setBehavior(bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
+
     bpmnParse.processFlowElements(transaction.getFlowElements());
-    processArtifacts(bpmnParse, transaction.getArtifacts(), activity);
-    
-    bpmnParse.removeCurrentScope();
-    
-    if (transaction.getIoSpecification() != null) {
-      IOSpecification ioSpecification = createIOSpecification(bpmnParse, transaction.getIoSpecification());
-      activity.setIoSpecification(ioSpecification);
-    }
+    processArtifacts(bpmnParse, transaction.getArtifacts());
 
   }
 

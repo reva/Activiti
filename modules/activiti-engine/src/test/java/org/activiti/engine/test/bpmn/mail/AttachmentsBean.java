@@ -33,23 +33,17 @@ public class AttachmentsBean implements Serializable {
   public File getFile() {
     String fileName = "EmailServiceTaskTest.testTextMailWithFileAttachment.bpmn20.xml";
     File file = new File(PACKAGE_DIR, fileName);
-    Validate.isTrue(file.exists(), "file <" + fileName + "> does not exist in dir "
-      + PACKAGE_DIR.getAbsolutePath());
+    Validate.isTrue(file.exists(), "file <" + fileName + "> does not exist in dir " + PACKAGE_DIR.getAbsolutePath());
     return file;
   }
 
   public File[] getFiles() {
     File[] files = new File[3];
-    String[] testNames = new String[] {
-      "testTextMailWithFileAttachment",
-      "testHtmlMailWithFileAttachment",
-      "testTextMailWithFileAttachments",
-    };
+    String[] testNames = new String[] { "testTextMailWithFileAttachment", "testHtmlMailWithFileAttachment", "testTextMailWithFileAttachments", };
     for (int i = 0; i < files.length; i++) {
       String fileName = "EmailServiceTaskTest." + testNames[i] + ".bpmn20.xml";
       File file = new File(PACKAGE_DIR, fileName);
-      Validate.isTrue(file.exists(),
-          "file <" + fileName + "> does not exist in dir " + PACKAGE_DIR.getAbsolutePath());
+      Validate.isTrue(file.exists(), "file <" + fileName + "> does not exist in dir " + PACKAGE_DIR.getAbsolutePath());
       files[i] = file;
     }
     return files;
@@ -67,8 +61,7 @@ public class AttachmentsBean implements Serializable {
   public File getNotExistingFile() {
     String fileName = "not-existing-file";
     File file = new File(PACKAGE_DIR, fileName);
-    Validate.isTrue(!file.exists(), "file <" + fileName + "> does exist in dir "
-          + PACKAGE_DIR.getAbsolutePath());
+    Validate.isTrue(!file.exists(), "file <" + fileName + "> does exist in dir " + PACKAGE_DIR.getAbsolutePath());
     return file;
   }
 
@@ -87,20 +80,25 @@ public class AttachmentsBean implements Serializable {
     }
 
     @Override
-    public String getContentType() { return contentType; }
+    public String getContentType() {
+      return contentType;
+    }
 
     @Override
     public InputStream getInputStream() {
       try {
         return new ByteArrayInputStream(content.getBytes("UTF-8"));
       } catch (UnsupportedEncodingException e) {
-        // this should not happen, since utf-8 is supported in stock jdk, but anyway
+        // this should not happen, since utf-8 is supported in stock
+        // jdk, but anyway
         return new ByteArrayInputStream(content.getBytes());
       }
     }
 
     @Override
-    public String getName() { return name; }
+    public String getName() {
+      return name;
+    }
 
     @Override
     public OutputStream getOutputStream() {

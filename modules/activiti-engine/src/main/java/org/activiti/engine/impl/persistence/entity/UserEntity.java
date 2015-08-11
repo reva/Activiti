@@ -22,9 +22,9 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 
-
 /**
  * @author Tom Baeyens
+ * @author Arkadiy Gornovoy
  */
 public class UserEntity implements User, Serializable, PersistentObject, HasRevision {
 
@@ -36,24 +36,22 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
   protected String lastName;
   protected String email;
   protected String password;
-  
+
   protected final ByteArrayRef pictureByteArrayRef = new ByteArrayRef();
-  
+
   public UserEntity() {
   }
-  
+
   public UserEntity(String id) {
     this.id = id;
   }
-  
-  public void delete() {
-    Context.getCommandContext()
-      .getDbSqlSession()
-      .delete(this);
 
-    pictureByteArrayRef.delete();
+  public void delete() {
+    Context.getCommandContext().getDbSqlSession().delete(this);
+
+    deletePicture();
   }
-  
+
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
     persistentState.put("firstName", firstName);
@@ -63,60 +61,82 @@ public class UserEntity implements User, Serializable, PersistentObject, HasRevi
     persistentState.put("pictureByteArrayId", pictureByteArrayRef.getId());
     return persistentState;
   }
-  
+
   public int getRevisionNext() {
-    return revision+1;
+    return revision + 1;
   }
-  
+
   public Picture getPicture() {
-    if(pictureByteArrayRef.getId() != null) {
+    if (pictureByteArrayRef.getId() != null) {
       return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());
     }
     return null;
   }
-  
+
   public void setPicture(Picture picture) {
-    pictureByteArrayRef.setValue(picture.getMimeType(), picture.getBytes());
+    if(picture != null) {
+      savePicture(picture);
+    } else {
+      deletePicture();
+    }      
   }
 
+  protected void savePicture(Picture picture) {
+    pictureByteArrayRef.setValue(picture.getMimeType(), picture.getBytes());
+  }
+  
+  protected void deletePicture() {
+    pictureByteArrayRef.delete();
+  }
 
   public String getId() {
     return id;
   }
+
   public void setId(String id) {
     this.id = id;
   }
+
   public String getFirstName() {
     return firstName;
   }
+
   public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
+
   public String getLastName() {
     return lastName;
   }
+
   public void setLastName(String lastName) {
     this.lastName = lastName;
   }
+
   public String getEmail() {
     return email;
   }
+
   public void setEmail(String email) {
     this.email = email;
   }
+
   public String getPassword() {
     return password;
   }
+
   public void setPassword(String password) {
     this.password = password;
   }
+
   public int getRevision() {
     return revision;
   }
+
   public void setRevision(int revision) {
     this.revision = revision;
   }
-  
+
   public boolean isPictureSet() {
     return pictureByteArrayRef.getId() != null;
   }

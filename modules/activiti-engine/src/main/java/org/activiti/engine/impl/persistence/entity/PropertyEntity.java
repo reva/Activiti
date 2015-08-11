@@ -18,15 +18,13 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public class PropertyEntity implements PersistentObject, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   String name;
   int revision;
   String value;
@@ -42,20 +40,25 @@ public class PropertyEntity implements PersistentObject, HasRevision, Serializab
   public String getName() {
     return name;
   }
+
   public int getRevision() {
     return revision;
   }
+
   public void setRevision(int revision) {
     this.revision = revision;
   }
+
   public String getValue() {
     return value;
   }
+
   public void setValue(String value) {
     this.value = value;
   }
-  
-  // persistent object methods ////////////////////////////////////////////////
+
+  // persistent object methods
+  // ////////////////////////////////////////////////
 
   public String getId() {
     return name;
@@ -68,12 +71,12 @@ public class PropertyEntity implements PersistentObject, HasRevision, Serializab
   public void setId(String id) {
     throw new ActivitiException("only provided id generation allowed for properties");
   }
-  
+
   public int getRevisionNext() {
-    return revision+1;
+    return revision + 1;
   }
 
-  // common methods  //////////////////////////////////////////////////////////
+  // common methods //////////////////////////////////////////////////////////
 
   @Override
   public String toString() {

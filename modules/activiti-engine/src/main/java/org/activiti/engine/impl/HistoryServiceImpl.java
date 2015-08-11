@@ -40,14 +40,14 @@ import org.activiti.engine.impl.cmd.GetHistoricIdentityLinksForTaskCmd;
  * @author Christian Stettler
  */
 public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
-	
-	public HistoryServiceImpl() {
-		
-	}
-	
-	public HistoryServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		super(processEngineConfiguration);
-	}
+
+  public HistoryServiceImpl() {
+
+  }
+
+  public HistoryServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    super(processEngineConfiguration);
+  }
 
   public HistoricProcessInstanceQuery createHistoricProcessInstanceQuery() {
     return new HistoricProcessInstanceQueryImpl(commandExecutor);
@@ -98,20 +98,20 @@ public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
   public NativeHistoricActivityInstanceQuery createNativeHistoricActivityInstanceQuery() {
     return new NativeHistoricActivityInstanceQueryImpl(commandExecutor);
   }
-  
+
   @Override
   public List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(String processInstanceId) {
     return commandExecutor.execute(new GetHistoricIdentityLinksForTaskCmd(null, processInstanceId));
   }
-  
+
   @Override
   public List<HistoricIdentityLink> getHistoricIdentityLinksForTask(String taskId) {
     return commandExecutor.execute(new GetHistoricIdentityLinksForTaskCmd(taskId, null));
   }
-  
+
   @Override
   public ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(String processInstanceId) {
-  	return new ProcessInstanceHistoryLogQueryImpl(commandExecutor, processInstanceId);
+    return new ProcessInstanceHistoryLogQueryImpl(commandExecutor, processInstanceId);
   }
-  
+
 }

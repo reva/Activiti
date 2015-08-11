@@ -17,12 +17,10 @@ import java.lang.reflect.Method;
 
 import org.activiti.engine.impl.javax.el.FunctionMapper;
 
-
 /**
  * Default implementation of a {@link FunctionMapper}.
  * 
- * A non-null implementation is required by the javax.el.* classes,
- * hence the reason for this pretty useless class.
+ * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
  * 
  * @author Joram Barrez
  */

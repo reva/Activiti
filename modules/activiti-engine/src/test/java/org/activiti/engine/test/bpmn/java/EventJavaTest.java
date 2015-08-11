@@ -29,12 +29,11 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.repository.Deployment;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class EventJavaTest extends PluggableActivitiTestCase {
-  
+
   public void testStartEventWithExecutionListener() throws Exception {
     BpmnModel bpmnModel = new BpmnModel();
     Process process = new Process();
@@ -64,11 +63,11 @@ public class EventJavaTest extends PluggableActivitiTestCase {
     EndEvent endEvent = new EndEvent();
     endEvent.setId("endEvent1");
     process.addFlowElement(endEvent);
-    
+
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
-    
+
     new BpmnXMLConverter().validateModel(new InputStreamSource(new ByteArrayInputStream(xml)));
-    
+
     Deployment deployment = repositoryService.createDeployment().name("test").addString("test.bpmn20.xml", new String(xml)).deploy();
     repositoryService.deleteDeployment(deployment.getId());
   }

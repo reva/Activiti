@@ -23,7 +23,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -40,15 +39,16 @@ public class FormTypes {
 
     if ("date".equals(formProperty.getType()) && StringUtils.isNotEmpty(formProperty.getDatePattern())) {
       formType = new DateFormType(formProperty.getDatePattern());
-      
+
     } else if ("enum".equals(formProperty.getType())) {
-      // ACT-1023: Using linked hashmap to preserve the order in which the entries are defined
+      // ACT-1023: Using linked hashmap to preserve the order in which the
+      // entries are defined
       Map<String, String> values = new LinkedHashMap<String, String>();
-      for (FormValue formValue: formProperty.getFormValues()) {
+      for (FormValue formValue : formProperty.getFormValues()) {
         values.put(formValue.getId(), formValue.getName());
       }
       formType = new EnumFormType(values);
-      
+
     } else if (StringUtils.isNotEmpty(formProperty.getType())) {
       formType = formTypes.get(formProperty.getType());
       if (formType == null) {

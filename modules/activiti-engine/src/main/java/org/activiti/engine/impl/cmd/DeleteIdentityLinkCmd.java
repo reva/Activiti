@@ -18,7 +18,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.IdentityLinkType;
 
-
 /**
  * @author Tom Baeyens
  * @author Falko Menge
@@ -29,11 +28,11 @@ public class DeleteIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
   private static final long serialVersionUID = 1L;
 
   protected String userId;
-  
+
   protected String groupId;
-  
+
   protected String type;
-  
+
   public DeleteIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
     super(taskId);
     validateParams(userId, groupId, type, taskId);
@@ -42,21 +41,21 @@ public class DeleteIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
     this.groupId = groupId;
     this.type = type;
   }
-  
+
   protected void validateParams(String userId, String groupId, String type, String taskId) {
-    if(taskId == null) {
+    if (taskId == null) {
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
-    
+
     if (type == null) {
       throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
     }
-    
-    // Special treatment for assignee and owner: group cannot be used and userId may be null
+
+    // Special treatment for assignee and owner: group cannot be used and
+    // userId may be null
     if (IdentityLinkType.ASSIGNEE.equals(type) || IdentityLinkType.OWNER.equals(type)) {
       if (groupId != null) {
-        throw new ActivitiIllegalArgumentException("Incompatible usage: cannot use type '" + type
-                + "' together with a groupId");
+        throw new ActivitiIllegalArgumentException("Incompatible usage: cannot use type '" + type + "' together with a groupId");
       }
     } else {
       if (userId == null && groupId == null) {
@@ -64,7 +63,7 @@ public class DeleteIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
       }
     }
   }
-  
+
   protected Void execute(CommandContext commandContext, TaskEntity task) {
 
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
@@ -74,11 +73,10 @@ public class DeleteIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
     } else {
       task.deleteIdentityLink(userId, groupId, type);
     }
-    
-    commandContext.getHistoryManager()
-      .createIdentityLinkComment(taskId, userId, groupId, type, false);
-    
-    return null;  
+
+    commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, false);
+
+    return null;
   }
-  
+
 }

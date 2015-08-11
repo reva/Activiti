@@ -9,12 +9,12 @@ import org.activiti.engine.delegate.ExecutionListener;
 public class CustomSetConditionsExecutionListener implements ExecutionListener {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected List<String> conditions = new ArrayList<String>();
   protected String flowId;
 
   @Override
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     execution.setVariable(flowId + "_activiti_conditions", conditions);
   }
 
@@ -25,7 +25,7 @@ public class CustomSetConditionsExecutionListener implements ExecutionListener {
   public void setConditions(List<String> conditions) {
     this.conditions = conditions;
   }
-  
+
   public void addCondition(String condition) {
     this.conditions.add(condition);
   }
@@ -37,5 +37,5 @@ public class CustomSetConditionsExecutionListener implements ExecutionListener {
   public void setFlowId(String flowId) {
     this.flowId = flowId;
   }
-  
+
 }

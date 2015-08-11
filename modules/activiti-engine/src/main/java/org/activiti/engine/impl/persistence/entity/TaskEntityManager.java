@@ -23,87 +23,93 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.task.Task;
-
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class TaskEntityManager extends AbstractManager {
+public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
+  
+  @Override
+  public Class<TaskEntity> getManagedPersistentObject() {
+    return TaskEntity.class;
+  }
+  
+  @Override
+  public void insert(TaskEntity entity, boolean fireCreateEvent) {
+    super.insert(entity, fireCreateEvent);
+    Context.getCommandContext().getHistoryManager().recordTaskId(entity);
+  }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {
-    List<TaskEntity> tasks = (List) getDbSqlSession()
-      .createTaskQuery()
-      .processInstanceId(processInstanceId)
-      .list();
-  
+    List<TaskEntity> tasks = (List) getDbSqlSession().createTaskQuery().processInstanceId(processInstanceId).list();
+
     String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
 
     CommandContext commandContext = Context.getCommandContext();
 
-    for (TaskEntity task: tasks) {
+    for (TaskEntity task : tasks) {
       if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createActivityCancelledEvent(
-            task.getExecution().getActivityId(),
-            task.getName(),
-            task.getExecutionId(),
-            task.getProcessInstanceId(),
-            task.getProcessDefinitionId(),
-            "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
+        commandContext
+            .getProcessEngineConfiguration()
+            .getEventDispatcher()
+            .dispatchEvent(
+                ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), task.getExecutionId(), task.getProcessInstanceId(),
+                    task.getProcessDefinitionId(), "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
       }
 
       deleteTask(task, reason, cascade);
     }
   }
-
+  
   public void deleteTask(TaskEntity task, String deleteReason, boolean cascade) {
+    deleteTask(task, deleteReason, cascade, false);
+  }
+    
+  public void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel) {
     if (!task.isDeleted()) {
-    	 task.fireEvent(TaskListener.EVENTNAME_DELETE);
+      task.fireEvent(TaskListener.EVENTNAME_DELETE);
       task.setDeleted(true);
-      
+
       CommandContext commandContext = Context.getCommandContext();
       String taskId = task.getId();
-      
+
       List<Task> subTasks = findTasksByParentTaskId(taskId);
-      for (Task subTask: subTasks) {
+      for (Task subTask : subTasks) {
         deleteTask((TaskEntity) subTask, deleteReason, cascade);
       }
-      
-      commandContext
-        .getIdentityLinkEntityManager()
-        .deleteIdentityLinksByTaskId(taskId);
 
-      commandContext
-        .getVariableInstanceEntityManager()
-        .deleteVariableInstanceByTask(task);
+      commandContext.getIdentityLinkEntityManager().deleteIdentityLinksByTaskId(taskId);
+
+      commandContext.getVariableInstanceEntityManager().deleteVariableInstanceByTask(task);
 
       if (cascade) {
-        commandContext
-          .getHistoricTaskInstanceEntityManager()
-          .deleteHistoricTaskInstanceById(taskId);
+        commandContext.getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
       } else {
-        commandContext
-          .getHistoryManager()
-          .recordTaskEnd(taskId, deleteReason);
+        commandContext.getHistoryManager().recordTaskEnd(taskId, deleteReason);
       }
-        
+
       getDbSqlSession().delete(task);
-      
-      if(commandContext.getEventDispatcher().isEnabled()) {
-      	commandContext.getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
+
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        
+        if (cancel) {
+          commandContext.getEventDispatcher().dispatchEvent(
+                  ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), task.getExecutionId(), task.getProcessInstanceId(),
+                      task.getProcessDefinitionId(), "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
+        }
+        
+        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
       }
     }
   }
-
 
   public TaskEntity findTaskById(String id) {
     if (id == null) {
@@ -113,45 +119,45 @@ public class TaskEntityManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskEntity> findTasksByExecutionId(String executionId) {
-    return getDbSqlSession().selectList("selectTasksByExecutionId", executionId);
+  public List<TaskEntity> findTasksByExecutionId(final String executionId) {
+    return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
+      
+      public boolean isRetained(TaskEntity taskEntity) {
+        return taskEntity.getExecutionId() != null && executionId.equals(taskEntity.getExecutionId());
+      }
+      
+    });
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<TaskEntity> findTasksByProcessInstanceId(String processInstanceId) {
     return getDbSqlSession().selectList("selectTasksByProcessInstanceId", processInstanceId);
   }
-  
-  @Deprecated
-  public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery, Page page) {
-    taskQuery.setFirstResult(page.getFirstResult());
-    taskQuery.setMaxResults(page.getMaxResults());
-    return findTasksByQueryCriteria(taskQuery);
-  }
-  
+
   @SuppressWarnings("unchecked")
   public List<Task> findTasksByQueryCriteria(TaskQueryImpl taskQuery) {
     final String query = "selectTaskByQueryCriteria";
     return getDbSqlSession().selectList(query, taskQuery);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Task> findTasksAndVariablesByQueryCriteria(TaskQueryImpl taskQuery) {
     final String query = "selectTaskWithVariablesByQueryCriteria";
-    // paging doesn't work for combining task instances and variables due to an outer join, so doing it in-memory
+    // paging doesn't work for combining task instances and variables due to
+    // an outer join, so doing it in-memory
     if (taskQuery.getFirstResult() < 0 || taskQuery.getMaxResults() <= 0) {
       return Collections.EMPTY_LIST;
     }
-    
+
     int firstResult = taskQuery.getFirstResult();
     int maxResults = taskQuery.getMaxResults();
-    
+
     // setting max results, limit to 20000 results for performance reasons
     taskQuery.setMaxResults(20000);
     taskQuery.setFirstResult(0);
-    
+
     List<Task> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter(query, taskQuery, taskQuery.getFirstResult(), taskQuery.getMaxResults());
-    
+
     if (instanceList != null && !instanceList.isEmpty()) {
       if (firstResult > 0) {
         if (firstResult <= instanceList.size()) {
@@ -171,7 +177,7 @@ public class TaskEntityManager extends AbstractManager {
   public long findTaskCountByQueryCriteria(TaskQueryImpl taskQuery) {
     return (Long) getDbSqlSession().selectOne("selectTaskCountByQueryCriteria", taskQuery);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Task> findTasksByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
     return getDbSqlSession().selectListWithRawParameter("selectTaskByNativeQuery", parameterMap, firstResult, maxResults);
@@ -187,31 +193,25 @@ public class TaskEntityManager extends AbstractManager {
   }
 
   public void deleteTask(String taskId, String deleteReason, boolean cascade) {
-    TaskEntity task = Context
-      .getCommandContext()
-      .getTaskEntityManager()
-      .findTaskById(taskId);
-    
-    if (task!=null) {
-      if(task.getExecutionId() != null) {
+    TaskEntity task = Context.getCommandContext().getTaskEntityManager().findTaskById(taskId);
+
+    if (task != null) {
+      if (task.getExecutionId() != null) {
         throw new ActivitiException("The task cannot be deleted because is part of a running process");
       }
-      
+
       String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
       deleteTask(task, reason, cascade);
     } else if (cascade) {
-      Context
-        .getCommandContext()
-        .getHistoricTaskInstanceEntityManager()
-        .deleteHistoricTaskInstanceById(taskId);
+      Context.getCommandContext().getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
     }
   }
-  
+
   public void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId) {
-  	HashMap<String, Object> params = new HashMap<String, Object>();
-  	params.put("deploymentId", deploymentId);
-  	params.put("tenantId", newTenantId);
-  	getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("deploymentId", deploymentId);
+    params.put("tenantId", newTenantId);
+    getDbSqlSession().update("updateTaskTenantIdForDeployment", params);
   }
-  
+
 }

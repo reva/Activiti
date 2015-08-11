@@ -12,7 +12,6 @@
  */
 package org.activiti.bpmn.converter.child;
 
-
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
@@ -25,13 +24,13 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  */
 public abstract class BaseChildElementParser implements BpmnXMLConstants {
-  
+
   protected static final Logger LOGGER = LoggerFactory.getLogger(BaseChildElementParser.class);
 
   public abstract String getElementName();
-  
+
   public abstract void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception;
-  
+
   protected void parseChildElements(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model, BaseChildElementParser parser) throws Exception {
     boolean readyWithChildElements = false;
     while (readyWithChildElements == false && xtr.hasNext()) {
@@ -47,7 +46,7 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
     }
   }
 
-  public boolean accepts(BaseElement element){
-    return element!=null;
+  public boolean accepts(BaseElement element) {
+    return element != null;
   };
 }

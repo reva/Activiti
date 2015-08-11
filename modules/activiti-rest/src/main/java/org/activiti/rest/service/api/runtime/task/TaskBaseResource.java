@@ -33,16 +33,15 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.activiti.rest.service.api.engine.variable.QueryVariable.QueryVariableOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
  * Shared logic for resources related to Tasks.
  * 
  * @author Frederik Heremans
  */
 public class TaskBaseResource {
-  
+
   private static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
-  
+
   static {
     properties.put("id", TaskQueryProperty.TASK_ID);
     properties.put("name", TaskQueryProperty.NAME);
@@ -54,13 +53,13 @@ public class TaskBaseResource {
     properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
     properties.put("tenantId", TaskQueryProperty.TENANT_ID);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected TaskService taskService;
-  
+
   @Autowired
   protected HistoryService historyService;
 
@@ -77,7 +76,7 @@ public class TaskBaseResource {
     }
     return state;
   }
-  
+
   /**
    * Populate the task based on the values that are present in the given {@link TaskRequest}.
    */
@@ -104,7 +103,7 @@ public class TaskBaseResource {
       task.setPriority(taskRequest.getPriority());
     }
     if (taskRequest.isCategorySet()) {
-    	task.setCategory(taskRequest.getCategory());
+      task.setCategory(taskRequest.getCategory());
     }
     if (taskRequest.isTenantIdSet()) {
       task.setTenantId(taskRequest.getTenantId());
@@ -118,12 +117,11 @@ public class TaskBaseResource {
       task.setDelegationState(delegationState);
     }
   }
-  
-  protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request, 
-      Map<String, String> requestParams) {
-    
+
+  protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request, Map<String, String> requestParams) {
+
     TaskQuery taskQuery = taskService.createTaskQuery();
-    
+
     // Populate filter-parameters
     if (request.getName() != null) {
       taskQuery.taskName(request.getName());
@@ -206,7 +204,7 @@ public class TaskBaseResource {
     if (request.getTaskDefinitionKey() != null) {
       taskQuery.taskDefinitionKey(request.getTaskDefinitionKey());
     }
-    
+
     if (request.getTaskDefinitionKeyLike() != null) {
       taskQuery.taskDefinitionKeyLike(request.getTaskDefinitionKeyLike());
     }
@@ -220,9 +218,9 @@ public class TaskBaseResource {
       taskQuery.taskDueAfter(request.getDueAfter());
     }
     if (request.getWithoutDueDate() != null && request.getWithoutDueDate()) {
-    	taskQuery.withoutTaskDueDate();
+      taskQuery.withoutTaskDueDate();
     }
-    
+
     if (request.getActive() != null) {
       if (request.getActive().booleanValue()) {
         taskQuery.active();
@@ -230,7 +228,7 @@ public class TaskBaseResource {
         taskQuery.suspended();
       }
     }
-    
+
     if (request.getIncludeTaskLocalVariables() != null) {
       if (request.getIncludeTaskLocalVariables()) {
         taskQuery.includeTaskLocalVariables();
@@ -241,57 +239,56 @@ public class TaskBaseResource {
         taskQuery.includeProcessVariables();
       }
     }
-    
+
     if (request.getProcessInstanceBusinessKeyLike() != null) {
-    	taskQuery.processInstanceBusinessKeyLike(request.getProcessInstanceBusinessKeyLike());
+      taskQuery.processInstanceBusinessKeyLike(request.getProcessInstanceBusinessKeyLike());
     }
-    
+
     if (request.getProcessDefinitionKey() != null) {
-    	taskQuery.processDefinitionKey(request.getProcessDefinitionKey());
+      taskQuery.processDefinitionKey(request.getProcessDefinitionKey());
     }
-    
+
     if (request.getProcessDefinitionKeyLike() != null) {
-    	taskQuery.processDefinitionKeyLike(request.getProcessDefinitionKeyLike());
+      taskQuery.processDefinitionKeyLike(request.getProcessDefinitionKeyLike());
     }
-    
+
     if (request.getProcessDefinitionName() != null) {
-    	taskQuery.processDefinitionName(request.getProcessDefinitionName());
+      taskQuery.processDefinitionName(request.getProcessDefinitionName());
     }
-    
+
     if (request.getProcessDefinitionNameLike() != null) {
-    	taskQuery.processDefinitionNameLike(request.getProcessDefinitionNameLike());
+      taskQuery.processDefinitionNameLike(request.getProcessDefinitionNameLike());
     }
-    
-    if(request.getTaskVariables() != null) {
+
+    if (request.getTaskVariables() != null) {
       addTaskvariables(taskQuery, request.getTaskVariables());
     }
-    
-    if(request.getProcessInstanceVariables() != null) {
+
+    if (request.getProcessInstanceVariables() != null) {
       addProcessvariables(taskQuery, request.getProcessInstanceVariables());
     }
-    
+
     if (request.getTenantId() != null) {
-    	taskQuery.taskTenantId(request.getTenantId());
+      taskQuery.taskTenantId(request.getTenantId());
     }
-    
+
     if (request.getTenantIdLike() != null) {
-    	taskQuery.taskTenantIdLike(request.getTenantIdLike());
+      taskQuery.taskTenantIdLike(request.getTenantIdLike());
     }
-    
+
     if (Boolean.TRUE.equals(request.getWithoutTenantId())) {
-    	taskQuery.taskWithoutTenantId();
+      taskQuery.taskWithoutTenantId();
     }
 
     if (request.getCandidateOrAssigned() != null) {
       taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
     }
-    
-    return new TaskPaginateList(restResponseFactory).paginateList(
-        requestParams, request, taskQuery, "id", properties);
+
+    return new TaskPaginateList(restResponseFactory).paginateList(requestParams, request, taskQuery, "id", properties);
   }
-  
+
   protected void addTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
-    
+
     for (QueryVariable variable : variables) {
       if (variable.getVariableOperation() == null) {
         throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
@@ -299,18 +296,18 @@ public class TaskBaseResource {
       if (variable.getValue() == null) {
         throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
       }
-      
+
       boolean nameLess = variable.getName() == null;
-      
+
       Object actualValue = restResponseFactory.getVariableValue(variable);
-      
+
       // A value-only query is only possible using equals-operator
       if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
         throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
       }
-      
-      switch(variable.getVariableOperation()) {
-      
+
+      switch (variable.getVariableOperation()) {
+
       case EQUALS:
         if (nameLess) {
           taskQuery.taskVariableValueEquals(actualValue);
@@ -318,56 +315,56 @@ public class TaskBaseResource {
           taskQuery.taskVariableValueEquals(variable.getName(), actualValue);
         }
         break;
-        
+
       case EQUALS_IGNORE_CASE:
         if (actualValue instanceof String) {
-          taskQuery.taskVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+          taskQuery.taskVariableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
         } else {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
-        
+
       case NOT_EQUALS:
         taskQuery.taskVariableValueNotEquals(variable.getName(), actualValue);
         break;
-        
+
       case NOT_EQUALS_IGNORE_CASE:
         if (actualValue instanceof String) {
-          taskQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+          taskQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
         } else {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
-        
+
       case GREATER_THAN:
-      	taskQuery.taskVariableValueGreaterThan(variable.getName(), actualValue);
-      	break;
-      	
+        taskQuery.taskVariableValueGreaterThan(variable.getName(), actualValue);
+        break;
+
       case GREATER_THAN_OR_EQUALS:
-      	taskQuery.taskVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
-      	break;
-      	
+        taskQuery.taskVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+        break;
+
       case LESS_THAN:
-      	taskQuery.taskVariableValueLessThan(variable.getName(), actualValue);
-      	break;
-      	
+        taskQuery.taskVariableValueLessThan(variable.getName(), actualValue);
+        break;
+
       case LESS_THAN_OR_EQUALS:
-      	taskQuery.taskVariableValueLessThanOrEqual(variable.getName(), actualValue);
-      	break;
-      	
+        taskQuery.taskVariableValueLessThanOrEqual(variable.getName(), actualValue);
+        break;
+
       case LIKE:
-      	if (actualValue instanceof String) {
-      		taskQuery.taskVariableValueLike(variable.getName(), (String) actualValue);
-      	} else {
-      		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
-      	}
-      	break;
+        if (actualValue instanceof String) {
+          taskQuery.taskVariableValueLike(variable.getName(), (String) actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+        }
+        break;
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
     }
   }
-  
+
   protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
     for (QueryVariable variable : variables) {
       if (variable.getVariableOperation() == null) {
@@ -376,76 +373,76 @@ public class TaskBaseResource {
       if (variable.getValue() == null) {
         throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
       }
-      
+
       boolean nameLess = variable.getName() == null;
-      
+
       Object actualValue = restResponseFactory.getVariableValue(variable);
-      
+
       // A value-only query is only possible using equals-operator
       if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
         throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
       }
-      
-      switch(variable.getVariableOperation()) {
-      
-        case EQUALS:
-          if (nameLess) {
-            taskQuery.processVariableValueEquals(actualValue);
-          } else {
-            taskQuery.processVariableValueEquals(variable.getName(), actualValue);
-          }
-          break;
-          
-        case EQUALS_IGNORE_CASE:
-          if (actualValue instanceof String) {
-            taskQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
-          } else {
-            throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
-          }
-          break;
-          
-        case NOT_EQUALS:
-          taskQuery.processVariableValueNotEquals(variable.getName(), actualValue);
-          break;
-          
-        case NOT_EQUALS_IGNORE_CASE:
-          if (actualValue instanceof String) {
-            taskQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
-          } else {
-            throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
-          }
-          break;
-          
-        case GREATER_THAN:
-        	taskQuery.processVariableValueGreaterThan(variable.getName(), actualValue);
-        	break;
-        	
-        case GREATER_THAN_OR_EQUALS:
-        	taskQuery.processVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
-        	break;
-        	
-        case LESS_THAN:
-        	taskQuery.processVariableValueLessThan(variable.getName(), actualValue);
-        	break;
-        	
-        case LESS_THAN_OR_EQUALS:
-        	taskQuery.processVariableValueLessThanOrEqual(variable.getName(), actualValue);
-        	break;
-        	
-        case LIKE:
-        	if (actualValue instanceof String) {
-        		taskQuery.processVariableValueLike(variable.getName(), (String) actualValue);
-        	} else {
-        		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
-        	}
-        	break;
-        	
-        default:
-          throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+
+      switch (variable.getVariableOperation()) {
+
+      case EQUALS:
+        if (nameLess) {
+          taskQuery.processVariableValueEquals(actualValue);
+        } else {
+          taskQuery.processVariableValueEquals(variable.getName(), actualValue);
+        }
+        break;
+
+      case EQUALS_IGNORE_CASE:
+        if (actualValue instanceof String) {
+          taskQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+
+      case NOT_EQUALS:
+        taskQuery.processVariableValueNotEquals(variable.getName(), actualValue);
+        break;
+
+      case NOT_EQUALS_IGNORE_CASE:
+        if (actualValue instanceof String) {
+          taskQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+        }
+        break;
+
+      case GREATER_THAN:
+        taskQuery.processVariableValueGreaterThan(variable.getName(), actualValue);
+        break;
+
+      case GREATER_THAN_OR_EQUALS:
+        taskQuery.processVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+        break;
+
+      case LESS_THAN:
+        taskQuery.processVariableValueLessThan(variable.getName(), actualValue);
+        break;
+
+      case LESS_THAN_OR_EQUALS:
+        taskQuery.processVariableValueLessThanOrEqual(variable.getName(), actualValue);
+        break;
+
+      case LIKE:
+        if (actualValue instanceof String) {
+          taskQuery.processVariableValueLike(variable.getName(), (String) actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+        }
+        break;
+
+      default:
+        throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
     }
   }
-  
+
   /**
    * Get valid task from request. Throws exception if task doen't exist or if task id is not provided.
    */
@@ -456,7 +453,7 @@ public class TaskBaseResource {
     }
     return task;
   }
-  
+
   /**
    * Get valid history task from request. Throws exception if task doen't exist or if task id is not provided.
    */

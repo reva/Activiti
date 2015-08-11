@@ -13,6 +13,7 @@
 package org.activiti.standalone.deploy;
 
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 /**
@@ -20,43 +21,50 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  * 
  * @author Joram Barrez
  */
-public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionEntity> {
-  
+public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionCacheEntry> {
+
   protected String id;
-  
-  protected ProcessDefinitionEntity processDefinition;
-  
+  protected ProcessDefinitionCacheEntry entry;
+
   @Override
-  public ProcessDefinitionEntity get(String id) {
-    if (id.equals(id)) {
-      return processDefinition;
+  public ProcessDefinitionCacheEntry get(String id) {
+    if (id.equals(this.id)) {
+      return entry;
     }
     return null;
   }
 
   @Override
-  public void add(String id, ProcessDefinitionEntity object) {
+  public void add(String id, ProcessDefinitionCacheEntry object) {
     this.id = id;
-    this.processDefinition = object;
+    this.entry = object;
   }
 
   @Override
   public void remove(String id) {
-    if (id.equals(id)) {
+    if (id.equals(this.id)) {
       this.id = null;
-      this.processDefinition = null;
+      this.entry = null;
     }
   }
 
   @Override
   public void clear() {
     this.id = null;
-    this.processDefinition = null;
+    this.entry = null;
   }
-  
+
+  @Override
+  public boolean contains(String id) {
+    return id.equals(this.id);
+  }
+
   // For testing purposes only
   public ProcessDefinitionEntity getCachedProcessDefinition() {
-    return processDefinition;
+    if (entry == null) {
+      return null;
+    }
+    return entry.getProcessDefinitionEntity();
   }
 
 }

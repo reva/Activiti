@@ -21,7 +21,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
@@ -29,11 +29,11 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "customnamespaceattributemodel.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     Process process = model.getMainProcess();
     assertNotNull(process.getAttributes());
@@ -42,7 +42,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     assertNotNull(attributes);
     assertEquals(1, attributes.size());
     ExtensionAttribute attribute = attributes.get(0);
-    //custom:version = "9"
+    // custom:version = "9"
     assertNotNull(attribute);
     assertEquals("http://custom.org/bpmn", attribute.getNamespace());
     assertEquals("custom", attribute.getNamespacePrefix());
@@ -56,7 +56,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     UserTask userTask = (UserTask) flowElement;
     assertEquals("usertask", userTask.getId());
     assertEquals("User Task", userTask.getName());
-    
+
     Map<String, List<ExtensionAttribute>> attributesMap = userTask.getAttributes();
     assertNotNull(attributesMap);
     assertEquals(2, attributesMap.size());
@@ -70,7 +70,7 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
     assertEquals("test", a.getValue());
     assertEquals("custom2", a.getNamespacePrefix());
     assertEquals("http://custom2.org/bpmn", a.getNamespace());
-    
+
     attributes = attributesMap.get("attr");
     assertNotNull(attributes);
     assertEquals(1, attributes.size());

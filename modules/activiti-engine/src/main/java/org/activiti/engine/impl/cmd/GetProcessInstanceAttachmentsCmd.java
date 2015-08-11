@@ -20,7 +20,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -28,14 +27,12 @@ public class GetProcessInstanceAttachmentsCmd implements Command<List<Attachment
 
   private static final long serialVersionUID = 1L;
   protected String processInstanceId;
-  
+
   public GetProcessInstanceAttachmentsCmd(String taskId) {
     this.processInstanceId = taskId;
   }
 
   public List<Attachment> execute(CommandContext commandContext) {
-    return commandContext
-      .getAttachmentEntityManager()
-      .findAttachmentsByProcessInstanceId(processInstanceId);
+    return commandContext.getAttachmentEntityManager().findAttachmentsByProcessInstanceId(processInstanceId);
   }
 }

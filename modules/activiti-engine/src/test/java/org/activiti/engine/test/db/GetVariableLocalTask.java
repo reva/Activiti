@@ -6,7 +6,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 public class GetVariableLocalTask implements JavaDelegate {
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     RuntimeService runtimeService = execution.getEngineServices().getRuntimeService();
     runtimeService.getVariableLocal(execution.getProcessInstanceId(), "Variable-That-Does-Not-Exist");
   }

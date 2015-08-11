@@ -24,21 +24,19 @@ import org.activiti.engine.runtime.ProcessInstance;
  * @author Joram Barrez
  */
 public class ActivateProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
-  
-  public ActivateProcessDefinitionCmd(ProcessDefinitionEntity processDefinitionEntity, 
-          boolean includeProcessInstances, Date executionDate, String tenantId) {
+
+  public ActivateProcessDefinitionCmd(ProcessDefinitionEntity processDefinitionEntity, boolean includeProcessInstances, Date executionDate, String tenantId) {
     super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
   }
 
-  public ActivateProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey, 
-          boolean includeProcessInstances, Date executionDate, String tenantId) {
+  public ActivateProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey, boolean includeProcessInstances, Date executionDate, String tenantId) {
     super(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
   }
-  
+
   protected SuspensionState getProcessDefinitionSuspensionState() {
     return SuspensionState.ACTIVE;
   }
-  
+
   protected String getDelayedExecutionJobHandlerType() {
     return TimerActivateProcessDefinitionHandler.TYPE;
   }

@@ -47,7 +47,7 @@ public class JobExecutorMBeanTest {
 
   @Mock
   protected ProcessEngineConfiguration processEngineConfiguration;
-  
+
   @Mock
   protected JobExecutor jobExecutor;
 
@@ -61,7 +61,7 @@ public class JobExecutorMBeanTest {
   @Test
   public void TestIsJobExecutorActivatedFalse() {
     when(jobExecutor.isActive()).thenReturn(false);
-   
+
     boolean result = jobExecutorMbean.isJobExecutorActivated();
     verify(jobExecutor).isActive();
     assertFalse(result);

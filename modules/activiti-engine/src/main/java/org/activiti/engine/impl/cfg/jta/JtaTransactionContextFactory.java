@@ -19,12 +19,11 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Daniel Meyer
  */
 public class JtaTransactionContextFactory implements TransactionContextFactory {
-  
+
   protected final TransactionManager transactionManager;
 
   public JtaTransactionContextFactory(TransactionManager transactionManager) {

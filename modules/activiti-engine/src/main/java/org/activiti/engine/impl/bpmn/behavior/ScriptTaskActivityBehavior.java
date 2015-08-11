@@ -22,7 +22,6 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * activity implementation of the BPMN 2.0 script task.
  * 
@@ -31,11 +30,11 @@ import org.slf4j.LoggerFactory;
  * @author Falko Menge
  */
 public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   private static final Logger LOGGER = LoggerFactory.getLogger(ScriptTaskActivityBehavior.class);
-  
+
   protected String script;
   protected String language;
   protected String resultVariable;
@@ -46,29 +45,28 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     this.language = language;
     this.resultVariable = resultVariable;
   }
-  
+
   public ScriptTaskActivityBehavior(String script, String language, String resultVariable, boolean storeScriptVariables) {
     this(script, language, resultVariable);
     this.storeScriptVariables = storeScriptVariables;
   }
-  
-  public void execute(ActivityExecution execution) throws Exception {
-    ScriptingEngines scriptingEngines = Context
-      .getProcessEngineConfiguration()
-      .getScriptingEngines();
+
+  public void execute(ActivityExecution execution) {
+
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
     boolean noErrors = true;
     try {
       Object result = scriptingEngines.evaluate(script, language, execution, storeScriptVariables);
-      
+
       if (resultVariable != null) {
         execution.setVariable(resultVariable, result);
       }
 
     } catch (ActivitiException e) {
-      
-      LOGGER.warn("Exception while executing " + execution.getActivity().getId() + " : " + e.getMessage());
-      
+
+      LOGGER.warn("Exception while executing " + execution.getCurrentFlowElement().getId() + " : " + e.getMessage());
+
       noErrors = false;
       Throwable rootCause = ExceptionUtils.getRootCause(e);
       if (rootCause instanceof BpmnError) {
@@ -77,9 +75,9 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
         throw e;
       }
     }
-     if (noErrors) {
-       leave(execution);
-     }
+    if (noErrors) {
+      leave(execution);
+    }
   }
-  
+
 }

@@ -28,27 +28,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class TaskIdentityLinkFamilyResource extends TaskBaseResource {
 
-  @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks/{family}", method = RequestMethod.GET, produces="application/json")
-  public List<RestIdentityLink> getIdentityLinksForFamily(@PathVariable("taskId") String taskId, 
-      @PathVariable("family") String family, HttpServletRequest request) {
-    
+  @RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks/{family}", method = RequestMethod.GET, produces = "application/json")
+  public List<RestIdentityLink> getIdentityLinksForFamily(@PathVariable("taskId") String taskId, @PathVariable("family") String family, HttpServletRequest request) {
+
     Task task = getTaskFromRequest(taskId);
 
-    if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family)
-            && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
+    if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
       throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
     }
-    
+
     boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
     List<RestIdentityLink> results = new ArrayList<RestIdentityLink>();
-    
+
     List<IdentityLink> allLinks = taskService.getIdentityLinksForTask(task.getId());
     for (IdentityLink link : allLinks) {
       boolean match = false;
@@ -57,7 +54,7 @@ public class TaskIdentityLinkFamilyResource extends TaskBaseResource {
       } else {
         match = link.getGroupId() != null;
       }
-      
+
       if (match) {
         results.add(restResponseFactory.createRestIdentityLink(link));
       }

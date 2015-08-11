@@ -8,20 +8,20 @@ import org.activiti.bpmn.model.Message;
 import org.junit.Test;
 
 public class MessageConverterTest extends AbstractConverterTest {
-  
+
   @Test
   public void connvertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
   }
-  
+
   private void validateModel(BpmnModel model) {
     Message message = model.getMessage("writeReportId");
     assertNotNull(message);
@@ -35,8 +35,8 @@ public class MessageConverterTest extends AbstractConverterTest {
     assertEquals("writeReport2Name", message2.getName());
     assertEquals("writeReport2Id", message2.getId());
   }
-  
+
   protected String getResource() {
-        return "message.bpmn";
+    return "message.bpmn";
   }
 }

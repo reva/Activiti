@@ -35,55 +35,71 @@ public class ServiceTask extends Task {
   public String getImplementation() {
     return implementation;
   }
+
   public void setImplementation(String implementation) {
     this.implementation = implementation;
   }
+
   public String getImplementationType() {
     return implementationType;
   }
+
   public void setImplementationType(String implementationType) {
     this.implementationType = implementationType;
   }
+
   public String getResultVariableName() {
     return resultVariableName;
   }
+
   public void setResultVariableName(String resultVariableName) {
     this.resultVariableName = resultVariableName;
   }
+
   public String getType() {
     return type;
   }
+
   public void setType(String type) {
     this.type = type;
   }
+
   public List<FieldExtension> getFieldExtensions() {
     return fieldExtensions;
   }
+
   public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
     this.fieldExtensions = fieldExtensions;
   }
+
   public List<CustomProperty> getCustomProperties() {
     return customProperties;
   }
+
   public void setCustomProperties(List<CustomProperty> customProperties) {
     this.customProperties = customProperties;
   }
+
   public String getOperationRef() {
     return operationRef;
   }
+
   public void setOperationRef(String operationRef) {
     this.operationRef = operationRef;
   }
+
   public String getExtensionId() {
     return extensionId;
   }
+
   public void setExtensionId(String extensionId) {
     this.extensionId = extensionId;
   }
+
   public boolean isExtended() {
     return extensionId != null && !extensionId.isEmpty();
   }
-  
+
   public String getSkipExpression() {
     return skipExpression;
   }

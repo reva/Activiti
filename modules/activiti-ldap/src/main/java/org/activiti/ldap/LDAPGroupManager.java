@@ -36,8 +36,7 @@ import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 /**
  * Implementation of the {@link GroupIdentityManager} interface specifically for LDAP.
  * 
- * Note that only a few methods are actually implemented, as many of the operations 
- * (save, update, etc.) are done on the LDAP system directly. 
+ * Note that only a few methods are actually implemented, as many of the operations (save, update, etc.) are done on the LDAP system directly.
  * 
  * @author Joram Barrez
  */
@@ -45,15 +44,15 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
 
   protected LDAPConfigurator ldapConfigurator;
   protected LDAPGroupCache ldapGroupCache;
-  
-	public LDAPGroupManager(LDAPConfigurator ldapConfigurator) {
-		this.ldapConfigurator = ldapConfigurator;
-	}
-	
-	public LDAPGroupManager(LDAPConfigurator ldapConfigurator, LDAPGroupCache ldapGroupCache) {
-	  this.ldapConfigurator = ldapConfigurator;
-	  this.ldapGroupCache = ldapGroupCache;
-	}
+
+  public LDAPGroupManager(LDAPConfigurator ldapConfigurator) {
+    this.ldapConfigurator = ldapConfigurator;
+  }
+
+  public LDAPGroupManager(LDAPConfigurator ldapConfigurator, LDAPGroupCache ldapGroupCache) {
+    this.ldapConfigurator = ldapConfigurator;
+    this.ldapGroupCache = ldapGroupCache;
+  }
 
   @Override
   public Group createNewGroup(String groupId) {
@@ -69,10 +68,10 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
   public void updateGroup(Group updatedGroup) {
     throw new ActivitiException("LDAP group manager doesn't support updating a group");
   }
-  
+
   @Override
   public boolean isNewGroup(Group group) {
-  	throw new ActivitiException("LDAP group manager doesn't support inserting or updating a group");
+    throw new ActivitiException("LDAP group manager doesn't support inserting or updating a group");
   }
 
   @Override
@@ -97,12 +96,15 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
 
   @Override
   public long findGroupCountByQueryCriteria(GroupQueryImpl query) {
-    return findGroupByQueryCriteria(query, null).size(); // Is there a generic way to do a count(*) in ldap?
+    return findGroupByQueryCriteria(query, null).size(); // Is there a
+                                                         // generic way to
+                                                         // do a count(*) in
+                                                         // ldap?
   }
 
   @Override
   public List<Group> findGroupsByUser(final String userId) {
-    
+
     // First try the cache (if one is defined)
     if (ldapGroupCache != null) {
       List<Group> groups = ldapGroupCache.get(userId);
@@ -110,22 +112,22 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
         return groups;
       }
     }
-    
+
     // Do the search against Ldap
     LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
     return ldapTemplate.execute(new LDAPCallBack<List<Group>>() {
-      
+
       public List<Group> executeInContext(InitialDirContext initialDirContext) {
-        
+
         String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryGroupsForUser(ldapConfigurator, userId);
-        
+
         List<Group> groups = new ArrayList<Group>();
         try {
           String baseDn = ldapConfigurator.getGroupBaseDn() != null ? ldapConfigurator.getGroupBaseDn() : ldapConfigurator.getBaseDn();
-          NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
+          NamingEnumeration<?> namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
           while (namingEnum.hasMore()) { // Should be only one
             SearchResult result = (SearchResult) namingEnum.next();
-            
+
             GroupEntity group = new GroupEntity();
             if (ldapConfigurator.getGroupIdAttribute() != null) {
               group.setId(result.getAttributes().get(ldapConfigurator.getGroupIdAttribute()).get().toString());
@@ -138,21 +140,21 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
             }
             groups.add(group);
           }
-          
+
           namingEnum.close();
-          
+
           // Cache results for later
           if (ldapGroupCache != null) {
             ldapGroupCache.add(userId, groups);
           }
-          
+
           return groups;
-          
+
         } catch (NamingException e) {
           throw new ActivitiException("Could not find groups for user " + userId, e);
         }
       }
-      
+
     });
   }
 
@@ -165,12 +167,12 @@ public class LDAPGroupManager extends AbstractManager implements GroupIdentityMa
   public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
     throw new ActivitiException("LDAP group manager doesn't support querying");
   }
-  
+
   protected SearchControls createSearchControls() {
     SearchControls searchControls = new SearchControls();
     searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
     searchControls.setTimeLimit(ldapConfigurator.getSearchTimeLimit());
     return searchControls;
   }
-	
+
 }

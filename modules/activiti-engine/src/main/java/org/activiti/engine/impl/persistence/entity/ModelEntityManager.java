@@ -24,15 +24,14 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 
-
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
-public class ModelEntityManager extends AbstractManager {
+public class ModelEntityManager extends AbstractEntityManager<ModelEntity> {
 
   public Model createNewModel() {
     return new ModelEntity();
@@ -42,12 +41,10 @@ public class ModelEntityManager extends AbstractManager {
     ((ModelEntity) model).setCreateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     ((ModelEntity) model).setLastUpdateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     getDbSqlSession().insert((PersistentObject) model);
-    
-    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, model));
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, model));
+
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, model));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, model));
     }
   }
 
@@ -56,10 +53,9 @@ public class ModelEntityManager extends AbstractManager {
     updatedModel.setLastUpdateTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.update(updatedModel);
-    
-    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedModel));
+
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedModel));
     }
   }
 
@@ -68,46 +64,45 @@ public class ModelEntityManager extends AbstractManager {
     getDbSqlSession().delete(model);
     deleteEditorSource(model);
     deleteEditorSourceExtra(model);
-    
-    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, model));
+
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, model));
     }
   }
-  
+
   public void insertEditorSourceForModel(String modelId, byte[] modelSource) {
     ModelEntity model = findModelById(modelId);
     if (model != null) {
       ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceValueId());
       ref.setValue("source", modelSource);
-      
+
       if (model.getEditorSourceValueId() == null) {
         model.setEditorSourceValueId(ref.getId());
         updateModel(model);
       }
     }
   }
-  
+
   public void deleteEditorSource(ModelEntity model) {
     if (model.getEditorSourceValueId() != null) {
       ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceValueId());
       ref.delete();
     }
   }
-  
+
   public void deleteEditorSourceExtra(ModelEntity model) {
     if (model.getEditorSourceExtraValueId() != null) {
       ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
       ref.delete();
     }
   }
-  
+
   public void insertEditorSourceExtraForModel(String modelId, byte[] modelSource) {
     ModelEntity model = findModelById(modelId);
     if (model != null) {
       ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
       ref.setValue("source-extra", modelSource);
-      
+
       if (model.getEditorSourceExtraValueId() == null) {
         model.setEditorSourceExtraValueId(ref.getId());
         updateModel(model);
@@ -123,7 +118,7 @@ public class ModelEntityManager extends AbstractManager {
   public List<Model> findModelsByQueryCriteria(ModelQueryImpl query, Page page) {
     return getDbSqlSession().selectList("selectModelsByQueryCriteria", query, page);
   }
-  
+
   public long findModelCountByQueryCriteria(ModelQueryImpl query) {
     return (Long) getDbSqlSession().selectOne("selectModelCountByQueryCriteria", query);
   }
@@ -131,23 +126,23 @@ public class ModelEntityManager extends AbstractManager {
   public ModelEntity findModelById(String modelId) {
     return (ModelEntity) getDbSqlSession().selectOne("selectModel", modelId);
   }
-  
+
   public byte[] findEditorSourceByModelId(String modelId) {
     ModelEntity model = findModelById(modelId);
     if (model == null || model.getEditorSourceValueId() == null) {
       return null;
     }
-    
+
     ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceValueId());
     return ref.getBytes();
   }
-  
+
   public byte[] findEditorSourceExtraByModelId(String modelId) {
     ModelEntity model = findModelById(modelId);
     if (model == null || model.getEditorSourceExtraValueId() == null) {
       return null;
     }
-    
+
     ByteArrayRef ref = new ByteArrayRef(model.getEditorSourceExtraValueId());
     return ref.getBytes();
   }

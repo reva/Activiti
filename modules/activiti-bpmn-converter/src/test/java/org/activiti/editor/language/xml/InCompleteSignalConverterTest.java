@@ -21,11 +21,11 @@ public class InCompleteSignalConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "incompletesignalmodel.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("task");
     assertNotNull(flowElement);

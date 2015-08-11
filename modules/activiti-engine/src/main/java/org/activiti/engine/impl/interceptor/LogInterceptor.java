@@ -13,16 +13,14 @@
 
 package org.activiti.engine.impl.interceptor;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /**
  * @author Tom Baeyens
  */
 public class LogInterceptor extends AbstractCommandInterceptor {
-  
+
   private static Logger log = LoggerFactory.getLogger(LogInterceptor.class);
 
   public <T> T execute(CommandConfig config, Command<T> command) {

@@ -19,11 +19,11 @@ public class VariableEventsTaskListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;
 
-	@Override
+  @Override
   public void notify(DelegateTask delegateTask) {
-		delegateTask.setVariableLocal("variable", 123);
-		delegateTask.setVariableLocal("variable", 456);
-		delegateTask.removeVariableLocal("variable");
+    delegateTask.setVariableLocal("variable", 123);
+    delegateTask.setVariableLocal("variable", 456);
+    delegateTask.removeVariableLocal("variable");
   }
 
 }

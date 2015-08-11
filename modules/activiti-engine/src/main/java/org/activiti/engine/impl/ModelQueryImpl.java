@@ -21,13 +21,12 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 
-
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
 public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements ModelQuery {
-  
+
   private static final long serialVersionUID = 1L;
   protected String id;
   protected String category;
@@ -55,12 +54,12 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
   public ModelQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
-  
+
   public ModelQueryImpl modelId(String modelId) {
     this.id = modelId;
     return this;
   }
-  
+
   public ModelQueryImpl modelCategory(String category) {
     if (category == null) {
       throw new ActivitiIllegalArgumentException("category is null");
@@ -68,7 +67,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.category = category;
     return this;
   }
-  
+
   public ModelQueryImpl modelCategoryLike(String categoryLike) {
     if (categoryLike == null) {
       throw new ActivitiIllegalArgumentException("categoryLike is null");
@@ -92,7 +91,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.name = name;
     return this;
   }
-  
+
   public ModelQueryImpl modelNameLike(String nameLike) {
     if (nameLike == null) {
       throw new ActivitiIllegalArgumentException("nameLike is null");
@@ -100,7 +99,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.nameLike = nameLike;
     return this;
   }
-  
+
   public ModelQuery modelKey(String key) {
     if (key == null) {
       throw new ActivitiIllegalArgumentException("key is null");
@@ -108,7 +107,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.key = key;
     return this;
   }
-  
+
   public ModelQueryImpl modelVersion(Integer version) {
     if (version == null) {
       throw new ActivitiIllegalArgumentException("version is null");
@@ -118,12 +117,12 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.version = version;
     return this;
   }
-  
+
   public ModelQuery latestVersion() {
     this.latest = true;
     return this;
   }
-  
+
   public ModelQuery deploymentId(String deploymentId) {
     if (deploymentId == null) {
       throw new ActivitiIllegalArgumentException("DeploymentId is null");
@@ -131,7 +130,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.deploymentId = deploymentId;
     return this;
   }
-  
+
   public ModelQuery notDeployed() {
     if (deployed == true) {
       throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
@@ -139,7 +138,7 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.notDeployed = true;
     return this;
   }
-  
+
   public ModelQuery deployed() {
     if (notDeployed == true) {
       throw new ActivitiIllegalArgumentException("Invalid usage: cannot use deployed() and notDeployed() in the same query");
@@ -147,98 +146,100 @@ public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements 
     this.deployed = true;
     return this;
   }
-  
+
   public ModelQuery modelTenantId(String tenantId) {
-  	if (tenantId == null) {
-  		throw new ActivitiIllegalArgumentException("Model tenant id is null");
-  	}
-  	this.tenantId = tenantId;
-  	return this;
+    if (tenantId == null) {
+      throw new ActivitiIllegalArgumentException("Model tenant id is null");
+    }
+    this.tenantId = tenantId;
+    return this;
   }
-  
+
   public ModelQuery modelTenantIdLike(String tenantIdLike) {
-  	if (tenantIdLike == null) {
-  		throw new ActivitiIllegalArgumentException("Model tenant id is null");
-  	}
-  	this.tenantIdLike = tenantIdLike;
-  	return this;
+    if (tenantIdLike == null) {
+      throw new ActivitiIllegalArgumentException("Model tenant id is null");
+    }
+    this.tenantIdLike = tenantIdLike;
+    return this;
   }
-  
+
   public ModelQuery modelWithoutTenantId() {
-  	this.withoutTenantId = true;
-  	return this;
+    this.withoutTenantId = true;
+    return this;
   }
-  
-  //sorting ////////////////////////////////////////////
-  
+
+  // sorting ////////////////////////////////////////////
+
   public ModelQuery orderByModelCategory() {
     return orderBy(ModelQueryProperty.MODEL_CATEGORY);
   }
-  
+
   public ModelQuery orderByModelId() {
     return orderBy(ModelQueryProperty.MODEL_ID);
   }
-  
+
   public ModelQuery orderByModelKey() {
     return orderBy(ModelQueryProperty.MODEL_KEY);
   }
-  
+
   public ModelQuery orderByModelVersion() {
     return orderBy(ModelQueryProperty.MODEL_VERSION);
   }
-  
+
   public ModelQuery orderByModelName() {
     return orderBy(ModelQueryProperty.MODEL_NAME);
   }
-  
+
   public ModelQuery orderByCreateTime() {
     return orderBy(ModelQueryProperty.MODEL_CREATE_TIME);
   }
-  
+
   public ModelQuery orderByLastUpdateTime() {
     return orderBy(ModelQueryProperty.MODEL_LAST_UPDATE_TIME);
   }
-  
+
   public ModelQuery orderByTenantId() {
-  	return orderBy(ModelQueryProperty.MODEL_TENANT_ID);
+    return orderBy(ModelQueryProperty.MODEL_TENANT_ID);
   }
-  
-  //results ////////////////////////////////////////////
-  
+
+  // results ////////////////////////////////////////////
+
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext
-      .getModelEntityManager()
-      .findModelCountByQueryCriteria(this);
+    return commandContext.getModelEntityManager().findModelCountByQueryCriteria(this);
   }
 
   public List<Model> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext
-      .getModelEntityManager()
-      .findModelsByQueryCriteria(this, page);
+    return commandContext.getModelEntityManager().findModelsByQueryCriteria(this, page);
   }
-  
-  //getters ////////////////////////////////////////////
-  
+
+  // getters ////////////////////////////////////////////
+
   public String getId() {
     return id;
   }
+
   public String getName() {
     return name;
   }
+
   public String getNameLike() {
     return nameLike;
   }
+
   public Integer getVersion() {
     return version;
   }
+
   public String getCategory() {
     return category;
   }
+
   public String getCategoryLike() {
     return categoryLike;
   }
+
   public String getCategoryNotEquals() {
     return categoryNotEquals;
   }

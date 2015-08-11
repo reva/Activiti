@@ -18,29 +18,28 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
 
-
 /**
- * {@link Condition} that resolves an UEL expression at runtime.  
+ * {@link Condition} that resolves an UEL expression at runtime.
  * 
  * @author Joram Barrez
  * @author Frederik Heremans
  */
 public class UelExpressionCondition implements Condition {
-  
+
   protected Expression expression;
-  
+
   public UelExpressionCondition(Expression expression) {
     this.expression = expression;
   }
 
   public boolean evaluate(DelegateExecution execution) {
     Object result = expression.getValue(execution);
-    
-    if (result==null) {
+
+    if (result == null) {
       throw new ActivitiException("condition expression returns null");
     }
-    if (! (result instanceof Boolean)) {
-      throw new ActivitiException("condition expression returns non-Boolean: "+result+" ("+result.getClass().getName()+")");
+    if (!(result instanceof Boolean)) {
+      throw new ActivitiException("condition expression returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
     }
     return (Boolean) result;
   }

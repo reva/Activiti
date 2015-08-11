@@ -23,7 +23,7 @@ import java.util.List;
 public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
 
   protected String id;
-  
+
   protected List<String> fieldNames;
 
   protected List<Class<?>> fieldTypes;
@@ -33,7 +33,7 @@ public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
     this.fieldNames = new ArrayList<String>();
     this.fieldTypes = new ArrayList<Class<?>>();
   }
-  
+
   public int getFieldSize() {
     return this.fieldNames.size();
   }
@@ -41,7 +41,7 @@ public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
   public String getId() {
     return this.id;
   }
-  
+
   public void setFieldName(int index, String fieldName, Class<?> type) {
     this.growListToContain(index, this.fieldNames);
     this.growListToContain(index, this.fieldTypes);
@@ -64,7 +64,7 @@ public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
   public Class<?> getFieldTypeAt(int index) {
     return this.fieldTypes.get(index);
   }
-  
+
   public StructureInstance createInstance() {
     return new FieldBaseStructureInstance(this);
   }

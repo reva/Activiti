@@ -19,7 +19,6 @@ import org.activiti.rest.common.util.DateToStringSerializer;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -28,33 +27,33 @@ public class CommentResponse {
   private String id;
   private String author;
   private String message;
-  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+  @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
   protected Date time;
   private String taskId;
   private String taskUrl;
   private String processInstanceId;
   private String processInstanceUrl;
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getId() {
     return id;
   }
-  
+
   public String getAuthor() {
     return author;
   }
-  
+
   public void setAuthor(String author) {
     this.author = author;
   }
-  
+
   public String getMessage() {
     return message;
   }
-  
+
   public void setMessage(String message) {
     this.message = message;
   }

@@ -24,7 +24,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -43,36 +42,33 @@ public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serial
   }
 
   public Map<String, Object> execute(CommandContext commandContext) {
-    if(taskId == null) {
+    if (taskId == null) {
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
-    
-    TaskEntity task = commandContext
-      .getTaskEntityManager()
-      .findTaskById(taskId);
-    
-    if (task==null) {
-      throw new ActivitiObjectNotFoundException("task "+taskId+" doesn't exist", Task.class);
+
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
     }
 
-    
     if (variableNames == null) {
-    	
-    	if (isLocal) {
-    		return task.getVariablesLocal();
-    	} else {
-    		return task.getVariables();
-    	}
-    	
+
+      if (isLocal) {
+        return task.getVariablesLocal();
+      } else {
+        return task.getVariables();
+      }
+
     } else {
-    	
-    	if (isLocal) {
-    		return task.getVariablesLocal(variableNames, false);
-    	} else {
-    		return task.getVariables(variableNames, false);
-    	}
-    	
+
+      if (isLocal) {
+        return task.getVariablesLocal(variableNames, false);
+      } else {
+        return task.getVariables(variableNames, false);
+      }
+
     }
-    
+
   }
 }

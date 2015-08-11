@@ -6,7 +6,7 @@ package org.activiti.bpmn.model;
 public class DataObject extends FlowElement {
 
   protected ItemDefinition itemSubjectRef;
-  
+
   public String getName() {
     return name;
   }
@@ -31,7 +31,7 @@ public class DataObject extends FlowElement {
 
   public void setValues(DataObject otherElement) {
     super.setValues(otherElement);
-    
+
     setId(otherElement.getId());
     setName(otherElement.getName());
     setItemSubjectRef(otherElement.getItemSubjectRef());

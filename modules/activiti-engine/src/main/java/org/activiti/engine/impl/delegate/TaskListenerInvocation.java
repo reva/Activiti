@@ -30,10 +30,10 @@ public class TaskListenerInvocation extends DelegateInvocation {
     this.delegateTask = delegateTask;
   }
 
-  protected void invoke() throws Exception {
+  protected void invoke() {
     executionListenerInstance.notify(delegateTask);
   }
-  
+
   public Object getTarget() {
     return executionListenerInstance;
   }

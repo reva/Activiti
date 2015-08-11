@@ -25,7 +25,6 @@ import javax.script.SimpleScriptContext;
 
 import org.activiti.engine.delegate.VariableScope;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -33,32 +32,32 @@ import org.activiti.engine.delegate.VariableScope;
 public class ScriptBindings implements Bindings {
 
   /**
-   * The script engine implementations put some key/value pairs into the binding.
-   * This list contains those keys, such that they wouldn't be stored as process variable.
+   * The script engine implementations put some key/value pairs into the binding. This list contains those keys, such that they wouldn't be stored as process variable.
    * 
    * This list contains the keywords for JUEL, Javascript and Groovy.
    */
-  protected static final Set<String> UNSTORED_KEYS = 
-    new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println"));
+  protected static final Set<String> UNSTORED_KEYS = new HashSet<String>(Arrays.asList("out", "out:print", "lang:import", "context", "elcontext", "print", "println"));
 
   protected List<Resolver> scriptResolvers;
   protected VariableScope variableScope;
   protected Bindings defaultBindings;
-  protected boolean storeScriptVariables = true; // By default everything is stored (backwards compatibility) 
-  
+  protected boolean storeScriptVariables = true; // By default everything is
+                                                 // stored (backwards
+                                                 // compatibility)
+
   public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope) {
     this.scriptResolvers = scriptResolvers;
     this.variableScope = variableScope;
     this.defaultBindings = new SimpleScriptContext().getBindings(SimpleScriptContext.ENGINE_SCOPE);
   }
-  
+
   public ScriptBindings(List<Resolver> scriptResolvers, VariableScope variableScope, boolean storeScriptVariables) {
     this(scriptResolvers, variableScope);
     this.storeScriptVariables = storeScriptVariables;
   }
 
   public boolean containsKey(Object key) {
-    for (Resolver scriptResolver: scriptResolvers) {
+    for (Resolver scriptResolver : scriptResolvers) {
       if (scriptResolver.containsKey(key)) {
         return true;
       }
@@ -67,7 +66,7 @@ public class ScriptBindings implements Bindings {
   }
 
   public Object get(Object key) {
-    for (Resolver scriptResolver: scriptResolvers) {
+    for (Resolver scriptResolver : scriptResolvers) {
       if (scriptResolver.containsKey(key)) {
         return scriptResolver.get(key);
       }
@@ -103,7 +102,7 @@ public class ScriptBindings implements Bindings {
     return variableScope.getVariables().values();
   }
 
-  public void putAll(Map< ? extends String, ? extends Object> toMerge) {
+  public void putAll(Map<? extends String, ? extends Object> toMerge) {
     throw new UnsupportedOperationException();
   }
 

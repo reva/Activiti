@@ -20,30 +20,30 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 public class TestMultipleActivitiEventListener implements ActivitiEventListener {
 
-	private List<ActivitiEvent> eventsReceived;
-	private List<Class<?>> entityClasses;
-	private List<Class<?>> eventClasses;
+  private List<ActivitiEvent> eventsReceived;
+  private List<Class<?>> entityClasses;
+  private List<Class<?>> eventClasses;
 
-	public TestMultipleActivitiEventListener() {
-		eventsReceived = new ArrayList<ActivitiEvent>();
+  public TestMultipleActivitiEventListener() {
+    eventsReceived = new ArrayList<ActivitiEvent>();
   }
 
-	public List<ActivitiEvent> getEventsReceived() {
-	  return eventsReceived;
+  public List<ActivitiEvent> getEventsReceived() {
+    return eventsReceived;
   }
-	
-	public void clearEventsReceived() {
-		eventsReceived.clear();
-	}
-	
-	@Override
-	public void onEvent(ActivitiEvent event) {
-		if(isAssignableFrom(eventClasses, event) && isAssignableFrom(entityClasses, ((ActivitiEntityEvent) event).getEntity())) {
-			eventsReceived.add(event);
-		}
-	}
 
-  private boolean isAssignableFrom(Collection<Class<?>>classes, Object entity) {
+  public void clearEventsReceived() {
+    eventsReceived.clear();
+  }
+
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    if (isAssignableFrom(eventClasses, event) && isAssignableFrom(entityClasses, ((ActivitiEntityEvent) event).getEntity())) {
+      eventsReceived.add(event);
+    }
+  }
+
+  private boolean isAssignableFrom(Collection<Class<?>> classes, Object entity) {
     for (Class<?> itemClass : classes) {
       if (itemClass.isAssignableFrom(entity.getClass()))
         return true;
@@ -51,10 +51,10 @@ public class TestMultipleActivitiEventListener implements ActivitiEventListener 
     return false;
   }
 
-	@Override
-	public boolean isFailOnException() {
-		return true;
-	}
+  @Override
+  public boolean isFailOnException() {
+    return true;
+  }
 
   public void setEntityClasses(Class<?>... entityClasses) {
     this.entityClasses = Arrays.asList(entityClasses);

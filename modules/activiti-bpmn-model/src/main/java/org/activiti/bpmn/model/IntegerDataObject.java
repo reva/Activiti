@@ -1,6 +1,5 @@
 package org.activiti.bpmn.model;
 
-
 /**
  * @author Lori Small
  */

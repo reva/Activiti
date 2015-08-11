@@ -20,44 +20,44 @@ import org.activiti.engine.impl.el.Expression;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
 public class ScriptExecutionListener implements ExecutionListener {
-  
+
   private static final long serialVersionUID = 1L;
 
   private Expression script;
 
-	private Expression language = null;
+  private Expression language;
 
-	private Expression resultVariable = null;
+  private Expression resultVariable;
 
-	@Override
-  public void notify(DelegateExecution execution) throws Exception {
-    
-		if (script == null) {
-			throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");
-		}
+  @Override
+  public void notify(DelegateExecution execution) {
 
-		if (language == null) {
-			throw new IllegalArgumentException("The field 'language' should be set on the ExecutionListener");
-		}
+    if (script == null) {
+      throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");
+    }
 
-		ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+    if (language == null) {
+      throw new IllegalArgumentException("The field 'language' should be set on the ExecutionListener");
+    }
 
-		Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
-		if (resultVariable != null) {
-		  execution.setVariable(resultVariable.getExpressionText(), result);
-		}
-	}
+    Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
 
-	public void setScript(Expression script) {
-		this.script = script;
-	}
+    if (resultVariable != null) {
+      execution.setVariable(resultVariable.getExpressionText(), result);
+    }
+  }
 
-	public void setLanguage(Expression language) {
-		this.language = language;
-	}
+  public void setScript(Expression script) {
+    this.script = script;
+  }
 
-	public void setResultVariable(Expression resultVariable) {
-		this.resultVariable = resultVariable;
-	}
+  public void setLanguage(Expression language) {
+    this.language = language;
+  }
+
+  public void setResultVariable(Expression resultVariable) {
+    this.resultVariable = resultVariable;
+  }
 }

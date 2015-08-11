@@ -18,7 +18,6 @@ import java.util.Map;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -32,7 +31,7 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
     super(taskId);
     this.variables = variables;
   }
-  
+
   protected Void execute(CommandContext commandContext, TaskEntity task) {
     if (variables != null) {
       task.setVariables(variables);
@@ -45,5 +44,5 @@ public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
   protected String getSuspendedTaskException() {
     return "Cannot resolve a suspended task";
   }
-  
+
 }

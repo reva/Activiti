@@ -35,7 +35,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   public void setUp() throws Exception {
     super.setUp();
-    
+
     Group accountants = identityService.newGroup("accountancy");
     identityService.saveGroup(accountants);
     Group managers = identityService.newGroup("management");
@@ -60,7 +60,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     identityService.deleteGroup("sales");
     identityService.deleteGroup("accountancy");
     identityService.deleteGroup("management");
-    
+
     super.tearDown();
   }
 
@@ -71,10 +71,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("singleCandidateGroup");
 
     // Task should not yet be assigned to kermit
-    List<Task> tasks = taskService
-      .createTaskQuery()
-      .taskAssignee(KERMIT)
-      .list();
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
     assertTrue(tasks.isEmpty());
 
     // The task should be visible in the candidate task list
@@ -91,10 +88,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     assertTrue(tasks.isEmpty());
 
     // The task will be visible on the personal task list
-    tasks = taskService
-      .createTaskQuery()
-      .taskAssignee(KERMIT)
-      .list();
+    tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
     assertEquals(1, tasks.size());
     task = tasks.get(0);
     assertEquals("Pay out expenses", task.getName());
@@ -112,20 +106,15 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("multipleCandidatesGroup");
 
     // Task should not yet be assigned to anyone
-    List<Task> tasks = taskService
-      .createTaskQuery()
-      .taskAssignee(KERMIT)
-      .list();
-    
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
+
     assertTrue(tasks.isEmpty());
-    tasks = taskService
-      .createTaskQuery()
-      .taskAssignee(GONZO)
-      .list();
-    
+    tasks = taskService.createTaskQuery().taskAssignee(GONZO).list();
+
     assertTrue(tasks.isEmpty());
 
-    // The task should be visible in the candidate task list of Gonzo and Kermit
+    // The task should be visible in the candidate task list of Gonzo and
+    // Kermit
     // and anyone in the management/accountancy group
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
@@ -145,10 +134,7 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("management").count());
 
     // The task will be visible on the personal task list of Gonzo
-    assertEquals(1, taskService
-      .createTaskQuery()
-      .taskAssignee(GONZO)
-      .count());
+    assertEquals(1, taskService.createTaskQuery().taskAssignee(GONZO).count());
 
     // But not on the personal task list of (for example) Kermit
     assertEquals(0, taskService.createTaskQuery().taskAssignee(KERMIT).count());
@@ -161,23 +147,23 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testMultipleCandidateUsers() {
-    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", Collections.singletonMap("Variable", (Object)"var"));
+    runtimeService.startProcessInstanceByKey("multipleCandidateUsersExample", Collections.singletonMap("Variable", (Object) "var"));
 
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
-    
+
     List<Task> tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).list();
     assertEquals(1, tasks.size());
-    
+
     Task task = tasks.get(0);
     taskService.setVariableLocal(task.getId(), "taskVar", 123);
     tasks = taskService.createTaskQuery().taskInvolvedUser(KERMIT).includeProcessVariables().includeTaskLocalVariables().list();
     task = tasks.get(0);
-    
+
     assertEquals(1, task.getProcessVariables().size());
     assertEquals(1, task.getTaskLocalVariables().size());
     taskService.addUserIdentityLink(task.getId(), GONZO, "test");
-    
+
     tasks = taskService.createTaskQuery().taskInvolvedUser(GONZO).includeProcessVariables().includeTaskLocalVariables().list();
     assertEquals(1, tasks.size());
     assertEquals(1, task.getProcessVariables().size());
@@ -191,24 +177,26 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(GONZO).list().size());
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
   }
-  
-  // test if candidate group works with expression, when there is a function with one parameter
-  @Deployment
-    public void testCandidateExpressionOneParam() {
-	  Map<String, Object> params = new HashMap<String, Object>();
-	  params.put("testBean", new TestBean());
-	  
-      runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
-      assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
-       
-    }
 
-  // test if candidate group works with expression, when there is a function with two parameters
+  // test if candidate group works with expression, when there is a function
+  // with one parameter
+  @Deployment
+  public void testCandidateExpressionOneParam() {
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("testBean", new TestBean());
+
+    runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).list().size());
+
+  }
+
+  // test if candidate group works with expression, when there is a function
+  // with two parameters
   @Deployment
   public void testCandidateExpressionTwoParams() {
-	  Map<String, Object> params = new HashMap<String, Object>();
-	  params.put("testBean", new TestBean());
-	  
+    Map<String, Object> params = new HashMap<String, Object>();
+    params.put("testBean", new TestBean());
+
     runtimeService.startProcessInstanceByKey("candidateWithExpression", params);
     assertEquals(1, taskService.createTaskQuery().taskCandidateUser(KERMIT).count());
     assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("sales").count());

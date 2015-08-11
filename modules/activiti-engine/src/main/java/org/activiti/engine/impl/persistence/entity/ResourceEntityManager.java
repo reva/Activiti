@@ -17,13 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.persistence.AbstractManager;
-
-
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class ResourceEntityManager extends AbstractManager {
+public class ResourceEntityManager extends AbstractEntityManager<ResourceEntity> {
 
   public void insertResource(ResourceEntity resource) {
     getDbSqlSession().insert(resource);
@@ -32,18 +30,17 @@ public class ResourceEntityManager extends AbstractManager {
   public void deleteResourcesByDeploymentId(String deploymentId) {
     getDbSqlSession().delete("deleteResourcesByDeploymentId", deploymentId);
   }
-  
+
   public ResourceEntity findResourceByDeploymentIdAndResourceName(String deploymentId, String resourceName) {
     Map<String, Object> params = new HashMap<String, Object>();
     params.put("deploymentId", deploymentId);
     params.put("resourceName", resourceName);
     return (ResourceEntity) getDbSqlSession().selectOne("selectResourceByDeploymentIdAndResourceName", params);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<ResourceEntity> findResourcesByDeploymentId(String deploymentId) {
     return getDbSqlSession().selectList("selectResourcesByDeploymentId", deploymentId);
   }
-  
 
 }

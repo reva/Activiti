@@ -28,12 +28,12 @@ public class DeploymentResponse {
 
   String id;
   String name;
-  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+  @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
   Date deploymentTime;
   String category;
   String url;
   String tenantId;
-  
+
   public DeploymentResponse(Deployment deployment, String url) {
     setId(deployment.getId());
     setName(deployment.getName());
@@ -42,41 +42,52 @@ public class DeploymentResponse {
     setTenantId(deployment.getTenantId());
     setUrl(url);
   }
-  
+
   public String getId() {
     return id;
   }
+
   public void setId(String id) {
     this.id = id;
   }
+
   public String getName() {
     return name;
   }
+
   public void setName(String name) {
     this.name = name;
   }
-  public  Date getDeploymentTime() {
+
+  public Date getDeploymentTime() {
     return deploymentTime;
   }
-  public void setDeploymentTime( Date deploymentTime) {
+
+  public void setDeploymentTime(Date deploymentTime) {
     this.deploymentTime = deploymentTime;
   }
+
   public String getCategory() {
     return category;
   }
+
   public void setCategory(String category) {
     this.category = category;
   }
+
   public void setUrl(String url) {
     this.url = url;
   }
+
   public String getUrl() {
     return url;
   }
+
   public void setTenantId(String tenantId) {
-	  this.tenantId = tenantId;
+    this.tenantId = tenantId;
   }
+
   public String getTenantId() {
-	  return tenantId;
+    return tenantId;
   }
 }

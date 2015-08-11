@@ -22,7 +22,6 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -47,15 +46,15 @@ public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
   private String tenantId;
   private String tenantIdLike;
   private Boolean withoutTenantId;
-  
+
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  
+
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
-  
+
   public List<String> getProcessInstanceIds() {
     return processInstanceIds;
   }
@@ -67,31 +66,31 @@ public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
   public String getProcessBusinessKey() {
     return processBusinessKey;
   }
-  
+
   public void setProcessBusinessKey(String processBusinessKey) {
     this.processBusinessKey = processBusinessKey;
   }
-  
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
-  
+
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }
-  
+
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
   }
-  
+
   public void setProcessDefinitionKey(String processDefinitionKey) {
     this.processDefinitionKey = processDefinitionKey;
   }
-  
+
   public String getSuperProcessInstanceId() {
     return superProcessInstanceId;
   }
-  
+
   public void setSuperProcessInstanceId(String superProcessInstanceId) {
     this.superProcessInstanceId = superProcessInstanceId;
   }
@@ -115,11 +114,11 @@ public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
   public String getInvolvedUser() {
     return involvedUser;
   }
-  
+
   public void setInvolvedUser(String involvedUser) {
     this.involvedUser = involvedUser;
   }
-  
+
   public Date getFinishedAfter() {
     return finishedAfter;
   }
@@ -168,37 +167,37 @@ public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
     this.includeProcessVariables = includeProcessVariables;
   }
 
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
   public List<QueryVariable> getVariables() {
     return variables;
   }
-  
+
   public void setVariables(List<QueryVariable> variables) {
     this.variables = variables;
   }
 
-	public String getTenantId() {
-		return tenantId;
-	}
+  public String getTenantId() {
+    return tenantId;
+  }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
 
-	public String getTenantIdLike() {
-		return tenantIdLike;
-	}
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
 
-	public void setTenantIdLike(String tenantIdLike) {
-		this.tenantIdLike = tenantIdLike;
-	}
+  public void setTenantIdLike(String tenantIdLike) {
+    this.tenantIdLike = tenantIdLike;
+  }
 
-	public Boolean getWithoutTenantId() {
-		return withoutTenantId;
-	}
+  public Boolean getWithoutTenantId() {
+    return withoutTenantId;
+  }
 
-	public void setWithoutTenantId(Boolean withoutTenantId) {
-		this.withoutTenantId = withoutTenantId;
-	}
-   
+  public void setWithoutTenantId(Boolean withoutTenantId) {
+    this.withoutTenantId = withoutTenantId;
+  }
+
 }

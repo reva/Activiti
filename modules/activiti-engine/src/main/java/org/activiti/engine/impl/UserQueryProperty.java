@@ -19,15 +19,13 @@ import java.util.Map;
 import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.query.QueryProperty;
 
-
-
 /**
  * Contains the possible properties that can be used by the {@link UserQuery}.
  * 
  * @author Joram Barrez
  */
 public class UserQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, UserQueryProperty> properties = new HashMap<String, UserQueryProperty>();
@@ -36,7 +34,7 @@ public class UserQueryProperty implements QueryProperty {
   public static final UserQueryProperty FIRST_NAME = new UserQueryProperty("RES.FIRST_");
   public static final UserQueryProperty LAST_NAME = new UserQueryProperty("RES.LAST_");
   public static final UserQueryProperty EMAIL = new UserQueryProperty("RES.EMAIL_");
-  
+
   private String name;
 
   public UserQueryProperty(String name) {
@@ -47,7 +45,7 @@ public class UserQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static UserQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

@@ -27,26 +27,26 @@ import org.slf4j.LoggerFactory;
 public class WSOperation implements OperationImplementation {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(WSOperation.class);
-  
+
   protected String id;
 
   protected String name;
-  
+
   protected WSService service;
-  
+
   public WSOperation(String id, String operationName, WSService service) {
     this.id = id;
     this.name = operationName;
     this.service = service;
   }
-  
+
   /**
    * {@inheritDoc}
    */
   public String getId() {
     return this.id;
   }
-  
+
   /**
    * {@inheritDoc}
    */
@@ -66,22 +66,22 @@ public class WSOperation implements OperationImplementation {
   private Object[] getArguments(MessageInstance message) {
     return message.getStructureInstance().toArray();
   }
-  
+
   private Object[] safeSend(Object[] arguments) {
     Object[] results = null;
-    
+
     try {
       results = this.service.getClient().send(this.name, arguments);
     } catch (Exception e) {
       LOGGER.warn("Error calling WS {}", this.service.getName(), e);
     }
-    
+
     if (results == null) {
       results = new Object[] {};
     }
     return results;
   }
-  
+
   private MessageInstance createResponseMessage(Object[] results, Operation operation) {
     MessageInstance message = null;
     MessageDefinition outMessage = operation.getOutMessage();

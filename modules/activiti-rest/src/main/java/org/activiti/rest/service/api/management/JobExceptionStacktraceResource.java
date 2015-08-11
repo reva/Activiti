@@ -29,25 +29,24 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class JobExceptionStacktraceResource {
-  
+
   @Autowired
   protected ManagementService managementService;
 
-  @RequestMapping(value="/management/jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
+  @RequestMapping(value = "/management/jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
   public String getJobStacktrace(@PathVariable String jobId, HttpServletResponse response) {
     Job job = getJobFromResponse(jobId);
-    
+
     String stackTrace = managementService.getJobExceptionStacktrace(job.getId());
-    
+
     if (stackTrace == null) {
       throw new ActivitiObjectNotFoundException("Job with id '" + job.getId() + "' doesn't have an exception stacktrace.", String.class);
     }
-    
+
     response.setContentType("text/plain");
     return stackTrace;
   }
 
-  
   protected Job getJobFromResponse(String jobId) {
     Job job = managementService.createJobQuery().jobId(jobId).singleResult();
 

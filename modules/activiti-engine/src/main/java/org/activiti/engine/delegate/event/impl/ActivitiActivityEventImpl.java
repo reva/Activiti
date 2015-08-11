@@ -23,48 +23,47 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
  */
 public class ActivitiActivityEventImpl extends ActivitiEventImpl implements ActivitiActivityEvent {
 
-	protected String activityId;
-	protected String activityName;
-	protected String activityType;
-	protected String behaviorClass;
-	
-	public ActivitiActivityEventImpl(ActivitiEventType type) {
-	  super(type);
+  protected String activityId;
+  protected String activityName;
+  protected String activityType;
+  protected String behaviorClass;
+
+  public ActivitiActivityEventImpl(ActivitiEventType type) {
+    super(type);
   }
 
-	@Override
+  @Override
   public String getActivityId() {
-		return activityId;
+    return activityId;
   }
-	
-	public void setActivityId(String activityId) {
-	  this.activityId = activityId;
+
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
   }
-	
-	public String getActivityName() {
-		return activityName;
-	}
 
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
-	}
+  public String getActivityName() {
+    return activityName;
+  }
 
-	@Override
-	public String getActivityType() {
-		return activityType;
-	}
+  public void setActivityName(String activityName) {
+    this.activityName = activityName;
+  }
 
-	public void setActivityType(String activityType) {
-		this.activityType = activityType;
-	}
+  @Override
+  public String getActivityType() {
+    return activityType;
+  }
 
-	@Override
-	public String getBehaviorClass() {
-		return behaviorClass;
-	}
+  public void setActivityType(String activityType) {
+    this.activityType = activityType;
+  }
 
-	public void setBehaviorClass(String behaviorClass) {
-		this.behaviorClass = behaviorClass;
-	}
-	
+  public String getBehaviorClass() {
+    return behaviorClass;
+  }
+
+  public void setBehaviorClass(String behaviorClass) {
+    this.behaviorClass = behaviorClass;
+  }
+  
 }

@@ -20,7 +20,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Event;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -28,17 +27,16 @@ public class GetTaskEventCmd implements Command<Event>, Serializable {
 
   private static final long serialVersionUID = 1L;
   protected String eventId;
-  
+
   public GetTaskEventCmd(String eventId) {
     this.eventId = eventId;
-    
-    if(eventId == null) {
+
+    if (eventId == null) {
       throw new ActivitiIllegalArgumentException("eventId is null");
     }
   }
 
   public Event execute(CommandContext commandContext) {
-    return commandContext
-      .getCommentEntityManager().findEvent(eventId);
+    return commandContext.getCommentEntityManager().findEvent(eventId);
   }
 }

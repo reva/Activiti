@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.data;
 
-
 /**
  * An instance of {@link ItemDefinition}
  * 
@@ -36,11 +35,11 @@ public class ItemInstance {
   public StructureInstance getStructureInstance() {
     return this.structureInstance;
   }
-  
+
   private FieldBaseStructureInstance getFieldBaseStructureInstance() {
     return (FieldBaseStructureInstance) this.structureInstance;
   }
-  
+
   public Object getFieldValue(String fieldName) {
     return this.getFieldBaseStructureInstance().getFieldValue(fieldName);
   }

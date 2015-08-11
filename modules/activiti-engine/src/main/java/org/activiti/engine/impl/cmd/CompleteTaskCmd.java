@@ -17,27 +17,26 @@ import java.util.Map;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Joram Barrez
  */
-public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
-      
+public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
+
   private static final long serialVersionUID = 1L;
   protected Map<String, Object> variables;
   protected boolean localScope;
-  
+
   public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
     super(taskId);
     this.variables = variables;
   }
-  
+
   public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
     super(taskId);
     this.variables = variables;
     this.localScope = localScope;
   }
-  
+
   protected Void execute(CommandContext commandContext, TaskEntity task) {
     if (variables!=null) {
     	if (localScope) {
@@ -48,11 +47,11 @@ public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
     		task.setVariables(variables);
     	}
     }
-    
-    task.complete(variables, localScope);
+
+    executeTaskComplete(commandContext, task, variables, localScope);
     return null;
   }
-  
+
   @Override
   protected String getSuspendedTaskException() {
     return "Cannot complete a suspended task";

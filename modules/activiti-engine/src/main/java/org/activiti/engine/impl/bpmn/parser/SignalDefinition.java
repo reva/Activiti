@@ -23,11 +23,10 @@ import java.io.Serializable;
 public class SignalDefinition implements Serializable {
 
   private static final long serialVersionUID = 1L;
-    
+
   private String id;
   private String name;
 
-    
   public String getId() {
     return id;
   }
@@ -43,5 +42,5 @@ public class SignalDefinition implements Serializable {
   public void setName(String name) {
     this.name = name;
   }
-  
+
 }

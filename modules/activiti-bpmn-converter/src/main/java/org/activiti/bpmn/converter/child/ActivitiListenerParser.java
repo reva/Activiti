@@ -25,9 +25,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public abstract class ActivitiListenerParser extends BaseChildElementParser {
-  
+
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    
+
     ActivitiListener listener = new ActivitiListener();
     BpmnXMLUtil.addXMLLocation(listener, xtr);
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_CLASS))) {
@@ -44,6 +44,6 @@ public abstract class ActivitiListenerParser extends BaseChildElementParser {
     addListenerToParent(listener, parentElement);
     parseChildElements(xtr, listener, model, new FieldExtensionParser());
   }
-  
+
   public abstract void addListenerToParent(ActivitiListener listener, BaseElement parentElement);
 }

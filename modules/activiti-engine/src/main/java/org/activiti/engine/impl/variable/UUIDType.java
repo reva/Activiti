@@ -32,20 +32,20 @@ public class UUIDType implements VariableType {
   public Object getValue(ValueFields valueFields) {
     String textValue = valueFields.getTextValue();
     if (textValue == null)
-    	return null;
-	return UUID.fromString(textValue);
+      return null;
+    return UUID.fromString(textValue);
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    if (value!=null) {
-        valueFields.setTextValue(value.toString());
-      } else {
-        valueFields.setTextValue(null);
-      }
+    if (value != null) {
+      valueFields.setTextValue(value.toString());
+    } else {
+      valueFields.setTextValue(null);
+    }
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
     return UUID.class.isAssignableFrom(value.getClass());

@@ -29,15 +29,16 @@ public class TerminateEventDefinitionParser extends BaseChildElementParser {
   public String getElementName() {
     return ELEMENT_EVENT_TERMINATEDEFINITION;
   }
-  
+
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof EndEvent == false) return;
-    
+    if (parentElement instanceof EndEvent == false)
+      return;
+
     TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
     BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    
+
     BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TERMINATEDEFINITION, eventDefinition, xtr, model);
-    
+
     ((Event) parentElement).getEventDefinitions().add(eventDefinition);
   }
 }

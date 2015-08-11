@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class PotentialStarterParser implements BpmnXMLConstants {
-  
+
   public void parse(XMLStreamReader xtr, Process activeProcess) throws Exception {
     String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
     if (StringUtils.isNotEmpty(resourceElement) && "resourceAssignmentExpression".equals(resourceElement)) {

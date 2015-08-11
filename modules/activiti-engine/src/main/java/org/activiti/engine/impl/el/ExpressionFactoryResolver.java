@@ -16,15 +16,13 @@ package org.activiti.engine.impl.el;
 import org.activiti.engine.impl.javax.el.ExpressionFactory;
 import org.activiti.engine.impl.juel.ExpressionFactoryImpl;
 
-
-
 /**
  * Class used to get hold of a {@link ExpressionFactory}.
  * 
  * @author Frederik Heremans
  */
 public abstract class ExpressionFactoryResolver {
-  
+
   public static ExpressionFactory resolveExpressionFactory() {
     // Return instance of custom JUEL implementation
     return new ExpressionFactoryImpl();

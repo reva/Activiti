@@ -36,7 +36,8 @@ public class TaskPriorityExtensionsTest extends PluggableActivitiTestCase {
     final Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("taskPriority", priority);
 
-    // Start process-instance, passing priority that should be used as task priority
+    // Start process-instance, passing priority that should be used as task
+    // priority
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtension", variables);
 
     final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();

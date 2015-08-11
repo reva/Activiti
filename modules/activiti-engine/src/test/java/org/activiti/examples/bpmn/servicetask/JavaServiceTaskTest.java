@@ -33,44 +33,36 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
   @Deployment
   public void testJavaServiceDelegation() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("javaServiceDelegation", CollectionUtil.singletonMap("input", "Activiti BPM Engine"));
-    Execution execution = runtimeService.createExecutionQuery()
-      .processInstanceId(pi.getId())
-      .activityId("waitState")
-      .singleResult();
+    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
     assertEquals("ACTIVITI BPM ENGINE", runtimeService.getVariable(execution.getId(), "input"));
   }
-  
+
   @Deployment
   public void testFieldInjection() {
-    // Process contains 2 service-tasks using field-injection. One should use the exposed setter,
+    // Process contains 2 service-tasks using field-injection. One should
+    // use the exposed setter,
     // the other is using the private field.
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("fieldInjection");
-    Execution execution = runtimeService.createExecutionQuery()
-      .processInstanceId(pi.getId())
-      .activityId("waitState")
-      .singleResult();
-    
+    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+
     assertEquals("HELLO WORLD", runtimeService.getVariable(execution.getId(), "var"));
     assertEquals("HELLO SETTER", runtimeService.getVariable(execution.getId(), "setterVar"));
   }
-  
+
   @Deployment
   public void testExpressionFieldInjection() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("name", "kermit");
     vars.put("gender", "male");
     vars.put("genderBean", new GenderBean());
-    
+
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionFieldInjection", vars);
-    Execution execution = runtimeService.createExecutionQuery()
-      .processInstanceId(pi.getId())
-      .activityId("waitState")
-      .singleResult();
-    
+    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+
     assertEquals("timrek .rM olleH", runtimeService.getVariable(execution.getId(), "var2"));
     assertEquals("elam :si redneg ruoY", runtimeService.getVariable(execution.getId(), "var1"));
   }
-  
+
   @Deployment
   public void testExpressionFieldInjectionWithSkipExpression() {
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -79,32 +71,26 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
     vars.put("genderBean", new GenderBean());
     vars.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     vars.put("skip", false);
-    
+
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionFieldInjectionWithSkipExpression", vars);
-    Execution execution = runtimeService.createExecutionQuery()
-      .processInstanceId(pi.getId())
-      .activityId("waitState")
-      .singleResult();
-    
+    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+
     assertEquals("timrek .rM olleH", runtimeService.getVariable(execution.getId(), "var2"));
     assertEquals("elam :si redneg ruoY", runtimeService.getVariable(execution.getId(), "var1"));
-    
+
     Map<String, Object> vars2 = new HashMap<String, Object>();
     vars2.put("name", "kermit");
     vars2.put("gender", "male");
     vars2.put("genderBean", new GenderBean());
     vars2.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     vars2.put("skip", true);
-    
+
     ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("expressionFieldInjectionWithSkipExpression", vars2);
-    Execution execution2 = runtimeService.createExecutionQuery()
-      .processInstanceId(pi2.getId())
-      .activityId("waitState")
-      .singleResult();
-    
+    Execution execution2 = runtimeService.createExecutionQuery().processInstanceId(pi2.getId()).activityId("waitState").singleResult();
+
     assertEquals(null, execution2);
   }
-  
+
   @Deployment
   public void testUnexistingClassDelegation() {
     try {
@@ -125,17 +111,17 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
       assertTrue(e.getMessage().contains("resultVariable"));
     }
   }
-  
+
   @Deployment
   public void testExceptionHandling() {
-    
-    // If variable value is != 'throw-exception', process goes 
-    // through service task and ends immidiately
+
+    // If variable value is != 'throw-exception', process goes
+    // through service task and ends immediately
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("var", "no-exception");
     runtimeService.startProcessInstanceByKey("exceptionHandling", vars);
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-    
+
     // If variable value == 'throw-exception', process executes
     // service task, which generates and catches exception,
     // and takes sequence flow to user task
@@ -144,12 +130,12 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Fix Exception", task.getName());
   }
-  
+
   @Deployment
   public void testGetBusinessKeyFromDelegateExecution() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("businessKeyProcess", "1234567890");
     assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("businessKeyProcess").count());
-    
+
     // Check if business-key was available from the process
     String key = (String) runtimeService.getVariable(processInstance.getId(), "businessKeySetOnExecution");
     assertNotNull(key);

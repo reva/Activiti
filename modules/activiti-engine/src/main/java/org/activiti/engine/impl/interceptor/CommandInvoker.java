@@ -12,16 +12,64 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class CommandInvoker extends AbstractCommandInterceptor {
+  
+  private static final Logger logger = LoggerFactory.getLogger(CommandInvoker.class);
 
   @Override
-  public <T> T execute(CommandConfig config, Command<T> command) {
-    return command.execute(Context.getCommandContext());
+  @SuppressWarnings("unchecked")
+  public <T> T execute(final CommandConfig config, final Command<T> command) {
+    final CommandContext commandContext = Context.getCommandContext();
+
+    // Execute the command.
+    // This will produce operations that will be put on the agenda.
+    commandContext.getAgenda().planOperation(new Runnable() {
+
+      @Override
+      public void run() {
+        commandContext.setResult(command.execute(commandContext));
+      }
+    });
+
+    // Run loop for agenda
+    executeOperations(commandContext);
+
+    // At the end, call the execution tree change listeners.
+    // TODO: optimization: only do this when the tree has actually changed
+    // (ie check dbSqlSession).
+    if (commandContext.hasInvolvedExecutions()) {
+      commandContext.getAgenda().planExecuteInactiveBehaviorsOperation();
+      executeOperations(commandContext);
+    }
+
+    return (T) commandContext.getResult();
+  }
+
+  protected void executeOperations(final CommandContext commandContext) {
+    while (!commandContext.getAgenda().isEmpty()) {
+      Runnable runnable = commandContext.getAgenda().getNextOperation();
+      executeOperation(runnable);
+    }
+  }
+
+  public void executeOperation(Runnable runnable) {
+    if (runnable instanceof AbstractOperation) {
+      AbstractOperation operation = (AbstractOperation) runnable;
+      if (operation.getExecution() == null || !operation.getExecution().isEnded()) {
+        logger.debug("Executing operation " + operation.getClass());
+        runnable.run();
+      }
+    } else {
+      runnable.run();
+    }
   }
 
   @Override

@@ -14,14 +14,14 @@ package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-
 public class CreateTaskLiteral extends AnnotationLiteral<CreateTask> implements CreateTask {
-  
-  protected final String activityId;   
-  
+
+  protected final String activityId;
+
   public CreateTaskLiteral(String activityId) {
     this.activityId = activityId;
   }
+
   @Override
   public String value() {
     return activityId != null ? activityId : "";

@@ -12,7 +12,6 @@
  */
 package org.activiti.engine;
 
-
 /**
  * Runtime exception that is the superclass of all Activiti exceptions.
  * 

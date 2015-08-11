@@ -12,18 +12,18 @@ public class NotExecutableConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readJsonFile();
     validateModel(bpmnModel);
   }
-  
-  @Test 
+
+  @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "test.notexecutablemodel.json";
   }
-  
+
   private void validateModel(BpmnModel model) {
     assertEquals("simpleProcess", model.getMainProcess().getId());
     assertEquals("Simple process", model.getMainProcess().getName());

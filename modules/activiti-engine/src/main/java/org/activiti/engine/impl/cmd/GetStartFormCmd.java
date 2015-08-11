@@ -22,8 +22,8 @@ import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.repository.ProcessDefinition;
-
 
 /**
  * @author Tom Baeyens
@@ -38,20 +38,17 @@ public class GetStartFormCmd implements Command<StartFormData>, Serializable {
   }
 
   public StartFormData execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .findDeployedProcessDefinitionById(processDefinitionId);
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId +"'", ProcessDefinition.class);
+    ProcessDefinitionEntity processDefinitionEntity = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    if (processDefinitionEntity == null) {
+      throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
     }
-    
-    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
+
+    StartFormHandler startFormHandler = FormHandlerUtil.getStartFormHandler(commandContext, processDefinitionEntity);
     if (startFormHandler == null) {
-      throw new ActivitiException("No startFormHandler defined in process '" + processDefinitionId +"'");
+      throw new ActivitiException("No startFormHandler defined in process '" + processDefinitionId + "'");
     }
-    
-    
-    return startFormHandler.createStartFormData(processDefinition);
+
+    return startFormHandler.createStartFormData(processDefinitionEntity);
   }
+  
 }

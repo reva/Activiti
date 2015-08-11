@@ -23,23 +23,22 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FieldExtensionExport implements BpmnXMLConstants {
 
-  public static boolean writeFieldExtensions(List<FieldExtension> fieldExtensionList, 
-      boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
-    
+  public static boolean writeFieldExtensions(List<FieldExtension> fieldExtensionList, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+
     for (FieldExtension fieldExtension : fieldExtensionList) {
-      
+
       if (StringUtils.isNotEmpty(fieldExtension.getFieldName())) {
-        
+
         if (StringUtils.isNotEmpty(fieldExtension.getStringValue()) || StringUtils.isNotEmpty(fieldExtension.getExpression())) {
-          
-          if (didWriteExtensionStartElement == false) { 
+
+          if (didWriteExtensionStartElement == false) {
             xtw.writeStartElement(ELEMENT_EXTENSIONS);
             didWriteExtensionStartElement = true;
           }
-          
+
           xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_FIELD, ACTIVITI_EXTENSIONS_NAMESPACE);
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_FIELD_NAME, fieldExtension.getFieldName(), xtw);
-          
+
           if (StringUtils.isNotEmpty(fieldExtension.getStringValue())) {
             xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_FIELD_STRING, ACTIVITI_EXTENSIONS_NAMESPACE);
             xtw.writeCData(fieldExtension.getStringValue());
@@ -48,7 +47,7 @@ public class FieldExtensionExport implements BpmnXMLConstants {
             xtw.writeCData(fieldExtension.getExpression());
           }
           xtw.writeEndElement();
-          xtw.writeEndElement(); 
+          xtw.writeEndElement();
         }
       }
     }

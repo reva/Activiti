@@ -22,7 +22,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
-
 /**
  * @author Tom Baeyens
  */

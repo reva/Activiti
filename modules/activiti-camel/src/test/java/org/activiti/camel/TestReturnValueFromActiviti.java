@@ -28,27 +28,26 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-
 /**
- * @author Saeid Mirzaei  
+ * @author Saeid Mirzaei
  */
 
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class TestReturnValueFromActiviti extends SpringActivitiTestCase {
   @Autowired
   CamelContext camelContext;
-  
+
   @Autowired
   RuntimeService runtimeService;
 
   @EndpointInject(uri = "mock:result")
   protected MockEndpoint resultEndpoint;
-  
+
   @Produce(uri = "direct:startReturnResultTest")
   protected ProducerTemplate template;
-  
+
   public void setUp() throws Exception {
-    
+
     camelContext.addRoutes(new RouteBuilder() {
 
       @Override
@@ -57,10 +56,10 @@ public class TestReturnValueFromActiviti extends SpringActivitiTestCase {
       }
     });
   }
-      
+
   public void tearDown() throws Exception {
     List<Route> routes = camelContext.getRoutes();
-    for (Route r: routes) {
+    for (Route r : routes) {
       camelContext.stopRoute(r.getId());
       camelContext.removeRoute(r.getId());
     }

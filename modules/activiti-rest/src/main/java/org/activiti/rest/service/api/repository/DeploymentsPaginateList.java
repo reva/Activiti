@@ -24,11 +24,11 @@ import org.activiti.rest.service.api.RestResponseFactory;
 public class DeploymentsPaginateList extends AbstractPaginateList {
 
   protected RestResponseFactory restResponseFactory;
-  
+
   public DeploymentsPaginateList(RestResponseFactory restResponseFactory) {
     this.restResponseFactory = restResponseFactory;
   }
-  
+
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {

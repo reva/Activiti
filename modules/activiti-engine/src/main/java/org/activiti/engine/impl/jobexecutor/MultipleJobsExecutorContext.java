@@ -24,7 +24,7 @@ public class MultipleJobsExecutorContext implements JobExecutorContext {
 
   protected List<String> currentProcessorJobQueue = new LinkedList<String>();
   protected JobEntity currentJob;
-        
+
   public List<String> getCurrentProcessorJobQueue() {
     return currentProcessorJobQueue;
   }
@@ -32,11 +32,11 @@ public class MultipleJobsExecutorContext implements JobExecutorContext {
   public boolean isExecutingExclusiveJob() {
     return currentJob == null ? false : currentJob.isExclusive();
   }
-     
+
   public void setCurrentJob(JobEntity currentJob) {
     this.currentJob = currentJob;
   }
-    
+
   public JobEntity getCurrentJob() {
     return currentJob;
   }

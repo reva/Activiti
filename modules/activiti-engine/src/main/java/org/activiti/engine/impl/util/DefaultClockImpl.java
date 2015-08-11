@@ -21,21 +21,21 @@ import java.util.TimeZone;
  * @author Joram Barrez
  */
 public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
-  
-  private static volatile Calendar CURRENT_TIME = null;
+
+  private static volatile Calendar CURRENT_TIME;
 
   @Override
   public void setCurrentTime(Date currentTime) {
     Calendar time = null;
-    
+
     if (currentTime != null) {
       time = new GregorianCalendar();
       time.setTime(currentTime);
     }
-    
+
     setCurrentCalendar(time);
   }
-  
+
   @Override
   public void setCurrentCalendar(Calendar currentTime) {
     CURRENT_TIME = currentTime;
@@ -44,16 +44,16 @@ public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
   @Override
   public void reset() {
     CURRENT_TIME = null;
-  } 
-  
+  }
+
   @Override
   public Date getCurrentTime() {
-    return CURRENT_TIME == null ? new Date() : CURRENT_TIME.getTime(); 
+    return CURRENT_TIME == null ? new Date() : CURRENT_TIME.getTime();
   }
 
   @Override
   public Calendar getCurrentCalendar() {
-    return CURRENT_TIME == null ? new GregorianCalendar() : (Calendar)CURRENT_TIME.clone(); 
+    return CURRENT_TIME == null ? new GregorianCalendar() : (Calendar) CURRENT_TIME.clone();
   }
 
   @Override
@@ -67,4 +67,3 @@ public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
   }
 
 }
-

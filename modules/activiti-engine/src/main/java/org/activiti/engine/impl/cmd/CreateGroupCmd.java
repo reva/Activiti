@@ -20,27 +20,24 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CreateGroupCmd implements Command<Group>, Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String groupId;
-  
+
   public CreateGroupCmd(String groupId) {
-    if(groupId == null) {
+    if (groupId == null) {
       throw new ActivitiIllegalArgumentException("groupId is null");
     }
     this.groupId = groupId;
   }
 
   public Group execute(CommandContext commandContext) {
-    return commandContext
-      .getGroupIdentityManager()
-      .createNewGroup(groupId);
+    return commandContext.getGroupIdentityManager().createNewGroup(groupId);
   }
 
 }

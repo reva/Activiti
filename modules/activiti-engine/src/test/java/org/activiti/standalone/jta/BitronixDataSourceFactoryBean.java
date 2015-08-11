@@ -17,17 +17,17 @@ public class BitronixDataSourceFactoryBean extends ResourceBean implements Facto
   private static final Logger LOG = LoggerFactory.getLogger(BitronixDataSourceFactoryBean.class);
 
   private PoolingDataSource ds;
-  
+
   @Override
   public Class<?> getObjectType() {
     return PoolingDataSource.class;
   }
-  
+
   @Override
   public boolean isSingleton() {
     return true;
   }
-  
+
   @Override
   public PoolingDataSource getObject() throws Exception {
     if (ds == null) {
@@ -48,7 +48,7 @@ public class BitronixDataSourceFactoryBean extends ResourceBean implements Facto
       ds.setDisabled(isDisabled());
       ds.setIgnoreRecoveryFailures(getIgnoreRecoveryFailures());
       ds.setDriverProperties(getDriverProperties());
-      
+
       LOG.debug("Initializing PoolingDataSource with id " + ds.getUniqueName());
       ds.init();
     }

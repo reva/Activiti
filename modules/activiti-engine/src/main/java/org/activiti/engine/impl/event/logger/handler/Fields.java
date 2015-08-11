@@ -34,7 +34,7 @@ public interface Fields {
   String SIGNAL_DATA = "signalData";
   String SOURCE_ACTIVITY_ID = "sourceActivityId";
   String SOURCE_ACTIVITY_NAME = "sourceActivityName";
-  String SOURCE_ACTIVITY_TYPE ="sourceActivityType";
+  String SOURCE_ACTIVITY_TYPE = "sourceActivityType";
   String SOURCE_ACTIVITY_BEHAVIOR_CLASS = "sourceActivityBehaviorClass";
   String TARGET_ACTIVITY_ID = "targetActivityId";
   String TARGET_ACTIVITY_NAME = "targetActivityName";

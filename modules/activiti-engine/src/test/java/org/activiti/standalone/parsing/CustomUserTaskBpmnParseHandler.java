@@ -15,22 +15,18 @@ package org.activiti.standalone.parsing;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 
 /**
  * @author Joram Barrez
  */
 public class CustomUserTaskBpmnParseHandler extends UserTaskParseHandler {
-  
+
   protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
-    
+
     // Do the regular stuff
     super.executeParse(bpmnParse, userTask);
     
-    // Make user tasks always async
-    ActivityImpl activity = findActivity(bpmnParse, userTask.getId());
-    activity.setAsync(true);
+    userTask.setAsynchronous(true);
   }
 
 }

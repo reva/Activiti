@@ -34,15 +34,14 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * Generic {@link ExecutionListener} publishing events using the cdi event
- * infrastructure.
+ * Generic {@link ExecutionListener} publishing events using the cdi event infrastructure.
  * 
  * @author Daniel Meyer
  */
 public class CdiExecutionListener implements ExecutionListener, Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected final BusinessProcessEventType type;
   protected final String transitionName;
   protected final String activityId;
@@ -60,17 +59,18 @@ public class CdiExecutionListener implements ExecutionListener, Serializable {
   }
 
   @Override
-  public void notify(DelegateExecution execution) throws Exception {    
-    // test whether cdi is setup correclty. (if not, just do not deliver the event)    
+  public void notify(DelegateExecution execution) {
+    // test whether cdi is setup correclty. (if not, just do not deliver the
+    // event)
     try {
       ProgrammaticBeanLookup.lookup(ProcessEngine.class);
-    }catch (Exception e) {
+    } catch (Exception e) {
       return;
     }
-    
+
     BusinessProcessEvent event = createEvent(execution);
-    Annotation[] qualifiers = getQualifiers(event);           
-    getBeanManager().fireEvent(event, qualifiers);    
+    Annotation[] qualifiers = getQualifiers(event);
+    getBeanManager().fireEvent(event, qualifiers);
   }
 
   protected BusinessProcessEvent createEvent(DelegateExecution execution) {
@@ -89,13 +89,13 @@ public class CdiExecutionListener implements ExecutionListener, Serializable {
   protected Annotation[] getQualifiers(BusinessProcessEvent event) {
     Annotation businessProcessQualifier = new BusinessProcessLiteral(event.getProcessDefinition().getKey());
     if (type == BusinessProcessEventType.TAKE) {
-      return new Annotation[] {businessProcessQualifier, new TakeTransitionLiteral(transitionName) };
+      return new Annotation[] { businessProcessQualifier, new TakeTransitionLiteral(transitionName) };
     }
     if (type == BusinessProcessEventType.START_ACTIVITY) {
-      return new Annotation[] {businessProcessQualifier, new StartActivityLiteral(activityId) };
+      return new Annotation[] { businessProcessQualifier, new StartActivityLiteral(activityId) };
     }
     if (type == BusinessProcessEventType.END_ACTIVITY) {
-      return new Annotation[] {businessProcessQualifier, new EndActivityLiteral(activityId) };
+      return new Annotation[] { businessProcessQualifier, new EndActivityLiteral(activityId) };
     }
     return new Annotation[] {};
   }

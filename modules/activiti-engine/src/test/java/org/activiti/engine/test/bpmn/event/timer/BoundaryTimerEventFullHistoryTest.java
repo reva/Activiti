@@ -21,11 +21,11 @@ import org.activiti.engine.test.Deployment;
  * @author Frederik Heremans
  */
 public class BoundaryTimerEventFullHistoryTest extends ResourceActivitiTestCase {
-  
+
   public BoundaryTimerEventFullHistoryTest() {
     super("org/activiti/standalone/history/fullhistory.activiti.cfg.xml");
   }
-  
+
   @Deployment
   public void testSetProcessVariablesFromTaskWhenTimerOnTask() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerVariablesProcess");

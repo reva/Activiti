@@ -21,19 +21,18 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Joram Barrez
  */
 public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
-  
+
   @Deployment
   public void testAddCommentToProcessInstance() {
-    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testProcessInstanceComment");
-      
+
       taskService.addComment(null, processInstance.getId(), "Hello World");
-      
+
       List<Comment> comments = taskService.getProcessInstanceComments(processInstance.getId());
       assertEquals(1, comments.size());
 
@@ -42,7 +41,7 @@ public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
 
       commentsByType = taskService.getProcessInstanceComments(processInstance.getId(), "noThisType");
       assertEquals(0, commentsByType.size());
-      
+
       // Suspend process instance
       runtimeService.suspendProcessInstanceById(processInstance.getId());
       try {
@@ -50,7 +49,7 @@ public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
       } catch (ActivitiException e) {
         assertTextPresent("Cannot add a comment to a suspended execution", e.getMessage());
       }
-      
+
       // Delete comments again
       taskService.deleteComments(null, processInstance.getId());
     }

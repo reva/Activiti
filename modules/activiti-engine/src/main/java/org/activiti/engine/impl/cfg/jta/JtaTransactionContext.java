@@ -67,7 +67,7 @@ public class JtaTransactionContext implements TransactionContext {
 
   public void addTransactionListener(TransactionState transactionState, final TransactionListener transactionListener) {
     Transaction transaction = getTransaction();
-    CommandContext commandContext = Context.getCommandContext();    
+    CommandContext commandContext = Context.getCommandContext();
     try {
       transaction.registerSynchronization(new TransactionStateSynchronization(transactionState, transactionListener, commandContext));
     } catch (IllegalStateException e) {
@@ -76,14 +76,14 @@ public class JtaTransactionContext implements TransactionContext {
       throw new ActivitiException("RollbackException while registering synchronization ", e);
     } catch (SystemException e) {
       throw new ActivitiException("SystemException while registering synchronization ", e);
-    }   
+    }
   }
-  
+
   public static class TransactionStateSynchronization implements Synchronization {
-        
+
     protected final TransactionListener transactionListener;
     protected final TransactionState transactionState;
-    private final CommandContext commandContext;    
+    private final CommandContext commandContext;
 
     public TransactionStateSynchronization(TransactionState transactionState, TransactionListener transactionListener, CommandContext commandContext) {
       this.transactionState = transactionState;
@@ -92,21 +92,19 @@ public class JtaTransactionContext implements TransactionContext {
     }
 
     public void beforeCompletion() {
-      if(TransactionState.COMMITTING.equals(transactionState) 
-         || TransactionState.ROLLINGBACK.equals(transactionState)) {
+      if (TransactionState.COMMITTING.equals(transactionState) || TransactionState.ROLLINGBACK.equals(transactionState)) {
         transactionListener.execute(commandContext);
       }
     }
 
     public void afterCompletion(int status) {
-      if(Status.STATUS_ROLLEDBACK == status && TransactionState.ROLLED_BACK.equals(transactionState)) {
+      if (Status.STATUS_ROLLEDBACK == status && TransactionState.ROLLED_BACK.equals(transactionState)) {
         transactionListener.execute(commandContext);
-      } else if(Status.STATUS_COMMITTED == status && TransactionState.COMMITTED.equals(transactionState)) {
+      } else if (Status.STATUS_COMMITTED == status && TransactionState.COMMITTED.equals(transactionState)) {
         transactionListener.execute(commandContext);
       }
     }
-    
+
   }
-  
 
 }

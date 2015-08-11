@@ -26,8 +26,7 @@ public class LaneExtensionTest {
   @Test
   @Deployment
   public void testLaneExtensionElement() {
-    ProcessDefinition processDefinition = activitiRule.getRepositoryService().createProcessDefinitionQuery()
-        .processDefinitionKey("swimlane-extension").singleResult();
+    ProcessDefinition processDefinition = activitiRule.getRepositoryService().createProcessDefinitionQuery().processDefinitionKey("swimlane-extension").singleResult();
     BpmnModel bpmnModel = activitiRule.getRepositoryService().getBpmnModel(processDefinition.getId());
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
     System.out.println(new String(xml));

@@ -18,7 +18,6 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -26,7 +25,7 @@ public class GroovyScriptTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testScriptExecution() {
-    int[] inputArray = new int[] {1, 2, 3, 4, 5};
+    int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
 
     Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");

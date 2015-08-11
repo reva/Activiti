@@ -31,10 +31,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Frederik Heremans
  */
 public class BaseDeploymentResourceDataResource {
-  
+
   @Autowired
   protected ContentTypeResolver contentTypeResolver;
-  
+
   @Autowired
   protected RepositoryService repositoryService;
 

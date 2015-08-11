@@ -14,7 +14,6 @@ package org.activiti.engine.test.bpmn.event.timer.compatibility;
  */
 
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -36,12 +35,12 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     Date baseTime = calendar.getTime();
 
     calendar.add(Calendar.MINUTE, 20);
-    //expect to stop boundary jobs after 20 minutes
+    // expect to stop boundary jobs after 20 minutes
     DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
     DateTime dt = new DateTime(calendar.getTime());
     String dateStr = fmt.print(dt);
 
-    //reset the timer
+    // reset the timer
     Calendar nextTimeCal = Calendar.getInstance();
     nextTimeCal.setTime(baseTime);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
@@ -56,24 +55,25 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-    //Test Boundary Events
+    // Test Boundary Events
     // complete will cause timer to be created
     taskService.complete(task.getId());
 
     List<Job> jobs = managementService.createJobQuery().list();
     assertEquals(1, jobs.size());
 
-    //change the job in old mode (the configuration should not be json in "old mode" but a simple string).
-    JobEntity job= (JobEntity) jobs.get(0);
+    // change the job in old mode (the configuration should not be json in
+    // "old mode" but a simple string).
+    JobEntity job = (JobEntity) jobs.get(0);
     changeConfigurationToPlainText(job);
 
-    //boundary events
+    // boundary events
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
       fail("a new job must be prepared because there are 10 repeats 2 seconds interval");
     } catch (Exception ex) {
-      //expected exception because a new job is prepared
+      // expected exception because a new job is prepared
     }
 
     for (int i = 0; i < 9; i++) {
@@ -83,7 +83,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
         waitForJobExecutorToProcessAllJobs(2000, 100);
         fail("a new job must be prepared because there are 10 repeats 2 seconds interval");
       } catch (Exception ex) {
-        //expected exception because a new job is prepared
+        // expected exception because a new job is prepared
       }
     }
 
@@ -92,7 +92,7 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
-    }catch (Exception ex){
+    } catch (Exception ex) {
       fail("Should not have any other jobs because the endDate is reached");
     }
     tasks = taskService.createTaskQuery().list();
@@ -107,15 +107,15 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
       fail("No jobs should be active here.");
     }
 
-    //now All the process instances should be completed
+    // now All the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, processInstances.size());
 
-    //no jobs
+    // no jobs
     jobs = managementService.createJobQuery().list();
     assertEquals(0, jobs.size());
 
-    //no tasks
+    // no tasks
     tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
 

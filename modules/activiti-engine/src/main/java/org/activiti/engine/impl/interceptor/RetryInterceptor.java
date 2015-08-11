@@ -18,9 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Intercepts {@link ActivitiOptimisticLockingException} and tries to run the
- * same command again. The number of retries and the time waited between retries
- * is configurable.
+ * Intercepts {@link ActivitiOptimisticLockingException} and tries to run the same command again. The number of retries and the time waited between retries is configurable.
  * 
  * @author Daniel Meyer
  */
@@ -33,12 +31,12 @@ public class RetryInterceptor extends AbstractCommandInterceptor {
   protected int waitIncreaseFactor = 5;
 
   public <T> T execute(CommandConfig config, Command<T> command) {
-    long waitTime=waitTimeInMs;
-    int failedAttempts=0;   
-    
-    do {      
+    long waitTime = waitTimeInMs;
+    int failedAttempts = 0;
+
+    do {
       if (failedAttempts > 0) {
-        log.info( "Waiting for {}ms before retrying the command.", waitTime);
+        log.info("Waiting for {}ms before retrying the command.", waitTime);
         waitBeforeRetry(waitTime);
         waitTime *= waitIncreaseFactor;
       }
@@ -49,16 +47,16 @@ public class RetryInterceptor extends AbstractCommandInterceptor {
         return next.execute(config, command);
 
       } catch (ActivitiOptimisticLockingException e) {
-        log.info("Caught optimistic locking exception: "+e);
+        log.info("Caught optimistic locking exception: " + e);
       }
-            
-      failedAttempts ++;      
-    } while(failedAttempts<=numOfRetries);
+
+      failedAttempts++;
+    } while (failedAttempts <= numOfRetries);
 
     throw new ActivitiException(numOfRetries + " retries failed with ActivitiOptimisticLockingException. Giving up.");
   }
 
-  protected void waitBeforeRetry(long waitTime) {    
+  protected void waitBeforeRetry(long waitTime) {
     try {
       Thread.sleep(waitTime);
     } catch (InterruptedException e) {
@@ -77,15 +75,15 @@ public class RetryInterceptor extends AbstractCommandInterceptor {
   public void setWaitTimeInMs(int waitTimeInMs) {
     this.waitTimeInMs = waitTimeInMs;
   }
-  
+
   public int getNumOfRetries() {
     return numOfRetries;
   }
-  
+
   public int getWaitIncreaseFactor() {
     return waitIncreaseFactor;
   }
-  
+
   public int getWaitTimeInMs() {
     return waitTimeInMs;
   }

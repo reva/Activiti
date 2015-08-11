@@ -40,12 +40,10 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
    * Return the current indent step.
    * 
    * <p>
-   * Return the current indent step: each start tag will be indented by this
-   * number of spaces times the number of ancestors that the element has.
+   * Return the current indent step: each start tag will be indented by this number of spaces times the number of ancestors that the element has.
    * </p>
    * 
-   * @return The number of spaces in each indentation step, or 0 or less for no
-   *         indentation.
+   * @return The number of spaces in each indentation step, or 0 or less for no indentation.
    * @see #setIndentStep(int)
    * 
    * @deprecated Only return the length of the indent string.
@@ -105,8 +103,7 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
    * Print indentation for the current level.
    * 
    * @exception org.xml.sax.SAXException
-   *              If there is an error writing the indentation characters, or if
-   *              a filter further down the chain raises an exception.
+   *              If there is an error writing the indentation characters, or if a filter further down the chain raises an exception.
    */
   private void doIndent() throws XMLStreamException {
     if (depth > 0) {
@@ -125,8 +122,7 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
     super.writeCharacters("\n");
   }
 
-  public void writeStartDocument(String encoding, String version)
-      throws XMLStreamException {
+  public void writeStartDocument(String encoding, String version) throws XMLStreamException {
     super.writeStartDocument(encoding, version);
     super.writeCharacters("\n");
   }
@@ -136,26 +132,22 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
     super.writeStartElement(localName);
   }
 
-  public void writeStartElement(String namespaceURI, String localName)
-      throws XMLStreamException {
+  public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
     onStartElement();
     super.writeStartElement(namespaceURI, localName);
   }
 
-  public void writeStartElement(String prefix, String localName,
-      String namespaceURI) throws XMLStreamException {
+  public void writeStartElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
     onStartElement();
     super.writeStartElement(prefix, localName, namespaceURI);
   }
 
-  public void writeEmptyElement(String namespaceURI, String localName)
-      throws XMLStreamException {
+  public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
     onEmptyElement();
     super.writeEmptyElement(namespaceURI, localName);
   }
 
-  public void writeEmptyElement(String prefix, String localName,
-      String namespaceURI) throws XMLStreamException {
+  public void writeEmptyElement(String prefix, String localName, String namespaceURI) throws XMLStreamException {
     onEmptyElement();
     super.writeEmptyElement(prefix, localName, namespaceURI);
   }
@@ -175,8 +167,7 @@ public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
     super.writeCharacters(text);
   }
 
-  public void writeCharacters(char[] text, int start, int len)
-      throws XMLStreamException {
+  public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
     state = SEEN_DATA;
     super.writeCharacters(text, start, len);
   }

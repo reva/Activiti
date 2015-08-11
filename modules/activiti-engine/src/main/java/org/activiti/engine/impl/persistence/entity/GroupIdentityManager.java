@@ -45,7 +45,7 @@ public interface GroupIdentityManager {
   List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findGroupCountByNativeQuery(Map<String, Object> parameterMap);
-  
+
   boolean isNewGroup(Group group);
 
 }

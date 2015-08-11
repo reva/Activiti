@@ -30,15 +30,14 @@ public class ExpressionExecutionListener implements ExecutionListener {
     this.expression = expression;
   }
 
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     // Return value of expression is ignored
     expression.getValue(execution);
   }
 
   /**
-   * returns the expression text for this execution listener. Comes in handy if you want to
-   * check which listeners you already have.
-   */  
+   * returns the expression text for this execution listener. Comes in handy if you want to check which listeners you already have.
+   */
   public String getExpressionText() {
     return expression.getExpressionText();
   }

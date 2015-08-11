@@ -24,12 +24,13 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  */
 public class CallerRunsRejectedJobsHandler implements RejectedJobsHandler {
-  
+
   private static Logger log = LoggerFactory.getLogger(CallerRunsRejectedJobsHandler.class);
 
   public void jobsRejected(JobExecutor jobExecutor, List<String> jobIds) {
     try {
-      // execute rejected work in caller thread (potentially blocking job acquisition)
+      // execute rejected work in caller thread (potentially blocking job
+      // acquisition)
       new ExecuteJobsRunnable(jobExecutor, jobIds).run();
     } catch (Exception e) {
       log.error("Failed to execute rejected jobs " + jobIds, e);

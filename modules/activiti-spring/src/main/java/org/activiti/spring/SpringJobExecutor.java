@@ -21,16 +21,13 @@ import org.springframework.core.task.TaskExecutor;
 
 /**
  * <p>
- * This is a spring based implementation of the {@link JobExecutor} using spring
- * abstraction {@link TaskExecutor} for performing background task execution.
+ * This is a spring based implementation of the {@link JobExecutor} using spring abstraction {@link TaskExecutor} for performing background task execution.
  * </p>
  * <p>
- * The idea behind this implementation is to externalize the configuration of
- * the task executor, so it can leverage to Application servers controller
- * thread pools, for example using the commonj API. The use of unmanaged thread
- * in application servers is discouraged by the Java EE spec.
+ * The idea behind this implementation is to externalize the configuration of the task executor, so it can leverage to Application servers controller thread pools, for example using the commonj API.
+ * The use of unmanaged thread in application servers is discouraged by the Java EE spec.
  * </p>
- *
+ * 
  * @author Pablo Ganga
  */
 public class SpringJobExecutor extends JobExecutor {
@@ -49,23 +46,22 @@ public class SpringJobExecutor extends JobExecutor {
   }
 
   /**
-   * Required spring injected {@link TaskExecutor} implementation that will be
-   * used to execute runnable jobs.
-   *
+   * Required spring injected {@link TaskExecutor} implementation that will be used to execute runnable jobs.
+   * 
    * @param taskExecutor
    */
   public void setTaskExecutor(TaskExecutor taskExecutor) {
     this.taskExecutor = taskExecutor;
   }
 
-	@Override
-	public void executeJobs(List<String> jobIds) {
-		try {
-			taskExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
-		} catch (RejectedExecutionException e) {
-			rejectedJobsHandler.jobsRejected(this, jobIds);
-		}
-	}
+  @Override
+  public void executeJobs(List<String> jobIds) {
+    try {
+      taskExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
+    } catch (RejectedExecutionException e) {
+      rejectedJobsHandler.jobsRejected(this, jobIds);
+    }
+  }
 
   @Override
   protected void startExecutingJobs() {

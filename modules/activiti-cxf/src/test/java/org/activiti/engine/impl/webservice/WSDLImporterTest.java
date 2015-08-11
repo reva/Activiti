@@ -40,19 +40,19 @@ public class WSDLImporterTest {
   public void setUp() {
     importer = new CxfWSDLImporter();
   }
-  
+
   @Test
   public void testImportCounter() throws Exception {
     URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/counter.wsdl");
     importer.importFrom(url.toString());
-    
+
     List<WSService> services = new ArrayList<WSService>(importer.getServices());
     Assert.assertEquals(1, services.size());
     WSService service = services.get(0);
-    
+
     Assert.assertEquals("Counter", service.getName());
     Assert.assertEquals("http://localhost:63081/counter", service.getLocation());
-    
+
     List<StructureDefinition> structures = sortStructures();
     List<WSOperation> operations = sortOperations();
 
@@ -62,32 +62,32 @@ public class WSDLImporterTest {
     this.assertOperation(operations.get(2), "prettyPrintCount", service);
     this.assertOperation(operations.get(3), "reset", service);
     this.assertOperation(operations.get(4), "setTo", service);
-    
+
     Assert.assertEquals(10, structures.size());
     this.assertStructure(structures.get(0), "getCount", new String[] {}, new Class<?>[] {});
-    this.assertStructure(structures.get(1), "getCountResponse", new String[] {"count"}, new Class<?>[] {Integer.class});
+    this.assertStructure(structures.get(1), "getCountResponse", new String[] { "count" }, new Class<?>[] { Integer.class });
     this.assertStructure(structures.get(2), "inc", new String[] {}, new Class<?>[] {});
     this.assertStructure(structures.get(3), "incResponse", new String[] {}, new Class<?>[] {});
-    this.assertStructure(structures.get(4), "prettyPrintCount", new String[] {"prefix", "suffix"}, new Class<?>[] {String.class, String.class});
-    this.assertStructure(structures.get(5), "prettyPrintCountResponse", new String[] {"prettyPrint"}, new Class<?>[] {String.class});
+    this.assertStructure(structures.get(4), "prettyPrintCount", new String[] { "prefix", "suffix" }, new Class<?>[] { String.class, String.class });
+    this.assertStructure(structures.get(5), "prettyPrintCountResponse", new String[] { "prettyPrint" }, new Class<?>[] { String.class });
     this.assertStructure(structures.get(6), "reset", new String[] {}, new Class<?>[] {});
     this.assertStructure(structures.get(7), "resetResponse", new String[] {}, new Class<?>[] {});
-    this.assertStructure(structures.get(8), "setTo", new String[] {"value"}, new Class<?>[] {Integer.class});
+    this.assertStructure(structures.get(8), "setTo", new String[] { "value" }, new Class<?>[] { Integer.class });
     this.assertStructure(structures.get(9), "setToResponse", new String[] {}, new Class<?>[] {});
   }
-  
+
   @Test
   public void testImportCounterWithImport() throws Exception {
     URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/counterWithImport.wsdl");
     importer.importFrom(url.toString());
-    
+
     List<WSService> services = new ArrayList<WSService>(importer.getServices());
     Assert.assertEquals(1, services.size());
     WSService service = services.get(0);
-    
+
     Assert.assertEquals("Counter", service.getName());
     Assert.assertEquals("http://localhost:63081/counter", service.getLocation());
-    
+
     List<StructureDefinition> structures = sortStructures();
     List<WSOperation> operations = sortOperations();
 
@@ -97,17 +97,17 @@ public class WSDLImporterTest {
     this.assertOperation(operations.get(2), "prettyPrintCount", service);
     this.assertOperation(operations.get(3), "reset", service);
     this.assertOperation(operations.get(4), "setTo", service);
-    
+
     Assert.assertEquals(10, structures.size());
     this.assertStructure(structures.get(0), "getCount", new String[] {}, new Class<?>[] {});
-    this.assertStructure(structures.get(1), "getCountResponse", new String[] {"count"}, new Class<?>[] {Integer.class});
+    this.assertStructure(structures.get(1), "getCountResponse", new String[] { "count" }, new Class<?>[] { Integer.class });
     this.assertStructure(structures.get(2), "inc", new String[] {}, new Class<?>[] {});
     this.assertStructure(structures.get(3), "incResponse", new String[] {}, new Class<?>[] {});
-    this.assertStructure(structures.get(4), "prettyPrintCount", new String[] {"prefix", "suffix"}, new Class<?>[] {String.class, String.class});
-    this.assertStructure(structures.get(5), "prettyPrintCountResponse", new String[] {"prettyPrint"}, new Class<?>[] {String.class});
+    this.assertStructure(structures.get(4), "prettyPrintCount", new String[] { "prefix", "suffix" }, new Class<?>[] { String.class, String.class });
+    this.assertStructure(structures.get(5), "prettyPrintCountResponse", new String[] { "prettyPrint" }, new Class<?>[] { String.class });
     this.assertStructure(structures.get(6), "reset", new String[] {}, new Class<?>[] {});
     this.assertStructure(structures.get(7), "resetResponse", new String[] {}, new Class<?>[] {});
-    this.assertStructure(structures.get(8), "setTo", new String[] {"value"}, new Class<?>[] {Integer.class});
+    this.assertStructure(structures.get(8), "setTo", new String[] { "value" }, new Class<?>[] { Integer.class });
     this.assertStructure(structures.get(9), "setToResponse", new String[] {}, new Class<?>[] {});
   }
 
@@ -130,7 +130,7 @@ public class WSDLImporterTest {
     });
     return structures;
   }
-  
+
   private void assertOperation(WSOperation wsOperation, String name, WSService service) {
     Assert.assertEquals(name, wsOperation.getName());
     Assert.assertEquals(service, wsOperation.getService());
@@ -138,9 +138,9 @@ public class WSDLImporterTest {
 
   private void assertStructure(StructureDefinition structure, String structureId, String[] parameters, Class<?>[] classes) {
     SimpleStructureDefinition simpleStructure = (SimpleStructureDefinition) structure;
-    
+
     Assert.assertEquals(structureId, simpleStructure.getId());
-    
+
     for (int i = 0; i < simpleStructure.getFieldSize(); i++) {
       Assert.assertEquals(parameters[i], simpleStructure.getFieldNameAt(i));
       Assert.assertEquals(classes[i], simpleStructure.getFieldTypeAt(i));

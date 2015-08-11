@@ -12,7 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -21,19 +20,19 @@ public abstract class Gateway extends FlowNode {
   protected boolean asynchronous;
   protected boolean notExclusive;
   protected String defaultFlow;
-  
+
   public boolean isAsynchronous() {
     return asynchronous;
   }
-  
+
   public void setAsynchronous(boolean asynchronous) {
     this.asynchronous = asynchronous;
   }
-  
+
   public boolean isNotExclusive() {
     return notExclusive;
   }
-  
+
   public void setNotExclusive(boolean notExclusive) {
     this.notExclusive = notExclusive;
   }
@@ -45,9 +44,9 @@ public abstract class Gateway extends FlowNode {
   public void setDefaultFlow(String defaultFlow) {
     this.defaultFlow = defaultFlow;
   }
-  
+
   public abstract Gateway clone();
-  
+
   public void setValues(Gateway otherElement) {
     super.setValues(otherElement);
     setAsynchronous(otherElement.isAsynchronous());

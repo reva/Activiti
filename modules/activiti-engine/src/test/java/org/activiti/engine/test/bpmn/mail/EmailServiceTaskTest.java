@@ -17,7 +17,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +33,6 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.WiserMessage;
 
-
 /**
  * @author Joram Barrez
  * @author Tim Stephenson
@@ -49,8 +47,7 @@ public class EmailServiceTaskTest extends EmailTestCase {
     assertEquals(1, messages.size());
 
     WiserMessage message = messages.get(0);
-    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
-        Arrays.asList("kermit@activiti.org"), null);
+    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost", Collections.singletonList("kermit@activiti.org"), null);
     assertProcessEnded(procId);
   }
 
@@ -65,8 +62,8 @@ public class EmailServiceTaskTest extends EmailTestCase {
     assertEquals(1, messages.size());
 
     WiserMessage message = messages.get(0);
-    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@myTenant.com",
-        Arrays.asList("kermit@activiti.org"), null);
+    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@myTenant.com", Collections.singletonList(
+                            "kermit@activiti.org"), null);
     assertProcessEnded(procId);
 
     repositoryService.deleteDeployment(deployment.getId(), true);
@@ -75,15 +72,16 @@ public class EmailServiceTaskTest extends EmailTestCase {
   public void testSimpleTextMailForNonExistentTenant() throws Exception {
     String tenantId = "nonExistentTenant";
 
-    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml").tenantId(tenantId).deploy();
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment()
+        .addClasspathResource("org/activiti/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml").tenantId(tenantId).deploy();
     String procId = runtimeService.startProcessInstanceByKeyAndTenantId("simpleTextOnly", tenantId).getId();
 
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());
 
     WiserMessage message = messages.get(0);
-    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
-        Arrays.asList("kermit@activiti.org"), null);
+    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost", Collections.singletonList(
+                            "kermit@activiti.org"), null);
     assertProcessEnded(procId);
 
     repositoryService.deleteDeployment(deployment.getId(), true);
@@ -129,8 +127,8 @@ public class EmailServiceTaskTest extends EmailTestCase {
     assertEquals(1, messages.size());
 
     WiserMessage message = messages.get(0);
-    assertEmailSend(message, false, subject, "Hello " + recipientName + ", this is an e-mail",
-        sender, Arrays.asList(recipient), null);
+    assertEmailSend(message, false, subject, "Hello " + recipientName + ", this is an e-mail", sender, Collections.singletonList(
+                            recipient), null);
   }
 
   @Deployment
@@ -138,11 +136,12 @@ public class EmailServiceTaskTest extends EmailTestCase {
     runtimeService.startProcessInstanceByKey("ccAndBcc");
 
     List<WiserMessage> messages = wiser.getMessages();
-    assertEmailSend(messages.get(0), false, "Hello world", "This is the content", "activiti@localhost",
-        Arrays.asList("kermit@activiti.org"), Arrays.asList("fozzie@activiti.org"));
+    assertEmailSend(messages.get(0), false, "Hello world", "This is the content", "activiti@localhost", Collections.singletonList(
+                            "kermit@activiti.org"), Collections.singletonList("fozzie@activiti.org"));
 
     // Bcc is not stored in the header (obviously)
-    // so the only way to verify the bcc, is that there are three messages send.
+    // so the only way to verify the bcc, is that there are three messages
+    // send.
     assertEquals(3, messages.size());
   }
 
@@ -152,7 +151,8 @@ public class EmailServiceTaskTest extends EmailTestCase {
 
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());
-    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Collections.singletonList(
+            "kermit@activiti.org"), null);
   }
 
   @Deployment
@@ -165,7 +165,8 @@ public class EmailServiceTaskTest extends EmailTestCase {
 
     List<WiserMessage> messages = wiser.getMessages();
     assertEquals(1, messages.size());
-    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+    assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Collections.singletonList(
+            "kermit@activiti.org"), null);
   }
 
   @Deployment
@@ -294,10 +295,9 @@ public class EmailServiceTaskTest extends EmailTestCase {
     }
   }
 
-  // Helper 
+  // Helper
 
-  public static void assertEmailSend(WiserMessage emailMessage, boolean htmlMail, String subject, String message,
-                                     String from, List<String> to, List<String> cc) throws IOException {
+  public static void assertEmailSend(WiserMessage emailMessage, boolean htmlMail, String subject, String message, String from, List<String> to, List<String> cc) throws IOException {
     try {
       MimeMessage mimeMessage = emailMessage.getMimeMessage();
 

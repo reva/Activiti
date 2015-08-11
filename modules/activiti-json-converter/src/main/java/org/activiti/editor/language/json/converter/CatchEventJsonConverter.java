@@ -29,24 +29,23 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Tijs Rademakers
  */
 public class CatchEventJsonConverter extends BaseBpmnJsonConverter {
-  
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    
+
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
   }
-  
+
   public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
     convertersToBpmnMap.put(STENCIL_EVENT_CATCH_TIMER, CatchEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_CATCH_MESSAGE, CatchEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_CATCH_SIGNAL, CatchEventJsonConverter.class);
   }
-  
+
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
     convertersToJsonMap.put(IntermediateCatchEvent.class, CatchEventJsonConverter.class);
   }
-  
+
   protected String getStencilId(BaseElement baseElement) {
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
     List<EventDefinition> eventDefinitions = catchEvent.getEventDefinitions();
@@ -54,7 +53,7 @@ public class CatchEventJsonConverter extends BaseBpmnJsonConverter {
       // return timer event as default;
       return STENCIL_EVENT_CATCH_TIMER;
     }
-    
+
     EventDefinition eventDefinition = eventDefinitions.get(0);
     if (eventDefinition instanceof MessageEventDefinition) {
       return STENCIL_EVENT_CATCH_MESSAGE;
@@ -69,7 +68,7 @@ public class CatchEventJsonConverter extends BaseBpmnJsonConverter {
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
     addEventProperties(catchEvent, propertiesNode);
   }
-  
+
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);

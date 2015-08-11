@@ -46,13 +46,12 @@ public class BaseProcessInstanceResource {
 
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected RuntimeService runtimeService;
-  
-  protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest, 
-      Map<String, String> requestParams) {
-    
+
+  protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest, Map<String, String> requestParams) {
+
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
 
     // Populate query based on request
@@ -95,21 +94,20 @@ public class BaseProcessInstanceResource {
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());
     }
-    
-    if(queryRequest.getTenantId() != null) {
-    	query.processInstanceTenantId(queryRequest.getTenantId());
-    }
-    
-    if(queryRequest.getTenantIdLike() != null) {
-    	query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
-    }
-    
-    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
-    	query.processInstanceWithoutTenantId();
+
+    if (queryRequest.getTenantId() != null) {
+      query.processInstanceTenantId(queryRequest.getTenantId());
     }
 
-    return new ProcessInstancePaginateList(restResponseFactory)
-        .paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
+    if (queryRequest.getTenantIdLike() != null) {
+      query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
+    }
+
+    if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+      query.processInstanceWithoutTenantId();
+    }
+
+    return new ProcessInstancePaginateList(restResponseFactory).paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
   }
 
   protected void addVariables(ProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
@@ -144,8 +142,7 @@ public class BaseProcessInstanceResource {
         if (actualValue instanceof String) {
           processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
         } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                  + actualValue.getClass().getName());
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
 
@@ -157,45 +154,42 @@ public class BaseProcessInstanceResource {
         if (actualValue instanceof String) {
           processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
         } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                  + actualValue.getClass().getName());
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
-        
+
       case LIKE:
         if (actualValue instanceof String) {
           processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
         } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: "
-                  + actualValue.getClass().getName());
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: " + actualValue.getClass().getName());
         }
         break;
-        
+
       case GREATER_THAN:
         processInstanceQuery.variableValueGreaterThan(variable.getName(), actualValue);
         break;
-        
+
       case GREATER_THAN_OR_EQUALS:
         processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
         break;
-        
+
       case LESS_THAN:
         processInstanceQuery.variableValueLessThan(variable.getName(), actualValue);
         break;
-        
+
       case LESS_THAN_OR_EQUALS:
         processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
         break;
-        
+
       default:
         throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
     }
   }
-  
-  protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) { 
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-           .processInstanceId(processInstanceId).singleResult();
+
+  protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) {
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.");
     }

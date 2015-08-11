@@ -22,7 +22,7 @@ import java.util.List;
 public class ComposedTransformer extends AbstractTransformer {
 
   protected List<Transformer> transformers;
-  
+
   /**
    * {@inheritDoc}
    */

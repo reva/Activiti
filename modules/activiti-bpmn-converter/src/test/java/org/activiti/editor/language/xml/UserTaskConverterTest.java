@@ -22,7 +22,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
@@ -30,11 +30,11 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "usertaskmodel.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("usertask");
     assertNotNull(flowElement);
@@ -47,7 +47,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals("testKey", userTask.getFormKey());
     assertEquals("40", userTask.getPriority());
     assertEquals("2012-11-01", userTask.getDueDate());
-    
+
     assertEquals("kermit", userTask.getAssignee());
     assertEquals(2, userTask.getCandidateUsers().size());
     assertTrue(userTask.getCandidateUsers().contains("kermit"));
@@ -55,14 +55,13 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals(2, userTask.getCandidateGroups().size());
     assertTrue(userTask.getCandidateGroups().contains("management"));
     assertTrue(userTask.getCandidateGroups().contains("sales"));
-    
+
     assertEquals(1, userTask.getCustomUserIdentityLinks().size());
     assertEquals(2, userTask.getCustomGroupIdentityLinks().size());
     assertTrue(userTask.getCustomUserIdentityLinks().get("businessAdministrator").contains("kermit"));
     assertTrue(userTask.getCustomGroupIdentityLinks().get("manager").contains("management"));
     assertTrue(userTask.getCustomGroupIdentityLinks().get("businessAdministrator").contains("management"));
-    
-    
+
     List<FormProperty> formProperties = userTask.getFormProperties();
     assertEquals(3, formProperties.size());
     FormProperty formProperty = formProperties.get(0);
@@ -84,7 +83,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(StringUtils.isEmpty(formProperty.getVariable()));
     assertTrue(StringUtils.isEmpty(formProperty.getExpression()));
     assertEquals(2, formProperty.getFormValues().size());
-    
+
     List<ActivitiListener> listeners = userTask.getTaskListeners();
     assertEquals(3, listeners.size());
     ActivitiListener listener = listeners.get(0);
@@ -99,11 +98,11 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${someDelegateExpression}", listener.getImplementation());
     assertEquals("complete", listener.getEvent());
-    
+
     List<ActivitiListener> executionListeners = userTask.getExecutionListeners();
     assertEquals(1, executionListeners.size());
     ActivitiListener executionListener = executionListeners.get(0);
     assertEquals("end", executionListener.getEvent());
-    
+
   }
 }

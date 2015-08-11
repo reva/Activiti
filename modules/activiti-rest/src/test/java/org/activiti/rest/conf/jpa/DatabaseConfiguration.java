@@ -15,11 +15,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
-@EnableJpaRepositories({"org.activiti.rest.api.jpa.repository"})
+@EnableJpaRepositories({ "org.activiti.rest.api.jpa.repository" })
 @EnableTransactionManagement
 public class DatabaseConfiguration {
 
-  @Bean(name="entityManagerFactory")
+  @Bean(name = "entityManagerFactory")
   public EntityManagerFactory entityManagerFactory() {
     LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
     entityManagerFactoryBean.setDataSource(dataSource());
@@ -33,16 +33,16 @@ public class DatabaseConfiguration {
     entityManagerFactoryBean.afterPropertiesSet();
     return entityManagerFactoryBean.getObject();
   }
-  
+
   @Bean
-  public DataSource dataSource() { 
+  public DataSource dataSource() {
     SimpleDriverDataSource ds = new SimpleDriverDataSource();
     ds.setDriverClass(org.h2.Driver.class);
-    
+
     // Connection settings
     ds.setUrl("jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000");
     ds.setUsername("sa");
-    
+
     return ds;
   }
 

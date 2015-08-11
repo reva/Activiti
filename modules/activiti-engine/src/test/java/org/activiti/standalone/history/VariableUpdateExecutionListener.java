@@ -13,11 +13,9 @@
 
 package org.activiti.standalone.history;
 
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
-
 
 /**
  * @author Frederik Heremans
@@ -25,10 +23,10 @@ import org.activiti.engine.delegate.Expression;
 public class VariableUpdateExecutionListener implements ExecutionListener {
 
   private Expression varName;
-  
-  public void notify(DelegateExecution execution) throws Exception {
+
+  public void notify(DelegateExecution execution) {
     String variableName = (String) varName.getValue(execution);
     execution.setVariable(variableName, "Event: " + execution.getEventName());
   }
- 
+
 }

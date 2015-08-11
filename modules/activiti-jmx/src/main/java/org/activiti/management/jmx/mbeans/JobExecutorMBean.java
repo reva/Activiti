@@ -28,8 +28,7 @@ public class JobExecutorMBean {
 
   public JobExecutorMBean(ProcessEngineConfiguration processEngineConfig) {
     jobExecutor = processEngineConfig.getJobExecutor();
-    
-    
+
   }
 
   @ManagedAttribute(description = "check if the job executor is activated")
@@ -43,7 +42,6 @@ public class JobExecutorMBean {
       jobExecutor.start();
     else
       jobExecutor.shutdown();
-
 
   }
 

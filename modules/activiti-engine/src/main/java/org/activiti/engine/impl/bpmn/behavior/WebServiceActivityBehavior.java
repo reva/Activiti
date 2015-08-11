@@ -30,13 +30,13 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Joram Barrez
  */
 public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
-  
+
   public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
 
   protected Operation operation;
-  
+
   protected IOSpecification ioSpecification;
-  
+
   protected List<AbstractDataAssociation> dataInputAssociations;
 
   protected List<AbstractDataAssociation> dataOutputAssociations;
@@ -45,21 +45,21 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     this.dataInputAssociations = new ArrayList<AbstractDataAssociation>();
     this.dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   }
-  
+
   public void addDataInputAssociation(AbstractDataAssociation dataAssociation) {
     this.dataInputAssociations.add(dataAssociation);
   }
-  
+
   public void addDataOutputAssociation(AbstractDataAssociation dataAssociation) {
     this.dataOutputAssociations.add(dataAssociation);
   }
-  
+
   /**
    * {@inheritDoc}
    */
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     MessageInstance message;
-    
+
     if (ioSpecification != null) {
       this.ioSpecification.initialize(execution);
       ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputName());
@@ -67,11 +67,11 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     } else {
       message = this.operation.getInMessage().createInstance();
     }
-    
+
     execution.setVariable(CURRENT_MESSAGE, message);
-    
+
     this.fillMessage(message, execution);
-    
+
     MessageInstance receivedMessage = this.operation.sendMessage(message);
 
     execution.setVariable(CURRENT_MESSAGE, receivedMessage);
@@ -83,13 +83,13 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
         outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
       }
     }
-    
+
     this.returnMessage(receivedMessage, execution);
-    
+
     execution.setVariable(CURRENT_MESSAGE, null);
     leave(execution);
   }
-  
+
   private void returnMessage(MessageInstance message, ActivityExecution execution) {
     for (AbstractDataAssociation dataAssociation : this.dataOutputAssociations) {
       dataAssociation.evaluate(execution);
@@ -109,5 +109,5 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   public void setOperation(Operation operation) {
     this.operation = operation;
   }
-  
+
 }

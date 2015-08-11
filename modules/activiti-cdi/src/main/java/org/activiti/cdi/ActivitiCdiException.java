@@ -28,7 +28,7 @@ public class ActivitiCdiException extends ActivitiException {
   }
 
   public ActivitiCdiException(String message) {
-    super(message);  
+    super(message);
   }
 
 }

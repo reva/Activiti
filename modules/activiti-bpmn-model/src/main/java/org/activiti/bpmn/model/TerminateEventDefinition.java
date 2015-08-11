@@ -22,7 +22,7 @@ public class TerminateEventDefinition extends EventDefinition {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(TerminateEventDefinition otherDefinition) {
     super.setValues(otherDefinition);
   }

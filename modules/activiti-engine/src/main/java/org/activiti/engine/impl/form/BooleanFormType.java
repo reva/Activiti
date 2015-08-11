@@ -20,9 +20,9 @@ import org.activiti.engine.form.AbstractFormType;
  * @author Frederik Heremans
  */
 public class BooleanFormType extends AbstractFormType {
-	
+
   private static final long serialVersionUID = 1L;
-  
+
   public String getName() {
     return "boolean";
   }
@@ -32,21 +32,20 @@ public class BooleanFormType extends AbstractFormType {
   }
 
   public Object convertFormValueToModelValue(String propertyValue) {
-    if (propertyValue==null || "".equals(propertyValue)) {
+    if (propertyValue == null || "".equals(propertyValue)) {
       return null;
     }
     return Boolean.valueOf(propertyValue);
   }
 
   public String convertModelValueToFormValue(Object modelValue) {
-  
-    if (modelValue==null) {
+
+    if (modelValue == null) {
       return null;
     }
-    
-    if(Boolean.class.isAssignableFrom(modelValue.getClass())
-            || boolean.class.isAssignableFrom(modelValue.getClass())) {
-      return modelValue.toString();      
+
+    if (Boolean.class.isAssignableFrom(modelValue.getClass()) || boolean.class.isAssignableFrom(modelValue.getClass())) {
+      return modelValue.toString();
     }
     throw new ActivitiIllegalArgumentException("Model value is not of type boolean, but of type " + modelValue.getClass().getName());
   }

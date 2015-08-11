@@ -33,10 +33,10 @@ public class DefaultVariableTypes implements VariableTypes, Serializable {
   public DefaultVariableTypes addType(VariableType type) {
     return addType(type, typesList.size());
   }
-  
+
   public DefaultVariableTypes addType(VariableType type, int index) {
     typesList.add(index, type);
-    typesMap.put(type.getTypeName(), type);      
+    typesMap.put(type.getTypeName(), type);
     return this;
   }
 
@@ -68,7 +68,7 @@ public class DefaultVariableTypes implements VariableTypes, Serializable {
 
   public int getTypeIndex(String typeName) {
     VariableType type = typesMap.get(typeName);
-    if(type != null) {
+    if (type != null) {
       return getTypeIndex(type);
     } else {
       return -1;

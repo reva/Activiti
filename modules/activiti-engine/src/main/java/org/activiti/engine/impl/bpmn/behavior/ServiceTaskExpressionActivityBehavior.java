@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
@@ -20,8 +21,7 @@ import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * ActivityBehavior that evaluates an expression when executed. Optionally, it
- * sets the result of the expression as a variable on the execution.
+ * ActivityBehavior that evaluates an expression when executed. Optionally, it sets the result of the expression as a variable on the execution.
  * 
  * @author Tom Baeyens
  * @author Christian Stettler
@@ -41,12 +41,11 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
     this.resultVariable = resultVariable;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     Object value = null;
     try {
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
-      if (!isSkipExpressionEnabled || 
-              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+      if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
         value = expression.getValue(execution);
         if (resultVariable != null) {
           execution.setVariable(resultVariable, value);
@@ -69,7 +68,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
       if (error != null) {
         ErrorPropagation.propagateError(error, execution);
       } else {
-        throw exc;
+        throw new ActivitiException("Could not execute service task expression",exc);
       }
     }
   }

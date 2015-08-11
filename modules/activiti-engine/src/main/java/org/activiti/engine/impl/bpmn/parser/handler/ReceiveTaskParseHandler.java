@@ -12,28 +12,21 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 
 /**
  * @author Joram Barrez
  */
 public class ReceiveTaskParseHandler extends AbstractActivityBpmnParseHandler<ReceiveTask> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
+
+  public Class<? extends BaseElement> getHandledType() {
     return ReceiveTask.class;
   }
-  
+
   protected void executeParse(BpmnParse bpmnParse, ReceiveTask receiveTask) {
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, receiveTask, BpmnXMLConstants.ELEMENT_TASK_RECEIVE);
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createReceiveTaskActivityBehavior(receiveTask));
-    
-    activity.setAsync(receiveTask.isAsynchronous());
-    activity.setExclusive(!receiveTask.isNotExclusive());
+    receiveTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createReceiveTaskActivityBehavior(receiveTask));
   }
 
 }

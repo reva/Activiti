@@ -25,17 +25,17 @@ import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
 public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 
   protected TransactionManager transactionManager;
-  
+
   public JtaProcessEngineConfiguration() {
     this.transactionsExternallyManaged = true;
   }
 
   @Override
   protected CommandInterceptor createTransactionInterceptor() {
-    if (transactionManager==null) {
-      throw new ActivitiException("transactionManager is required property for JtaProcessEngineConfiguration, use "+StandaloneProcessEngineConfiguration.class.getName()+" otherwise");
+    if (transactionManager == null) {
+      throw new ActivitiException("transactionManager is required property for JtaProcessEngineConfiguration, use " + StandaloneProcessEngineConfiguration.class.getName() + " otherwise");
     }
-    
+
     return new JtaTransactionInterceptor(transactionManager);
   }
 
@@ -45,7 +45,7 @@ public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImp
       transactionContextFactory = new JtaTransactionContextFactory(transactionManager);
     }
   }
-  
+
   public TransactionManager getTransactionManager() {
     return transactionManager;
   }

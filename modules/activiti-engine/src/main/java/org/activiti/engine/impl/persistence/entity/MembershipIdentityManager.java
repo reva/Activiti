@@ -13,8 +13,6 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-
-
 /**
  * @author Joram Barrez
  */

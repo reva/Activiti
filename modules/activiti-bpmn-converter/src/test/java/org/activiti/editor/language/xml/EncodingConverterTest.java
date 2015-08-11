@@ -10,20 +10,20 @@ import org.activiti.bpmn.model.UserTask;
 import org.junit.Test;
 
 public class EncodingConverterTest extends AbstractConverterTest {
-  
+
   @Test
   public void connvertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("writeReportTask");
     assertNotNull(flowElement);
@@ -33,7 +33,7 @@ public class EncodingConverterTest extends AbstractConverterTest {
     assertEquals("writeReportTask", userTask.getId());
     assertEquals("Fazer relatório", userTask.getName());
   }
-  
+
   protected String getResource() {
     return "encoding.bpmn";
   }

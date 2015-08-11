@@ -21,11 +21,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  * @author Tijs Rademakers
  */
 public class Lane extends BaseElement {
-  
+
   protected String name;
   protected Process parentProcess;
   protected List<String> flowReferences = new ArrayList<String>();
-  
+
   public String getName() {
     return name;
   }
@@ -38,7 +38,7 @@ public class Lane extends BaseElement {
   public Process getParentProcess() {
     return parentProcess;
   }
-  
+
   public void setParentProcess(Process parentProcess) {
     this.parentProcess = parentProcess;
   }
@@ -50,18 +50,18 @@ public class Lane extends BaseElement {
   public void setFlowReferences(List<String> flowReferences) {
     this.flowReferences = flowReferences;
   }
-  
+
   public Lane clone() {
     Lane clone = new Lane();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(Lane otherElement) {
     super.setValues(otherElement);
     setName(otherElement.getName());
     setParentProcess(otherElement.getParentProcess());
-    
+
     flowReferences = new ArrayList<String>();
     if (otherElement.getFlowReferences() != null && !otherElement.getFlowReferences().isEmpty()) {
       flowReferences.addAll(otherElement.getFlowReferences());

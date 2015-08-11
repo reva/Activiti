@@ -16,51 +16,62 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.List;
 
 import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
-import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
-public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {    
-      
-  private static final long serialVersionUID = -2961893934810190972L;
-  
-  protected final boolean processInstanceScope;
-  protected final EventSubscriptionDeclaration signalDefinition;
+public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-  public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal, EventSubscriptionDeclaration signalDefinition) {
-    this.processInstanceScope = Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope());
-    this.signalDefinition = signalDefinition;
+  private static final long serialVersionUID = -2961893934810190972L;
+
+  protected final SignalEventDefinition signalEventDefinition;
+  protected String signalEventName;
+  protected boolean processInstanceScope;
+
+  public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, SignalEventDefinition signalEventDefinition, Signal signal) {
+    if (signal != null) {
+      signalEventName = signal.getName();
+      if (Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope())) {
+        this.processInstanceScope = true;
+      }
+    } else {
+      signalEventName = signalEventDefinition.getSignalRef();
+    }
+    this.signalEventDefinition = signalEventDefinition;
   }
-  
-  public void execute(ActivityExecution execution) throws Exception {
-    
+
+  public void execute(ActivityExecution execution) {
+
     CommandContext commandContext = Context.getCommandContext();
-    
+
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
     if (processInstanceScope) {
-      subscriptionEntities = commandContext
-              .getEventSubscriptionEntityManager()
-              .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
+      subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalEventName);
     } else {
-      subscriptionEntities = commandContext
-              .getEventSubscriptionEntityManager()
-              .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName(), execution.getTenantId());
+      subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(signalEventName, execution.getTenantId());
     }
-    
+
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-      signalEventSubscriptionEntity.eventReceived(null, signalDefinition.isAsync());
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), signalEventName, 
+              null, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
+              signalEventSubscriptionEntity.getProcessDefinitionId()));
+      
+      signalEventSubscriptionEntity.eventReceived(null, signalEventDefinition.isAsync());
     }
-    
-    if (execution.getActivity() != null) { // dont continue if process has already finished
-      leave(execution);
-    }
+
+    commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution);
+//    if (execution.getCurrentActivityId() != null) { // don't continue if process has already finished
+//      leave(execution);
+//    }
   }
- 
+
 }

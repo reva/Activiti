@@ -22,8 +22,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Testcase for assuring that the {@link StartProcessInterceptor} behaves as
- * expected.
+ * Testcase for assuring that the {@link StartProcessInterceptor} behaves as expected.
  * 
  * @author Daniel Meyer
  */
@@ -41,7 +40,7 @@ public class StartProcessTest extends CdiActivitiTestCase {
     assertNotNull(runtimeService.createProcessInstanceQuery().singleResult());
 
     assertEquals("Activiti", businessProcess.getVariable("name"));
-    
+
     businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
     businessProcess.completeTask();
   }
@@ -60,7 +59,7 @@ public class StartProcessTest extends CdiActivitiTestCase {
 
     assertEquals("Activiti", businessProcess.getVariable("name"));
 
-    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());  
+    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
     businessProcess.completeTask();
   }
 

@@ -22,7 +22,6 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -73,254 +72,255 @@ public class TaskQueryRequest extends PaginateRequest {
 
   private List<QueryVariable> taskVariables;
   private List<QueryVariable> processInstanceVariables;
-  
+
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
   public String getNameLike() {
     return nameLike;
   }
-  
+
   public void setNameLike(String nameLike) {
     this.nameLike = nameLike;
   }
-  
+
   public String getDescription() {
     return description;
   }
-  
+
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   public String getDescriptionLike() {
     return descriptionLike;
   }
-  
+
   public void setDescriptionLike(String descriptionLike) {
     this.descriptionLike = descriptionLike;
   }
-  
+
   public Integer getPriority() {
     return priority;
   }
-  
+
   public void setPriority(Integer priority) {
     this.priority = priority;
   }
-  
+
   public Integer getMinimumPriority() {
     return minimumPriority;
   }
-  
+
   public void setMinimumPriority(Integer minimumPriority) {
     this.minimumPriority = minimumPriority;
   }
-  
+
   public Integer getMaximumPriority() {
     return maximumPriority;
   }
-  
+
   public void setMaximumPriority(Integer maximumPriority) {
     this.maximumPriority = maximumPriority;
   }
-  
+
   public String getAssignee() {
     return assignee;
   }
-  
+
   public void setAssignee(String assignee) {
     this.assignee = assignee;
   }
-  
+
   public String getAssigneeLike() {
-	  return assigneeLike;
+    return assigneeLike;
   }
-  
+
   public void setAssigneeLike(String assigneeLike) {
-	  this.assigneeLike = assigneeLike;
+    this.assigneeLike = assigneeLike;
   }
-  
+
   public String getOwner() {
     return owner;
   }
-  
+
   public void setOwner(String owner) {
     this.owner = owner;
   }
-  
+
   public String getOwnerLike() {
-	  return ownerLike;
+    return ownerLike;
   }
+
   public void setOwnerLike(String ownerLike) {
-	  this.ownerLike = ownerLike;
+    this.ownerLike = ownerLike;
   }
-  
+
   public Boolean getUnassigned() {
     return unassigned;
   }
-  
+
   public void setUnassigned(Boolean unassigned) {
     this.unassigned = unassigned;
   }
-  
+
   public String getDelegationState() {
     return delegationState;
   }
-  
+
   public void setDelegationState(String delegationState) {
     this.delegationState = delegationState;
   }
-  
+
   public String getCandidateUser() {
     return candidateUser;
   }
-  
+
   public void setCandidateUser(String candidateUser) {
     this.candidateUser = candidateUser;
   }
-  
+
   public String getCandidateGroup() {
     return candidateGroup;
   }
-  
+
   public void setCandidateGroup(String candidateGroup) {
     this.candidateGroup = candidateGroup;
   }
-  
+
   public List<String> getCandidateGroupIn() {
-	return candidateGroupIn;
+    return candidateGroupIn;
   }
-	  
+
   public void setCandidateGroupIn(List<String> candidateGroupIn) {
-	this.candidateGroupIn = candidateGroupIn;
+    this.candidateGroupIn = candidateGroupIn;
   }
 
   public String getInvolvedUser() {
     return involvedUser;
   }
-  
+
   public void setInvolvedUser(String involvedUser) {
     this.involvedUser = involvedUser;
   }
-  
+
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  
+
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
-  
+
   public String getProcessInstanceBusinessKey() {
     return processInstanceBusinessKey;
   }
-  
+
   public void setProcessInstanceBusinessKey(String processInstanceBusinessKey) {
     this.processInstanceBusinessKey = processInstanceBusinessKey;
   }
-  
+
   public String getProcessInstanceBusinessKeyLike() {
-	  return processInstanceBusinessKeyLike;
+    return processInstanceBusinessKeyLike;
   }
-  
+
   public void setProcessInstanceBusinessKeyLike(String processInstanceBusinessKeyLike) {
-	  this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
+    this.processInstanceBusinessKeyLike = processInstanceBusinessKeyLike;
   }
-  
+
   public String getExecutionId() {
     return executionId;
   }
-  
+
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
   }
-  
+
   public Date getCreatedOn() {
     return createdOn;
   }
-  
+
   public void setCreatedOn(Date createdOn) {
     this.createdOn = createdOn;
   }
-  
+
   public Date getCreatedBefore() {
     return createdBefore;
   }
-  
+
   public void setCreatedBefore(Date createdBefore) {
     this.createdBefore = createdBefore;
   }
-  
+
   public Date getCreatedAfter() {
     return createdAfter;
   }
-  
+
   public void setCreatedAfter(Date createdAfter) {
     this.createdAfter = createdAfter;
   }
-  
+
   public Boolean getExcludeSubTasks() {
     return excludeSubTasks;
   }
-  
+
   public void setExcludeSubTasks(Boolean excludeSubTasks) {
     this.excludeSubTasks = excludeSubTasks;
   }
-  
+
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
   }
-  
+
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
   }
-  
+
   public String getTaskDefinitionKeyLike() {
     return taskDefinitionKeyLike;
   }
-  
+
   public void setTaskDefinitionKeyLike(String taskDefinitionKeyLike) {
     this.taskDefinitionKeyLike = taskDefinitionKeyLike;
   }
-  
+
   public Date getDueDate() {
     return dueDate;
   }
-  
+
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
   }
-  
+
   public Date getDueBefore() {
     return dueBefore;
   }
-  
+
   public void setDueBefore(Date dueBefore) {
     this.dueBefore = dueBefore;
   }
-  
+
   public Date getDueAfter() {
     return dueAfter;
   }
-  
+
   public void setDueAfter(Date dueAfter) {
     this.dueAfter = dueAfter;
   }
-  
+
   public Boolean getActive() {
     return active;
   }
-  
+
   public void setActive(Boolean active) {
     this.active = active;
   }
-  
+
   public Boolean getIncludeTaskLocalVariables() {
     return includeTaskLocalVariables;
   }
@@ -337,85 +337,86 @@ public class TaskQueryRequest extends PaginateRequest {
     this.includeProcessVariables = includeProcessVariables;
   }
 
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
   public List<QueryVariable> getTaskVariables() {
     return taskVariables;
   }
-  
+
   public void setTaskVariables(List<QueryVariable> taskVariables) {
     this.taskVariables = taskVariables;
   }
-  
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)
+
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
   public List<QueryVariable> getProcessInstanceVariables() {
     return processInstanceVariables;
   }
-  
+
   public void setProcessInstanceVariables(List<QueryVariable> processInstanceVariables) {
     this.processInstanceVariables = processInstanceVariables;
   }
-  
+
   public void setProcessDefinitionNameLike(String processDefinitionNameLike) {
-	  this.processDefinitionNameLike = processDefinitionNameLike;
+    this.processDefinitionNameLike = processDefinitionNameLike;
   }
-  
+
   public String getProcessDefinitionNameLike() {
-	  return processDefinitionNameLike;
+    return processDefinitionNameLike;
   }
-  
+
   public String getProcessDefinitionKeyLike() {
-	  return processDefinitionKeyLike;
+    return processDefinitionKeyLike;
   }
+
   public void setProcessDefinitionKeyLike(String processDefinitionKeyLike) {
-	  this.processDefinitionKeyLike = processDefinitionKeyLike;
+    this.processDefinitionKeyLike = processDefinitionKeyLike;
   }
-  
+
   public void setWithoutDueDate(Boolean withoutDueDate) {
-	  this.withoutDueDate = withoutDueDate;
+    this.withoutDueDate = withoutDueDate;
   }
-  
+
   public Boolean getWithoutDueDate() {
-	  return withoutDueDate;
+    return withoutDueDate;
   }
-  
+
   public String getProcessDefinitionKey() {
-	  return processDefinitionKey;
+    return processDefinitionKey;
   }
-  
+
   public void setProcessDefinitionKey(String processDefinitionKey) {
-	  this.processDefinitionKey = processDefinitionKey;
+    this.processDefinitionKey = processDefinitionKey;
   }
-  
+
   public String getProcessDefinitionName() {
-	  return processDefinitionName;
+    return processDefinitionName;
   }
-  
+
   public void setProcessDefinitionName(String processDefinitionName) {
-	  this.processDefinitionName = processDefinitionName;
+    this.processDefinitionName = processDefinitionName;
   }
-  
+
   public void setTenantId(String tenantId) {
-	  this.tenantId = tenantId;
+    this.tenantId = tenantId;
   }
-  
+
   public String getTenantId() {
-	  return tenantId;
+    return tenantId;
   }
-  
+
   public void setTenantIdLike(String tenantIdLike) {
-	  this.tenantIdLike = tenantIdLike;
+    this.tenantIdLike = tenantIdLike;
   }
-  
+
   public String getTenantIdLike() {
-	  return tenantIdLike;
+    return tenantIdLike;
   }
-  
+
   public void setWithoutTenantId(Boolean withoutTenantId) {
-	  this.withoutTenantId = withoutTenantId;
+    this.withoutTenantId = withoutTenantId;
   }
-  
+
   public Boolean getWithoutTenantId() {
-	  return withoutTenantId;
+    return withoutTenantId;
   }
 
   public String getCandidateOrAssigned() {

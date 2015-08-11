@@ -16,7 +16,7 @@ public class TextAnnotationConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
@@ -24,11 +24,11 @@ public class TextAnnotationConverterTest extends AbstractConverterTest {
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "parsing_error_on_extension_elements.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getFlowElement("_5");
     assertNotNull(flowElement);

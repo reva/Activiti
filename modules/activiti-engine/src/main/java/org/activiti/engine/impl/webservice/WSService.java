@@ -43,7 +43,7 @@ public class WSService implements BpmnInterfaceImplementation {
     this.operations = new HashMap<String, WSOperation>();
     this.wsdlLocation = wsdlLocation;
   }
-  
+
   public WSService(String name, String location, SyncWebServiceClient client) {
     this.name = name;
     this.location = location;
@@ -57,7 +57,7 @@ public class WSService implements BpmnInterfaceImplementation {
 
   SyncWebServiceClient getClient() {
     if (this.client == null) {
-      //TODO refactor to use configuration
+      // TODO refactor to use configuration
       SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) ReflectUtil.instantiate(ProcessEngineConfigurationImpl.DEFAULT_WS_SYNC_FACTORY);
       this.client = factory.create(this.wsdlLocation);
     }
@@ -70,7 +70,7 @@ public class WSService implements BpmnInterfaceImplementation {
   public String getName() {
     return this.name;
   }
-  
+
   public String getLocation() {
     return this.location;
   }

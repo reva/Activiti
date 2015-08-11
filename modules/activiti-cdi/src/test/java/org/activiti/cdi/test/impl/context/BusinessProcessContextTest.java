@@ -34,31 +34,34 @@ public class BusinessProcessContextTest extends CdiActivitiTestCase {
 
     businessProcess.startProcessByKey("testResolution").getId();
 
-    assertNotNull(getBeanInstance(CreditCard.class));    
+    assertNotNull(getBeanInstance(CreditCard.class));
   }
 
   @Test
   // no @Deployment for this test
   public void testResolutionBeforeProcessStart() throws Exception {
-    // assert that @BusinessProcessScoped beans can be resolved in the absence of an underlying process instance:
+    // assert that @BusinessProcessScoped beans can be resolved in the
+    // absence of an underlying process instance:
     assertNotNull(getBeanInstance(CreditCard.class));
   }
 
   @Test
   @Deployment
   public void testConversationalBeanStoreFlush() throws Exception {
-    
+
     getBeanInstance(BusinessProcess.class).setVariable("testVariable", "testValue");
-    String pid =  getBeanInstance(BusinessProcess.class).startProcessByKey("testConversationalBeanStoreFlush").getId();
+    String pid = getBeanInstance(BusinessProcess.class).startProcessByKey("testConversationalBeanStoreFlush").getId();
 
     getBeanInstance(BusinessProcess.class).associateExecutionById(pid);
 
-    // assert that the variable assigned on the businessProcess bean is flushed 
+    // assert that the variable assigned on the businessProcess bean is
+    // flushed
     assertEquals("testValue", runtimeService.getVariable(pid, "testVariable"));
 
-    // assert that the value set to the message bean in the first service task is flushed
+    // assert that the value set to the message bean in the first service
+    // task is flushed
     assertEquals("Hello from Activiti", getBeanInstance(ProcessScopedMessageBean.class).getMessage());
-    
+
     // complete the task to allow the process instance to terminate
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
   }
@@ -66,28 +69,28 @@ public class BusinessProcessContextTest extends CdiActivitiTestCase {
   @Test
   @Deployment
   public void testChangeProcessScopedBeanProperty() throws Exception {
-    
+
     // resolve the creditcard bean (@BusinessProcessScoped) and set a value:
     getBeanInstance(CreditCard.class).setCreditcardNumber("123");
     String pid = getBeanInstance(BusinessProcess.class).startProcessByKey("testConversationalBeanStoreFlush").getId();
-    
+
     getBeanInstance(BusinessProcess.class).startTask(taskService.createTaskQuery().singleResult().getId());
-        
+
     // assert that the value of creditCardNumber is '123'
     assertEquals("123", getBeanInstance(CreditCard.class).getCreditcardNumber());
     // set a different value:
     getBeanInstance(CreditCard.class).setCreditcardNumber("321");
     // complete the task
     getBeanInstance(BusinessProcess.class).completeTask();
-    
+
     getBeanInstance(BusinessProcess.class).associateExecutionById(pid);
 
     // now assert that the value of creditcard is "321":
     assertEquals("321", getBeanInstance(CreditCard.class).getCreditcardNumber());
-    
+
     // complete the task to allow the process instance to terminate
     taskService.complete(taskService.createTaskQuery().singleResult().getId());
-    
+
   }
-    
+
 }

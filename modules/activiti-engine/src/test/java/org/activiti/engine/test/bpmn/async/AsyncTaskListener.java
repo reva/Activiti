@@ -15,7 +15,6 @@ package org.activiti.engine.test.bpmn.async;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-
 public class AsyncTaskListener implements TaskListener {
 
   private static final long serialVersionUID = 1L;

@@ -29,14 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class TableCollectionResource {
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected ManagementService managementService;
 
-  @RequestMapping(value="/management/tables", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/management/tables", method = RequestMethod.GET, produces = "application/json")
   public List<TableResponse> getTables(HttpServletRequest request) {
     return restResponseFactory.createTableResponseList(managementService.getTableCount());
   }

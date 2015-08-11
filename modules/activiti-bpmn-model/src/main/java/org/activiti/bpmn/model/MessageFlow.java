@@ -21,14 +21,14 @@ public class MessageFlow extends BaseElement {
   protected String sourceRef;
   protected String targetRef;
   protected String messageRef;
-  
+
   public MessageFlow() {
-  	
+
   }
-  
+
   public MessageFlow(String sourceRef, String targetRef) {
-  	this.sourceRef = sourceRef;
-  	this.targetRef = targetRef;
+    this.sourceRef = sourceRef;
+    this.targetRef = targetRef;
   }
 
   public String getName() {
@@ -42,19 +42,19 @@ public class MessageFlow extends BaseElement {
   public String getSourceRef() {
     return sourceRef;
   }
-  
+
   public void setSourceRef(String sourceRef) {
     this.sourceRef = sourceRef;
   }
-  
+
   public String getTargetRef() {
     return targetRef;
   }
-  
+
   public void setTargetRef(String targetRef) {
     this.targetRef = targetRef;
   }
-  
+
   public String getMessageRef() {
     return messageRef;
   }
@@ -66,13 +66,13 @@ public class MessageFlow extends BaseElement {
   public String toString() {
     return sourceRef + " --> " + targetRef;
   }
-  
+
   public MessageFlow clone() {
     MessageFlow clone = new MessageFlow();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(MessageFlow otherFlow) {
     super.setValues(otherFlow);
     setName(otherFlow.getName());

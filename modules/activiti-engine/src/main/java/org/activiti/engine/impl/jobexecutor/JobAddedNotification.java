@@ -12,22 +12,20 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
-
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JobAddedNotification implements TransactionListener {
-  
+
   private static Logger log = LoggerFactory.getLogger(JobAddedNotification.class);
-  
+
   protected JobExecutor jobExecutor;
-  
+
   public JobAddedNotification(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
   }

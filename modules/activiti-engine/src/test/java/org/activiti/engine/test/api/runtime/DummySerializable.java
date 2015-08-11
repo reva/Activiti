@@ -15,7 +15,6 @@ package org.activiti.engine.test.api.runtime;
 
 import java.io.Serializable;
 
-
 /**
  * Dummy class that implements {@link Serializable}.
  * 

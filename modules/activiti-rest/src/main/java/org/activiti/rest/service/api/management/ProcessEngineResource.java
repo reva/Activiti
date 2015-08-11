@@ -28,14 +28,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ProcessEngineResource {
-  
-  @Autowired @Qualifier("processEngine")
+
+  @Autowired
+  @Qualifier("processEngine")
   protected ProcessEngine engine;
 
-  @RequestMapping(value="/management/engine", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/management/engine", method = RequestMethod.GET, produces = "application/json")
   public ProcessEngineInfoResponse getEngineInfo() {
     ProcessEngineInfoResponse response = new ProcessEngineInfoResponse();
-    
+
     try {
       ProcessEngineInfo engineInfo = ProcessEngines.getProcessEngineInfo(engine.getName());
       if (engineInfo != null) {
@@ -49,7 +50,7 @@ public class ProcessEngineResource {
     } catch (Exception e) {
       throw new ActivitiException("Error retrieving process info", e);
     }
-   
+
     response.setVersion(ProcessEngine.VERSION);
     return response;
   }

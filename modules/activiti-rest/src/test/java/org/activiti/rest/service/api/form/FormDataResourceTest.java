@@ -34,16 +34,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
 /**
  * Test for all REST-operations related to a Form data resource.
  * 
  * @author Tijs Rademakers
  */
 public class FormDataResourceTest extends BaseSpringRestTestCase {
-  
+
   protected ObjectMapper objectMapper = new ObjectMapper();
-  
+
   @Deployment
   public void testGetFormData() throws Exception {
     Map<String, Object> variableMap = new HashMap<String, Object>();
@@ -53,9 +52,8 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?taskId=" + task.getId()), HttpStatus.SC_OK);
-    
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?taskId=" + task.getId()), HttpStatus.SC_OK);
+
     // Check resulting task
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
@@ -73,7 +71,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
-    
+
     propNode = mappedProperties.get("duration");
     assertNotNull(propNode);
     assertEquals("duration", propNode.get("id").asText());
@@ -83,7 +81,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
-    
+
     propNode = mappedProperties.get("speaker");
     assertNotNull(propNode);
     assertEquals("speaker", propNode.get("id").asText());
@@ -93,7 +91,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean() == false);
     assertTrue(propNode.get("required").asBoolean() == false);
-    
+
     propNode = mappedProperties.get("street");
     assertNotNull(propNode);
     assertEquals("street", propNode.get("id").asText());
@@ -103,7 +101,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean());
-    
+
     propNode = mappedProperties.get("start");
     assertNotNull(propNode);
     assertEquals("start", propNode.get("id").asText());
@@ -114,7 +112,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
-    
+
     propNode = mappedProperties.get("end");
     assertNotNull(propNode);
     assertEquals("end", propNode.get("id").asText());
@@ -125,7 +123,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
-    
+
     propNode = mappedProperties.get("direction");
     assertNotNull(propNode);
     assertEquals("direction", propNode.get("id").asText());
@@ -146,10 +144,10 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertEquals("Go Right", mappedEnums.get("right"));
     assertEquals("Go Up", mappedEnums.get("up"));
     assertEquals("Go Down", mappedEnums.get("down"));
-    
-    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=" + processInstance.getProcessDefinitionId()), HttpStatus.SC_OK);
-    
+
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=" + processInstance.getProcessDefinitionId()),
+        HttpStatus.SC_OK);
+
     // Check resulting task
     responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
@@ -158,7 +156,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     for (JsonNode propertyNode : responseNode.get("formProperties")) {
       mappedProperties.put(propertyNode.get("id").asText(), propertyNode);
     }
-    
+
     propNode = mappedProperties.get("number");
     assertNotNull(propNode);
     assertEquals("number", propNode.get("id").asText());
@@ -168,7 +166,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
-    
+
     propNode = mappedProperties.get("description");
     assertNotNull(propNode);
     assertEquals("description", propNode.get("id").asText());
@@ -178,14 +176,12 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("readable").asBoolean());
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
-    
-    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=123"), HttpStatus.SC_NOT_FOUND));
-    
-    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId2=123"), HttpStatus.SC_BAD_REQUEST));
+
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=123"), HttpStatus.SC_NOT_FOUND));
+
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId2=123"), HttpStatus.SC_BAD_REQUEST));
   }
-  
+
   @Deployment
   public void testSubmitFormData() throws Exception {
     Map<String, Object> variableMap = new HashMap<String, Object>();
@@ -205,20 +201,19 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     propNode.put("id", "room");
     propNode.put("value", 123l);
     propertyArray.add(propNode);
-    
-    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA));
+
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
     closeResponse(executeRequest(httpPost, HttpStatus.SC_INTERNAL_SERVER_ERROR));
-    
+
     propNode = objectMapper.createObjectNode();
     propNode.put("id", "street");
     propNode.put("value", "test");
     propertyArray.add(propNode);
-    
+
     httpPost.setEntity(new StringEntity(requestNode.toString()));
     closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
-    
+
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -228,14 +223,14 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     for (HistoricVariableInstance historicVariableInstance : variables) {
       historyMap.put(historicVariableInstance.getVariableName(), historicVariableInstance);
     }
-    
+
     assertEquals("123", historyMap.get("room").getValue());
     assertEquals(processInstanceId, historyMap.get("room").getProcessInstanceId());
-    
+
     processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
     processInstanceId = processInstance.getId();
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
-    
+
     requestNode.put("taskId", task.getId());
     propNode = objectMapper.createObjectNode();
     propNode.put("id", "direction");
@@ -243,11 +238,11 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     propertyArray.add(propNode);
     httpPost.setEntity(new StringEntity(requestNode.toString()));
     closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
-    
+
     propNode.put("value", "up");
     httpPost.setEntity(new StringEntity(requestNode.toString()));
     closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
-    
+
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -257,11 +252,11 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     for (HistoricVariableInstance historicVariableInstance : variables) {
       historyMap.put(historicVariableInstance.getVariableName(), historicVariableInstance);
     }
-    
+
     assertEquals("123", historyMap.get("room").getValue());
     assertEquals(processInstanceId, historyMap.get("room").getProcessInstanceId());
     assertEquals("up", historyMap.get("direction").getValue());
-    
+
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionId", processDefinitionId);
     propertyArray = objectMapper.createArrayNode();
@@ -270,7 +265,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     propNode.put("id", "number");
     propNode.put("value", 123);
     propertyArray.add(propNode);
-    
+
     httpPost.setEntity(new StringEntity(requestNode.toString()));
     CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());

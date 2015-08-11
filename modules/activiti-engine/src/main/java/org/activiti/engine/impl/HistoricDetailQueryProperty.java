@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.query.QueryProperty;
 
-
 /**
  * Contains the possible properties which can be used in a {@link HistoricDetailQuery}.
  * 
@@ -36,7 +35,7 @@ public class HistoricDetailQueryProperty implements QueryProperty {
   public static final HistoricDetailQueryProperty VARIABLE_TYPE = new HistoricDetailQueryProperty("TYPE_");
   public static final HistoricDetailQueryProperty VARIABLE_REVISION = new HistoricDetailQueryProperty("REV_");
   public static final HistoricDetailQueryProperty TIME = new HistoricDetailQueryProperty("TIME_");
-  
+
   private String name;
 
   public HistoricDetailQueryProperty(String name) {
@@ -47,7 +46,7 @@ public class HistoricDetailQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static HistoricDetailQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

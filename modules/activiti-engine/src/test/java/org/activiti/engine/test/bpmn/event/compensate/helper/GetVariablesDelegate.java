@@ -17,17 +17,16 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
-
 /**
  * @author Daniel Meyer
  */
 public class GetVariablesDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
-    Object nrOfCompletedInstances = execution.getVariable("nrOfCompletedInstances");    
-    Integer variable = SetVariablesDelegate.variablesMap.get(nrOfCompletedInstances);
+  public void execute(DelegateExecution execution) {
+    Integer nrOfCompletedInstances = (Integer) execution.getVariable("nrOfCompletedInstances");
+    Integer variable = SetVariablesDelegate.variablesMap.get(nrOfCompletedInstances - 1);
     Object variableLocal = execution.getVariable("variable");
-    if(!variableLocal.equals(variable)) {
+    if (!variableLocal.equals(variable)) {
       throw new ActivitiIllegalArgumentException("wrong variable passed in to compensation handler");
     }
   }

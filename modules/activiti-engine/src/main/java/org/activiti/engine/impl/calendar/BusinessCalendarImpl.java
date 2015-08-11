@@ -18,8 +18,8 @@ public abstract class BusinessCalendarImpl implements BusinessCalendar {
   }
 
   @Override
-  public Date resolveDuedate(String duedateDescription){
-    return resolveDuedate(duedateDescription,-1);
+  public Date resolveDuedate(String duedateDescription) {
+    return resolveDuedate(duedateDescription, -1);
   }
 
   public abstract Date resolveDuedate(String duedateDescription, int maxIterations);
@@ -31,7 +31,7 @@ public abstract class BusinessCalendarImpl implements BusinessCalendar {
 
   @Override
   public Date resolveEndDate(String endDateString) {
-      return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(endDateString).toCalendar(null).getTime();
+    return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(endDateString).toCalendar(null).getTime();
   }
 
 }

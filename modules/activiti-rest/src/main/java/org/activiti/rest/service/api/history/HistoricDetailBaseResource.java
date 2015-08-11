@@ -38,14 +38,14 @@ public class HistoricDetailBaseResource {
     allowedSortProperties.put("revision", HistoricDetailQueryProperty.VARIABLE_REVISION);
     allowedSortProperties.put("variableType", HistoricDetailQueryProperty.VARIABLE_TYPE);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String,String> allRequestParams) {
+  protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String, String> allRequestParams) {
     HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
     // Populate query based on request
@@ -72,7 +72,6 @@ public class HistoricDetailBaseResource {
       }
     }
 
-    return new HistoricDetailPaginateList(restResponseFactory).paginateList(
-        allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
+    return new HistoricDetailPaginateList(restResponseFactory).paginateList(allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 }

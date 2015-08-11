@@ -61,7 +61,7 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
     assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
 
   }
-  
+
   @Test
   @Deployment
   public void testProcessWithoutWaitState() {
@@ -102,11 +102,10 @@ public class BusinessProcessBeanTest extends CdiActivitiTestCase {
 
     assertNull(getBeanInstance(Task.class));
     assertNull(getBeanInstance("taskId"));
-    
 
     businessProcess.startProcessByKey("businessProcessBeanTest");
     String taskId = taskService.createTaskQuery().singleResult().getId();
-    
+
     businessProcess.startTask(taskId);
 
     // assert that now we can resolve the Task-bean

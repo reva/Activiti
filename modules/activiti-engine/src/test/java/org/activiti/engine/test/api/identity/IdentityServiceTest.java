@@ -32,19 +32,19 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
   public void testUserInfo() {
     User user = identityService.newUser("testuser");
     identityService.saveUser(user);
-    
+
     identityService.setUserInfo("testuser", "myinfo", "myvalue");
     assertEquals("myvalue", identityService.getUserInfo("testuser", "myinfo"));
-    
+
     identityService.setUserInfo("testuser", "myinfo", "myvalue2");
     assertEquals("myvalue2", identityService.getUserInfo("testuser", "myinfo"));
-    
+
     identityService.deleteUserInfo("testuser", "myinfo");
     assertNull(identityService.getUserInfo("testuser", "myinfo"));
-    
+
     identityService.deleteUser(user.getId());
   }
-  
+
   public void testCreateExistingUser() {
     User user = identityService.newUser("testuser");
     identityService.saveUser(user);
@@ -53,12 +53,13 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
       identityService.saveUser(secondUser);
       fail("Exception should have been thrown");
     } catch (RuntimeException re) {
-      // Expected exception while saving new user with the same name as an existing one.
-    } 
-      
+      // Expected exception while saving new user with the same name as an
+      // existing one.
+    }
+
     identityService.deleteUser(user.getId());
   }
-  
+
   public void testUpdateUser() {
     // First, create a new user
     User user = identityService.newUser("johndoe");
@@ -90,13 +91,19 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
 
     Picture picture = new Picture("niceface".getBytes(), "image/string");
     identityService.setUserPicture(userId, picture);
-    
+
     picture = identityService.getUserPicture(userId);
 
     // Fetch and update the user
     user = identityService.createUserQuery().userId("johndoe").singleResult();
     assertTrue("byte arrays differ", Arrays.equals("niceface".getBytes(), picture.getBytes()));
     assertEquals("image/string", picture.getMimeType());
+    
+    //interface defintion states that setting picture to null should delete it
+    identityService.setUserPicture(userId, null);
+    assertNull("it should be possible to nullify user picture",identityService.getUserPicture(userId));    
+    user = identityService.createUserQuery().userId("johndoe").singleResult();
+    assertNull("it should be possible to delete user picture",identityService.getUserPicture(userId));
 
     identityService.deleteUser(user.getId());
   }
@@ -126,51 +133,49 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     assertNull(group);
   }
 
-
-
   public void testCreateMembershipUnexistingGroup() {
     User johndoe = identityService.newUser("johndoe");
     identityService.saveUser(johndoe);
-    
+
     try {
       identityService.createMembership(johndoe.getId(), "unexistinggroup");
       fail("Expected exception");
-    } catch(RuntimeException re) {
+    } catch (RuntimeException re) {
       // Exception expected
     }
-    
+
     identityService.deleteUser(johndoe.getId());
   }
-  
+
   public void testCreateMembershipUnexistingUser() {
     Group sales = identityService.newGroup("sales");
     identityService.saveGroup(sales);
-    
+
     try {
       identityService.createMembership("unexistinguser", sales.getId());
       fail("Expected exception");
-    } catch(RuntimeException re) {
+    } catch (RuntimeException re) {
       // Exception expected
     }
-    
+
     identityService.deleteGroup(sales.getId());
   }
-  
+
   public void testCreateMembershipAlreadyExisting() {
     Group sales = identityService.newGroup("sales");
     identityService.saveGroup(sales);
     User johndoe = identityService.newUser("johndoe");
     identityService.saveUser(johndoe);
-    
+
     // Create the membership
     identityService.createMembership(johndoe.getId(), sales.getId());
-    
+
     try {
-      identityService.createMembership(johndoe.getId(), sales.getId());      
-    } catch(RuntimeException re) {
-     // Expected exception, membership already exists
+      identityService.createMembership(johndoe.getId(), sales.getId());
+    } catch (RuntimeException re) {
+      // Expected exception, membership already exists
     }
-    
+
     identityService.deleteGroup(sales.getId());
     identityService.deleteUser(johndoe.getId());
   }
@@ -192,7 +197,7 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("user is null", ae.getMessage());
     }
   }
-  
+
   public void testFindGroupByIdNullArgument() {
     try {
       identityService.createGroupQuery().groupId(null).singleResult();
@@ -263,21 +268,21 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     identityService.deleteGroup("sales");
     identityService.deleteUser("johndoe");
   }
-  
+
   public void testDeleteMembershipWhenUserIsNoMember() {
     Group sales = identityService.newGroup("sales");
     identityService.saveGroup(sales);
 
     User johndoe = identityService.newUser("johndoe");
     identityService.saveUser(johndoe);
-    
+
     // Delete the membership when the user is no member
     identityService.deleteMembership(johndoe.getId(), sales.getId());
-    
+
     identityService.deleteGroup("sales");
     identityService.deleteUser("johndoe");
   }
-  
+
   public void testDeleteMembershipUnexistingGroup() {
     User johndoe = identityService.newUser("johndoe");
     identityService.saveUser(johndoe);
@@ -285,7 +290,7 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     identityService.deleteMembership(johndoe.getId(), "unexistinggroup");
     identityService.deleteUser(johndoe.getId());
   }
-  
+
   public void testDeleteMembershipUnexistingUser() {
     Group sales = identityService.newGroup("sales");
     identityService.saveGroup(sales);
@@ -293,7 +298,7 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     identityService.deleteMembership("unexistinguser", sales.getId());
     identityService.deleteGroup(sales.getId());
   }
-  
+
   public void testDeleteMemberschipNullArguments() {
     try {
       identityService.deleteMembership(null, "group");
@@ -318,11 +323,11 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("userId is null", ae.getMessage());
     }
   }
-  
+
   public void testDeleteUserUnexistingUserId() {
     // No exception should be thrown. Deleting an unexisting user should
     // be ignored silently
-     identityService.deleteUser("unexistinguser");
+    identityService.deleteUser("unexistinguser");
   }
 
   public void testCheckPasswordNullSafe() {
@@ -330,51 +335,51 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     assertFalse(identityService.checkPassword(null, "passwd"));
     assertFalse(identityService.checkPassword(null, null));
   }
-  
+
   public void testUserOptimisticLockingException() {
     User user = identityService.newUser("kermit");
     identityService.saveUser(user);
-    
+
     User user1 = identityService.createUserQuery().singleResult();
     User user2 = identityService.createUserQuery().singleResult();
-    
+
     user1.setFirstName("name one");
     identityService.saveUser(user1);
 
     try {
-      
+
       user2.setFirstName("name two");
       identityService.saveUser(user2);
-      
+
       fail("Expected an exception");
     } catch (ActivitiOptimisticLockingException e) {
       // Expected an exception
     }
-    
+
     identityService.deleteUser(user.getId());
   }
-  
+
   public void testGroupOptimisticLockingException() {
     Group group = identityService.newGroup("group");
     identityService.saveGroup(group);
-    
+
     Group group1 = identityService.createGroupQuery().singleResult();
     Group group2 = identityService.createGroupQuery().singleResult();
-    
+
     group1.setName("name one");
     identityService.saveGroup(group1);
 
     try {
-      
+
       group2.setName("name two");
       identityService.saveGroup(group2);
-      
+
       fail("Expected an exception");
     } catch (ActivitiOptimisticLockingException e) {
       // Expected an exception
     }
-    
+
     identityService.deleteGroup(group.getId());
   }
-  
+
 }

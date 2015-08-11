@@ -16,8 +16,10 @@ package org.activiti.examples.bpmn.executionlistener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * Simple {@link ExecutionListener} that sets the current activity id and name attributes on the execution.
@@ -31,7 +33,7 @@ public class CurrentActivityExecutionListener implements ExecutionListener {
   public static class CurrentActivity {
     private final String activityId;
     private final String activityName;
-    
+
     public CurrentActivity(String activityId, String activityName) {
       this.activityId = activityId;
       this.activityName = activityName;
@@ -40,20 +42,23 @@ public class CurrentActivityExecutionListener implements ExecutionListener {
     public String getActivityId() {
       return activityId;
     }
-    
+
     public String getActivityName() {
       return activityName;
     }
   }
-  
-  public void notify(DelegateExecution execution) throws Exception {
-    currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), execution.getCurrentActivityName()));
+
+  public void notify(DelegateExecution execution) {
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    String activityId = execution.getCurrentActivityId();
+    FlowElement currentFlowElement = process.getFlowElement(activityId, true);
+    currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), currentFlowElement.getName()));
   }
 
   public static List<CurrentActivity> getCurrentActivities() {
     return currentActivities;
   }
-  
+
   public static void clear() {
     currentActivities.clear();
   }

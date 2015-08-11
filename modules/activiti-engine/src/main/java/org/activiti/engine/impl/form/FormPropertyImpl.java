@@ -16,12 +16,11 @@ package org.activiti.engine.impl.form;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 
-
 /**
  * @author Tom Baeyens
  */
 public class FormPropertyImpl implements FormProperty {
-  
+
   protected String id;
   protected String name;
   protected FormType type;
@@ -43,27 +42,27 @@ public class FormPropertyImpl implements FormProperty {
   public String getId() {
     return id;
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public FormType getType() {
     return type;
   }
-  
+
   public String getValue() {
     return value;
   }
-  
+
   public boolean isRequired() {
     return isRequired;
   }
-  
+
   public boolean isReadable() {
     return isReadable;
   }
-  
+
   public void setValue(String value) {
     this.value = value;
   }

@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 public class BusinessProcessContext implements Context {
 
   final static Logger logger = LoggerFactory.getLogger(BusinessProcessContext.class);
-  
-  private final BeanManager beanManager;  
-  
+
+  private final BeanManager beanManager;
+
   public BusinessProcessContext(BeanManager beanManager) {
     this.beanManager = beanManager;
   }
@@ -47,7 +47,7 @@ public class BusinessProcessContext implements Context {
   }
 
   @Override
-  public Class< ? extends Annotation> getScope() {
+  public Class<? extends Annotation> getScope() {
     return BusinessProcessScoped.class;
   }
 
@@ -59,8 +59,8 @@ public class BusinessProcessContext implements Context {
     BusinessProcess businessProcess = getBusinessProcess();
     Object variable = businessProcess.getVariable(variableName);
     if (variable != null) {
-      if(logger.isDebugEnabled()) {
-        if(businessProcess.isAssociated()) {        
+      if (logger.isDebugEnabled()) {
+        if (businessProcess.isAssociated()) {
           logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
         } else {
           logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
@@ -83,8 +83,8 @@ public class BusinessProcessContext implements Context {
     BusinessProcess businessProcess = getBusinessProcess();
     Object variable = businessProcess.getVariable(variableName);
     if (variable != null) {
-      if(logger.isDebugEnabled()) {
-        if(businessProcess.isAssociated()) {        
+      if (logger.isDebugEnabled()) {
+        if (businessProcess.isAssociated()) {
           logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
         } else {
           logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
@@ -93,9 +93,9 @@ public class BusinessProcessContext implements Context {
 
       return (T) variable;
     } else {
-      
-      if(logger.isDebugEnabled()) {
-        if(businessProcess.isAssociated()) {        
+
+      if (logger.isDebugEnabled()) {
+        if (businessProcess.isAssociated()) {
           logger.debug("Creating instance of bean '{}' in business process context representing Execution[{}]", variableName, businessProcess.getExecutionId());
         } else {
           logger.debug("Creating instance of bean '{}' in transient bean store", variableName);
@@ -111,9 +111,11 @@ public class BusinessProcessContext implements Context {
 
   @Override
   public boolean isActive() {
-    // we assume the business process is always 'active'. If no task/execution is 
-    // associated, temporary instances of @BusinessProcesScoped beans are cached in the 
-    // conversation / request 
+    // we assume the business process is always 'active'. If no
+    // task/execution is
+    // associated, temporary instances of @BusinessProcesScoped beans are
+    // cached in the
+    // conversation / request
     return true;
   }
 

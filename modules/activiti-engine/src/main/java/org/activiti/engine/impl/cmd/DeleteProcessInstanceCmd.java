@@ -23,7 +23,7 @@ import java.io.Serializable;
  * @author Joram Barrez
  */
 public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
-  
+
   private static final long serialVersionUID = 1L;
   protected String processInstanceId;
   protected String deleteReason;
@@ -33,7 +33,7 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     this.deleteReason = deleteReason;
   }
 
-  public Void execute(CommandContext commandContext) { 
+  public Void execute(CommandContext commandContext) {
     if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
@@ -44,14 +44,14 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     }
 
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createCancelledEvent(this.processInstanceId
-        , this.processInstanceId, null, deleteReason));
+      commandContext.getProcessEngineConfiguration().getEventDispatcher()
+        .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(this.processInstanceId, this.processInstanceId, null, deleteReason));
     }
 
-    commandContext
-      .getExecutionEntityManager()
-      .deleteProcessInstance(processInstanceId, deleteReason);
+    commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceId, null, deleteReason, true);
+
+    // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance
+    // commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceId, deleteReason);
     return null;
   }
 

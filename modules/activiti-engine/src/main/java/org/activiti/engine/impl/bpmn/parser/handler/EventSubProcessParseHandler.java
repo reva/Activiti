@@ -15,13 +15,12 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventSubProcess;
 
-
 /**
  * @author Joram Barrez
  */
 public class EventSubProcessParseHandler extends SubProcessParseHandler {
-  
-  protected Class< ? extends BaseElement> getHandledType() {
+
+  protected Class<? extends BaseElement> getHandledType() {
     return EventSubProcess.class;
   }
 

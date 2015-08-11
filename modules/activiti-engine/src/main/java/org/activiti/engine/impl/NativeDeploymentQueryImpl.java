@@ -11,7 +11,7 @@ import java.util.Map;
 public class NativeDeploymentQueryImpl extends AbstractNativeQuery<NativeDeploymentQuery, Deployment> implements NativeDeploymentQuery {
 
   private static final long serialVersionUID = 1L;
-  
+
   public NativeDeploymentQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
@@ -20,19 +20,14 @@ public class NativeDeploymentQueryImpl extends AbstractNativeQuery<NativeDeploym
     super(commandExecutor);
   }
 
+  // results ////////////////////////////////////////////////////////////////
 
- //results ////////////////////////////////////////////////////////////////
-  
   public List<Deployment> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext
-      .getDeploymentEntityManager()
-      .findDeploymentsByNativeQuery(parameterMap, firstResult, maxResults);
+    return commandContext.getDeploymentEntityManager().findDeploymentsByNativeQuery(parameterMap, firstResult, maxResults);
   }
-  
+
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext
-      .getDeploymentEntityManager()
-      .findDeploymentCountByNativeQuery(parameterMap);
+    return commandContext.getDeploymentEntityManager().findDeploymentCountByNativeQuery(parameterMap);
   }
 
 }

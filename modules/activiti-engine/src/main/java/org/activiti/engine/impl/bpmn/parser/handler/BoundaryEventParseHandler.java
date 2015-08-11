@@ -12,59 +12,53 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<BoundaryEvent> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(BoundaryEventParseHandler.class);
-  
-  public Class< ? extends BaseElement> getHandledType() {
+
+  private static final Logger logger = LoggerFactory.getLogger(BoundaryEventParseHandler.class);
+
+  public Class<? extends BaseElement> getHandledType() {
     return BoundaryEvent.class;
   }
-  
+
   protected void executeParse(BpmnParse bpmnParse, BoundaryEvent boundaryEvent) {
-    
-    ActivityImpl parentActivity = findActivity(bpmnParse, boundaryEvent.getAttachedToRefId());
-    if (parentActivity == null) {
-      logger.warn("Invalid reference in boundary event. Make sure that the referenced activity is defined in the same scope as the boundary event " +  boundaryEvent.getId());
+
+    if (boundaryEvent.getAttachedToRef() == null) {
+      logger.warn("Invalid reference in boundary event. Make sure that the referenced activity " + "is defined in the same scope as the boundary event " + boundaryEvent.getId());
       return;
     }
-   
-    ActivityImpl nestedActivity = createActivityOnScope(bpmnParse, boundaryEvent, BpmnXMLConstants.ELEMENT_EVENT_BOUNDARY, parentActivity);
-    bpmnParse.setCurrentActivity(nestedActivity);
 
     EventDefinition eventDefinition = null;
-    if (!boundaryEvent.getEventDefinitions().isEmpty()) {
+    if (boundaryEvent.getEventDefinitions().size() > 0) {
       eventDefinition = boundaryEvent.getEventDefinitions().get(0);
     }
-    
-    if (eventDefinition instanceof TimerEventDefinition
-            || eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition
-            || eventDefinition instanceof SignalEventDefinition
-            || eventDefinition instanceof CancelEventDefinition
-            || eventDefinition instanceof MessageEventDefinition
-            || eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
+
+    if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof ErrorEventDefinition || eventDefinition instanceof SignalEventDefinition
+        || eventDefinition instanceof CancelEventDefinition || eventDefinition instanceof MessageEventDefinition || eventDefinition instanceof CompensateEventDefinition) {
 
       bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-      
+
     } else {
+      // Should already be picked up by process validator on deploy, so this is just to be sure
       logger.warn("Unsupported boundary event type for boundary event " + boundaryEvent.getId());
     }
+
   }
 
 }

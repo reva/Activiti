@@ -22,17 +22,13 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * Factory class used by the {@link BpmnParser} and {@link BpmnParse} to instantiate
- * the behaviour classes for {@link TaskListener} and {@link ExecutionListener} usages.
- *
- * You can provide your own implementation of this class. This way, you can give
- * different execution semantics to the standard construct. 
+ * Factory class used by the {@link BpmnParser} and {@link BpmnParse} to instantiate the behaviour classes for {@link TaskListener} and {@link ExecutionListener} usages.
  * 
- * The easiest and advisable way to implement your own {@link ListenerFactory} 
- * is to extend the {@link DefaultListenerFactory}.
+ * You can provide your own implementation of this class. This way, you can give different execution semantics to the standard construct.
  * 
- * An instance of this interface can be injected in the {@link ProcessEngineConfigurationImpl}
- * and its subclasses. 
+ * The easiest and advisable way to implement your own {@link ListenerFactory} is to extend the {@link DefaultListenerFactory}.
+ * 
+ * An instance of this interface can be injected in the {@link ProcessEngineConfigurationImpl} and its subclasses.
  * 
  * @author Joram Barrez
  */
@@ -49,11 +45,11 @@ public interface ListenerFactory {
   public abstract ExecutionListener createExpressionExecutionListener(ActivitiListener activitiListener);
 
   public abstract ExecutionListener createDelegateExpressionExecutionListener(ActivitiListener activitiListener);
-  
+
   public abstract ActivitiEventListener createClassDelegateEventListener(EventListener eventListener);
-  
+
   public abstract ActivitiEventListener createDelegateExpressionEventListener(EventListener eventListener);
-  
+
   public abstract ActivitiEventListener createEventThrowingEventListener(EventListener eventListener);
 
 }

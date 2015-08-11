@@ -24,7 +24,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 public class StringToDate extends AbstractTransformer {
 
   protected FastDateFormat format = FastDateFormat.getInstance("dd/MM/yyyy");
-  
+
   @Override
   protected Object primTransform(Object anObject) throws Exception {
     return format.parse((String) anObject);

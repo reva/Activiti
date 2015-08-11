@@ -64,44 +64,44 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     calendar.set(2025, Calendar.DECEMBER, 10, 0, 0, 0);
     testClock.setCurrentTime(calendar.getTime());
 
-    //deploy the process
-    repositoryService.createDeployment()
-            .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventRepeatWithoutEndDateTest.testCycleDateStartTimerEvent.bpmn20.xml")
-            .deploy();
+    // deploy the process
+    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventRepeatWithoutEndDateTest.testCycleDateStartTimerEvent.bpmn20.xml").deploy();
     assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
 
-    //AFTER DEPLOYMENT
-    //when the process is deployed there will be created a timerStartEvent job which will wait to be executed.
+    // AFTER DEPLOYMENT
+    // when the process is deployed there will be created a timerStartEvent
+    // job which will wait to be executed.
     List<Job> jobs = managementService.createJobQuery().list();
     assertEquals(1, jobs.size());
 
-    //dueDate should be after 24 hours from the process deployment
+    // dueDate should be after 24 hours from the process deployment
     Calendar dueDateCalendar = Calendar.getInstance();
     dueDateCalendar.set(2025, Calendar.DECEMBER, 11, 0, 0, 0);
 
-    //check the due date is inside the 2 seconds range
+    // check the due date is inside the 2 seconds range
     assertEquals(true, Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000);
 
-    //No process instances
+    // No process instances
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, processInstances.size());
 
-    //No tasks
+    // No tasks
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
-
+    
     // ADVANCE THE CLOCK
     // advance the clock after 9 days from starting the process ->
-    // the system will execute the pending job and will create a new one (day by day)
-    moveByMinutes(9 * 60 * 24);
+    // the system will execute the pending job and will create a new one
+    // (day by day)
+    moveByMinutes((9 * 60 * 24));
     try {
-      waitForJobExecutorToProcessAllJobs(10000, 200);
+      waitForJobExecutorToProcessAllJobs(10000L, 200);
       fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
-      //expected failure
+      // expected failure
     }
 
-    // After time advanced 9 days  there should be 9 process instance started
+    // After time advanced 9 days there should be 9 process instance started
     processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(9, processInstances.size());
 
@@ -109,11 +109,12 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     tasks = taskService.createTaskQuery().list();
     assertEquals(9, tasks.size());
 
-    // one new job will be created (and the old one will be deleted after execution)
+    // one new job will be created (and the old one will be deleted after
+    // execution)
     jobs = managementService.createJobQuery().list();
     assertEquals(1, jobs.size());
 
-    //check if the last job to be executed has the dueDate set correctly
+    // check if the last job to be executed has the dueDate set correctly
     // (10'th repeat after 10 dec. => dueDate must have DueDate = 20 dec.)
     dueDateCalendar = Calendar.getInstance();
     dueDateCalendar.set(2025, Calendar.DECEMBER, 20, 0, 0, 0);
@@ -127,12 +128,14 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     } catch (Exception e) {
       fail("Because the maximum number of repeats is reached it will not be executed other jobs");
     }
-    // After the 10nth startEvent Execution should have 10 process instances started
+    // After the 10nth startEvent Execution should have 10 process instances
+    // started
     // (since the first one was not completed)
     processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(10, processInstances.size());
 
-    // the current job will be deleted after execution and a new one will not be created. (all 10 has already executed)
+    // the current job will be deleted after execution and a new one will
+    // not be created. (all 10 has already executed)
     jobs = managementService.createJobQuery().list();
     assertEquals(0, jobs.size());
 
@@ -141,7 +144,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     tasks = taskService.createTaskQuery().list();
     assertEquals(10, tasks.size());
 
-    //FINAL CHECK
+    // FINAL CHECK
     // count "timer fired" events
     int timerFiredCount = 0;
     List<ActivitiEvent> eventsReceived = listener.getEventsReceived();
@@ -151,7 +154,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
       }
     }
 
-    //count "entity created" events
+    // count "entity created" events
     int eventCreatedCount = 0;
     for (ActivitiEvent eventReceived : eventsReceived) {
       if (ActivitiEventType.ENTITY_CREATED.equals(eventReceived.getType())) {
@@ -166,12 +169,13 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
         eventDeletedCount++;
       }
     }
-    assertEquals(10, timerFiredCount); //10 timers fired
-    assertEquals(10, eventCreatedCount); //10 jobs created
-    assertEquals(10, eventDeletedCount); //10 jobs deleted
+    assertEquals(10, timerFiredCount); // 10 timers fired
+    assertEquals(10, eventCreatedCount); // 10 jobs created
+    assertEquals(10, eventDeletedCount); // 10 jobs deleted
 
     // for each processInstance
-    // let's complete the userTasks where the process is hanging in order to complete the processes.
+    // let's complete the userTasks where the process is hanging in order to
+    // complete the processes.
     for (ProcessInstance processInstance : processInstances) {
       tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
       Task task = tasks.get(0);
@@ -180,15 +184,15 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
       taskService.complete(task.getId());
     }
 
-    //now All the process instances should be completed
+    // now All the process instances should be completed
     processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, processInstances.size());
 
-    //no jobs
+    // no jobs
     jobs = managementService.createJobQuery().list();
     assertEquals(0, jobs.size());
 
-    //no tasks
+    // no tasks
     tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
 

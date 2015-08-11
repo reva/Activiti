@@ -9,26 +9,26 @@ public class ErrorInfo {
   private String exception;
 
   public ErrorInfo(String message, Exception ex) {
-      this.message = message;
-      if (ex != null) {
-        this.exception = ex.getLocalizedMessage();
-      }
+    this.message = message;
+    if (ex != null) {
+      this.exception = ex.getLocalizedMessage();
+    }
   }
 
   public String getMessage() {
-      return message;
+    return message;
   }
 
   public void setMessage(String message) {
-      this.message = message;
+    this.message = message;
   }
-  
+
   public void setException(String exception) {
-      this.exception = exception;
+    this.exception = exception;
   }
-  
+
   @JsonInclude(Include.NON_NULL)
   public String getException() {
-      return exception;
+    return exception;
   }
 }

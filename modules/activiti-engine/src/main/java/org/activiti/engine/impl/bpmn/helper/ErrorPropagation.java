@@ -13,224 +13,340 @@
 
 package org.activiti.engine.impl.bpmn.helper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.Event;
+import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmException;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
-import org.activiti.engine.impl.pvm.PvmScope;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.impl.util.tree.ExecutionTree;
+import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 /**
- * This class is responsible for finding and executing error handlers for BPMN
- * Errors.
+ * This class is responsible for finding and executing error handlers for BPMN Errors.
  * 
- * Possible error handlers include Error Intermediate Events and Error Event
- * Sub-Processes.
+ * Possible error handlers include Error Intermediate Events and Error Event Sub-Processes.
  * 
- * @author Falko Menge
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  * @author Saeid Mirzaei
  */
 public class ErrorPropagation {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ErrorPropagation.class);
-
-  public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {    
+  public static void propagateError(BpmnError error, ActivityExecution execution) {
     propagateError(error.getErrorCode(), execution);
   }
-  
-  public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
 
-	  while (execution != null) {
-		    String eventHandlerId = findLocalErrorEventHandler(execution, errorCode); 
-		    if (eventHandlerId != null) {
-		    	 executeCatch(eventHandlerId, execution, errorCode);
-		    	 break;
-		    }
-		    execution = getSuperExecution(execution);
-	  }
-    if (execution == null) {
-		  throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" 
-	                + errorCode + "', neither in same process nor in parent process");		  
-	  }
+  public static void propagateError(String errorCode, ActivityExecution execution) {
+    Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorCode);
+    if (eventMap.size() > 0) {
+      executeCatch(eventMap, execution, errorCode);
+    } else {
+      if (execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId()) == false) {
+        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+        ExecutionTree executionTree = executionEntityManager.findExecutionTree(execution.getRootProcessInstanceId());
+        ExecutionTreeNode rootNode = executionTree.getRoot();
+        
+        // get execution node for current process instance
+        ExecutionTreeNode existingNode = getCurrentExecutionTreeNode(rootNode, execution.getProcessInstanceId());
+        if (existingNode != null) {
+          
+          // get execution node for parent process of current process instance
+          ExecutionTreeNode parentNode = existingNode.getParent();
+          
+          Set<String> toDeleteExecutions = new HashSet<String>();
+          toDeleteExecutions.add(execution.getProcessInstanceId());
+          
+          while (parentNode != null && eventMap.size() == 0) {
+            eventMap = findCatchingEventsForProcess(parentNode.getExecutionEntity().getProcessDefinitionId(), errorCode);
+            if (eventMap.size() > 0) {
+              
+              for (String processInstanceId : toDeleteExecutions) {
+                executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, 
+                    execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED");
+              }
+              executeCatch(eventMap, parentNode.getExecutionEntity(), errorCode);
+            
+            } else {
+              toDeleteExecutions.add(parentNode.getExecutionEntity().getProcessInstanceId());
+              parentNode = parentNode.getParent();
+            }
+          }
+        }
+      }
+    }
+    
+    if (eventMap.size() == 0) {
+      throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" + errorCode + "', neither in same process nor in parent process");
+    }
   }
 
+  protected static void executeCatch(Map<String, List<Event>> eventMap, ActivityExecution activityExecution, String errorId) {
+    ExecutionEntity currentExecution = (ExecutionEntity) activityExecution;
 
-  private static String findLocalErrorEventHandler(ActivityExecution execution, String errorCode) {
-    PvmScope scope = execution.getActivity();
-    while (scope != null) {
+    Event matchingEvent = null;
+
+    /*
+     * ScopeImpl catchingScope = errorHandler.getParent(); if (catchingScope instanceof ActivityImpl) { ActivityImpl catchingScopeActivity = (ActivityImpl) catchingScope; if
+     * (!catchingScopeActivity.isScope()) { // event subprocesses catchingScope = catchingScopeActivity.getParent(); } }
+     */
+
+    // if (catchingScope instanceof PvmProcessDefinition) {
+    // executeEventHandler(errorHandler, ((ExecutionEntity) execution).getProcessInstance(), errorCode);
+
+    // } else {
+    if (eventMap.containsKey(currentExecution.getActivityId())) {
+      matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
       
-      @SuppressWarnings("unchecked")
-      List<ErrorEventDefinition> definitions = (List<ErrorEventDefinition>) scope.getProperty(BpmnParse.PROPERTYNAME_ERROR_EVENT_DEFINITIONS);
-      if(definitions != null) {      
-        // definitions are sorted by precedence, ie. event subprocesses first.      
-        for (ErrorEventDefinition errorEventDefinition : definitions) {
-          if(errorEventDefinition.catches(errorCode)) {
-            return scope.findActivity(errorEventDefinition.getHandlerActivityId()).getId();
+      // check for parallel multi instance execution --> if so, get the parent execution
+      FlowElement parentElement = currentExecution.getParent().getCurrentFlowElement();
+      if (parentElement != null && parentElement.getId().equals(currentExecution.getCurrentFlowElement().getId())) {
+        currentExecution = currentExecution.getParent();
+      }
+      
+    } else {
+      currentExecution = currentExecution.getParent();
+
+      // Traverse parents until one is found that is a scope and matches the activity the boundary event is defined on
+      while (matchingEvent == null && currentExecution != null) {
+        FlowElementsContainer currentContainer = null;
+        if (currentExecution.getCurrentFlowElement() instanceof FlowElementsContainer) {
+          currentContainer = (FlowElementsContainer) currentExecution.getCurrentFlowElement();
+        } else if (currentExecution.getId().equals(currentExecution.getProcessInstanceId())) {
+          currentContainer = ProcessDefinitionUtil.getProcess(currentExecution.getProcessDefinitionId());
+        }
+        
+        for (String refId : eventMap.keySet()) {
+          List<Event> events = eventMap.get(refId);
+          if (CollectionUtils.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
+            if (currentContainer.getFlowElement(refId) != null) {
+              matchingEvent = events.get(0);
+            }
+          }
+        }
+        
+        if (matchingEvent == null) {
+          if (eventMap.containsKey(currentExecution.getActivityId())) {
+            matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
+            
+            // check for parallel multi instance execution --> if so, get the parent execution
+            FlowElement parentElement = currentExecution.getParent().getCurrentFlowElement();
+            if (parentElement != null && parentElement.getId().equals(currentExecution.getCurrentFlowElement().getId())) {
+              currentExecution = currentExecution.getParent();
+            }
+          } else if (StringUtils.isNotEmpty(currentExecution.getParentId())) {
+            currentExecution = currentExecution.getParent();
+          } else {
+            currentExecution = null;
+          }
+        }
+      }
+    }
+
+    if (matchingEvent != null && currentExecution != null) {
+      executeEventHandler(matchingEvent, currentExecution, errorId);
+    } else {
+      throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
+    }
+    // }
+  }
+
+  protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, String errorId) {
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
+      if (bpmnModel != null) {
+        
+        String errorCode = bpmnModel.getErrors().get(errorId);
+        if (errorCode == null) {
+          errorCode = errorId;
+        }
+        
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createErrorEvent(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, event.getId(), errorId, errorCode, parentExecution.getId(),
+              parentExecution.getProcessInstanceId(), parentExecution.getProcessDefinitionId()));
+      }
+    }
+
+    if (event instanceof StartEvent) {
+      parentExecution.setCurrentFlowElement(event);
+      Context.getAgenda().planContinueProcessOperation(parentExecution);
+    } else {
+      ExecutionEntity boundaryExecution = null;
+      /*if (boundaryParentExecution.isScope() == false) {
+        boundaryParentExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(boundaryParentExecution.getParentId());
+      }*/
+      List<ExecutionEntity> childExecutions = parentExecution.getExecutions();
+      for (ExecutionEntity childExecution : childExecutions) {
+        if (childExecution.getActivityId().equals(event.getId())) {
+          boundaryExecution = childExecution;
+        }
+      }
+      Context.getAgenda().planTriggerExecutionOperation(boundaryExecution);
+    }
+  }
+
+  protected static Map<String, List<Event>> findCatchingEventsForProcess(String processDefinitionId, String errorCode) {
+    Map<String, List<Event>> eventMap = new HashMap<String, List<Event>>();
+    Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+    BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
+
+    String compareErrorCode = retrieveErrorCode(bpmnModel, errorCode);
+    
+    List<EventSubProcess> subProcesses = process.findFlowElementsOfType(EventSubProcess.class, true);
+    for (EventSubProcess eventSubProcess : subProcesses) {
+      for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
+        if (flowElement instanceof StartEvent) {
+          StartEvent startEvent = (StartEvent) flowElement;
+          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+            ErrorEventDefinition errorEventDef = (ErrorEventDefinition) startEvent.getEventDefinitions().get(0);
+            String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorCode());
+            
+            if (eventErrorCode == null || compareErrorCode == null || eventErrorCode.equals(compareErrorCode)) {
+              List<Event> startEvents = new ArrayList<Event>();
+              startEvents.add(startEvent);
+              eventMap.put(eventSubProcess.getId(), startEvents);
+            }
+          }
+        }
+      }
+    }
+    
+    List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+      if (boundaryEvent.getAttachedToRefId() != null && CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+
+        ErrorEventDefinition errorEventDef = (ErrorEventDefinition) boundaryEvent.getEventDefinitions().get(0);
+        String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorCode());
+        
+        if (eventErrorCode == null || compareErrorCode == null || eventErrorCode.equals(compareErrorCode)) {
+          List<Event> elementBoundaryEvents = null;
+          if (eventMap.containsKey(boundaryEvent.getAttachedToRefId()) == false) {
+            elementBoundaryEvents = new ArrayList<Event>();
+            eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
+          } else {
+            elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
+          }
+          elementBoundaryEvents.add(boundaryEvent);
+        }
+      }
+    }
+    return eventMap;
+  }
+
+  public static boolean mapException(Exception e, ExecutionEntity execution, List<MapExceptionEntry> exceptionMap) {
+    String errorCode = findMatchingExceptionMapping(e, exceptionMap);
+    if (errorCode != null) {
+      propagateError(errorCode, execution);
+      return true;
+    } else {
+      ExecutionEntity callActivityExecution = null;
+      ExecutionEntity parentExecution = execution.getParent();
+      while (parentExecution != null && callActivityExecution == null) {
+        if (parentExecution.getId().equals(parentExecution.getProcessInstanceId())) {
+          if (parentExecution.getSuperExecution() != null) {
+            callActivityExecution = parentExecution.getSuperExecution();
+          } else {
+            parentExecution = null;
+          }
+        } else {
+          parentExecution = parentExecution.getParent();
+        }
+      }
+      
+      if (callActivityExecution != null) {
+        CallActivity callActivity = (CallActivity) callActivityExecution.getCurrentFlowElement();
+        if (CollectionUtils.isNotEmpty(callActivity.getMapExceptions())) {
+          errorCode = findMatchingExceptionMapping(e, callActivity.getMapExceptions());
+          if (errorCode != null) {
+            propagateError(errorCode, callActivityExecution);
+            return true;
           }
         }
       }
       
-      // search for error handlers in parent scopes 
-      if (scope instanceof PvmActivity) {
-        scope = ((PvmActivity) scope).getParent();
-      } else {
-        scope = null;
-      }
-    }
-    return null;
-  }
-
-  
-  private static ActivityExecution getSuperExecution(ActivityExecution execution) {
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    ExecutionEntity superExecution = executionEntity.getProcessInstance().getSuperExecution();
-    if (superExecution != null && !superExecution.isScope()) {
-      return superExecution.getParent();
-    }
-    return superExecution;
-  }
-  
-  private static void executeCatch(String errorHandlerId, ActivityExecution execution, String errorCode) {
-    ProcessDefinitionImpl processDefinition = ((ExecutionEntity) execution).getProcessDefinition();
-    ActivityImpl errorHandler = processDefinition.findActivity(errorHandlerId);
-    if (errorHandler == null) {
-      throw new ActivitiException(errorHandlerId + " not found in process definition");
-    }
-    
-    boolean matchingParentFound = false;
-    ActivityExecution leavingExecution = execution;
-    ActivityImpl currentActivity = (ActivityImpl) execution.getActivity();    
-    
-    ScopeImpl catchingScope = errorHandler.getParent();
-    if(catchingScope instanceof ActivityImpl) { 
-      ActivityImpl catchingScopeActivity = (ActivityImpl) catchingScope;
-      if(!catchingScopeActivity.isScope()) { // event subprocesses
-        catchingScope = catchingScopeActivity.getParent();
-      }
-    }
-    
-    if(catchingScope instanceof PvmProcessDefinition) {
-      executeEventHandler(errorHandler, ((ExecutionEntity)execution).getProcessInstance(), errorCode);
-      
-    } else {      
-      if (currentActivity.getId().equals(catchingScope.getId())) {
-        matchingParentFound = true;
-      } else {
-        currentActivity = (ActivityImpl) currentActivity.getParent();
-      
-        // Traverse parents until one is found that is a scope 
-        // and matches the activity the boundary event is defined on
-        while(!matchingParentFound && leavingExecution != null && currentActivity != null) {
-          if (!leavingExecution.isConcurrent() && currentActivity.getId().equals(catchingScope.getId())) {
-            matchingParentFound = true;
-          } else if (leavingExecution.isConcurrent()) {
-            leavingExecution = leavingExecution.getParent();
-          } else {
-            currentActivity = currentActivity.getParentActivity();
-            leavingExecution = leavingExecution.getParent();
-          } 
-        }
-        
-        // Follow parents up until matching scope can't be found anymore (needed to support for multi-instance)
-        while (leavingExecution != null
-                && leavingExecution.getParent() != null 
-                && leavingExecution.getParent().getActivity() != null
-                && leavingExecution.getParent().getActivity().getId().equals(catchingScope.getId())) {
-          leavingExecution = leavingExecution.getParent();
-        }
-      }
-      
-      if (matchingParentFound && leavingExecution != null) {
-        executeEventHandler(errorHandler, leavingExecution, errorCode);
-      } else {
-        throw new ActivitiException("No matching parent execution for activity " + errorHandlerId + " found");
-      }
-    }
-        
-  }
-
-  private static void executeEventHandler(ActivityImpl borderEventActivity, ActivityExecution leavingExecution, String errorCode) {  
-  	if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-  		Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-  				ActivitiEventBuilder.createErrorEvent(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, borderEventActivity.getId(), errorCode, leavingExecution.getId(), leavingExecution.getProcessInstanceId(), leavingExecution.getProcessDefinitionId()));
-  	}
-  	
-    if(borderEventActivity.getActivityBehavior() instanceof EventSubProcessStartEventActivityBehavior) {
-      InterpretableExecution execution = (InterpretableExecution) leavingExecution;
-      execution.setActivity(borderEventActivity.getParentActivity());
-      execution.performOperation(AtomicOperation.ACTIVITY_START); // make sure the listeners are invoked!
-    }else {
-      leavingExecution.executeActivity(borderEventActivity);
-    }
-  }
-
-  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap) throws Exception {
-    return mapException(e,execution,  exceptionMap, false); 
-  }
-
-  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap, boolean wrapped) throws Exception {
-    if (exceptionMap == null)
       return false;
-    
-    if (wrapped && e instanceof PvmException) {
-      e = (Exception) ((PvmException) e).getCause();
     }
-    
-    String defaultMap = null;
-   
-    for (MapExceptionEntry me: exceptionMap) {
+  }
+  
+  protected static String findMatchingExceptionMapping(Exception e, List<MapExceptionEntry> exceptionMap) {
+    String defaultExceptionMapping = null;
+
+    for (MapExceptionEntry me : exceptionMap) {
       String exceptionClass = me.getClassName();
       String errorCode = me.getErrorCode();
-       
+
       // save the first mapping with no exception class as default map
-      if (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(exceptionClass) && defaultMap == null) {
-        defaultMap = errorCode;
+      if (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(exceptionClass) && defaultExceptionMapping == null) {
+        defaultExceptionMapping = errorCode;
         continue;
       }
-       
+
       // ignore if error code or class are not defined
-      if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(exceptionClass))
+      if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(exceptionClass)) {
         continue;
-       
+      }
+
       if (e.getClass().getName().equals(exceptionClass)) {
-        propagateError(errorCode, execution);
-        return true;
+        return errorCode;
       }
       if (me.isAndChildren()) {
         Class<?> exceptionClassClass = ReflectUtil.loadClass(exceptionClass);
         if (exceptionClassClass.isAssignableFrom(e.getClass())) {
-          propagateError(errorCode, execution);
-          return true;
+          return errorCode;
         }
       }
     }
-    if (defaultMap != null) {
-      propagateError(defaultMap, execution);
-      return true;
+    
+    return defaultExceptionMapping;
+  }
+  
+  protected static ExecutionTreeNode getCurrentExecutionTreeNode(ExecutionTreeNode treeNode, String processInstanceId) {
+    if (treeNode.getChildren() != null && treeNode.getChildren().size() > 0) {
+      ExecutionEntity childEntity = treeNode.getChildren().get(0).getExecutionEntity();
+      if (childEntity != null && childEntity.getProcessInstanceId() != null && childEntity.getProcessInstanceId().equals(processInstanceId)) {
+        return treeNode.getChildren().get(0);
+      }
+      
+      for (ExecutionTreeNode childTreeNode : treeNode.getChildren()) {
+        ExecutionTreeNode searchedNode = getCurrentExecutionTreeNode(childTreeNode, processInstanceId);
+        if (searchedNode != null) {
+          return searchedNode;
+        }
+      }
     }
-     
-    return false;
+    return null;
+  }
+  
+  protected static String retrieveErrorCode(BpmnModel bpmnModel, String errorCode) {
+    String finalErrorCode = null;
+    if (errorCode != null && bpmnModel.containsErrorRef(errorCode)) {
+      finalErrorCode = bpmnModel.getErrors().get(errorCode);
+    } else {
+      finalErrorCode = errorCode;
+    }
+    return finalErrorCode;
   }
 }

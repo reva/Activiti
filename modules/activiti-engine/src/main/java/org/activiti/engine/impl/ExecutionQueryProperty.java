@@ -20,12 +20,12 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.ExecutionQuery;
 
 /**
- * Contains the possible properties that can be used in a {@link ExecutionQuery}.
+ * Contains the possible properties that can be used in a {@link ExecutionQuery} .
  * 
  * @author Joram Barrez
  */
 public class ExecutionQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
@@ -34,7 +34,7 @@ public class ExecutionQueryProperty implements QueryProperty {
   public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("ProcessDefinitionKey");
   public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("ProcessDefinitionId");
   public static final ExecutionQueryProperty TENANT_ID = new ExecutionQueryProperty("RES.TENANT_ID_");
-  
+
   private String name;
 
   public ExecutionQueryProperty(String name) {
@@ -45,7 +45,7 @@ public class ExecutionQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static ExecutionQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

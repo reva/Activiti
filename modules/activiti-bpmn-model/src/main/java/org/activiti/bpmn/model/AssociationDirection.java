@@ -16,17 +16,14 @@ package org.activiti.bpmn.model;
  * @author Tijs Rademakers
  */
 public enum AssociationDirection {
-  NONE("None"),
-  ONE("One"),
-  BOTH("Both");
-  
+  NONE("None"), ONE("One"), BOTH("Both");
+
   String value;
-  
-  AssociationDirection(final String value)
-  {
+
+  AssociationDirection(final String value) {
     this.value = value;
   }
-  
+
   public String getValue() {
     return value;
   }

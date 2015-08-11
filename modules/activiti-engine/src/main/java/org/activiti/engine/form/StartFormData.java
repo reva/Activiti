@@ -15,14 +15,16 @@ package org.activiti.engine.form;
 
 import org.activiti.engine.repository.ProcessDefinition;
 
-
-/** Specific {@link FormData} for starting a new process instance.
+/**
+ * Specific {@link FormData} for starting a new process instance.
  * 
  * @author Tom Baeyens
  */
 public interface StartFormData extends FormData {
 
-  /** The process definition for which this form is starting a new process instance */
+  /**
+   * The process definition for which this form is starting a new process instance
+   */
   ProcessDefinition getProcessDefinition();
-  
+
 }

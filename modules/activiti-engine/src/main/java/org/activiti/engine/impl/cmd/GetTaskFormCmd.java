@@ -24,7 +24,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -38,19 +37,17 @@ public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
   }
 
   public TaskFormData execute(CommandContext commandContext) {
-    TaskEntity task = commandContext
-      .getTaskEntityManager()
-      .findTaskById(taskId);
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
     if (task == null) {
-      throw new ActivitiObjectNotFoundException("No task found for taskId '" + taskId +"'", Task.class);
+      throw new ActivitiObjectNotFoundException("No task found for taskId '" + taskId + "'", Task.class);
     }
-    
-    if(task.getTaskDefinition() != null) {
+
+    if (task.getTaskDefinition() != null) {
       TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
       if (taskFormHandler == null) {
-        throw new ActivitiException("No taskFormHandler specified for task '" + taskId +"'");
+        throw new ActivitiException("No taskFormHandler specified for task '" + taskId + "'");
       }
-      
+
       return taskFormHandler.createTaskForm(task);
     } else {
       // Standalone task, no TaskFormData available

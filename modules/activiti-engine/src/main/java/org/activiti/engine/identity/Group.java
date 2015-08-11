@@ -16,7 +16,6 @@ import java.io.Serializable;
 
 import org.activiti.engine.IdentityService;
 
-
 /**
  * Represents a group, used in {@link IdentityService}.
  * 
@@ -25,11 +24,14 @@ import org.activiti.engine.IdentityService;
 public interface Group extends Serializable {
 
   String getId();
+
   void setId(String id);
-  
+
   String getName();
+
   void setName(String name);
-  
+
   String getType();
+
   void setType(String string);
 }

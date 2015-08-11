@@ -25,14 +25,13 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.repository.Deployment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DeploymentEntity implements Serializable, Deployment, PersistentObject {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String id;
   protected String name;
   protected String category;
@@ -40,33 +39,33 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   protected boolean isNew;
-  
+
+  // Backwards compatibility
+  protected String engineVersion;
+
   /**
-   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions).
-   * Will be null otherwise.
+   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions). Will be null otherwise.
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
-  
+
   public ResourceEntity getResource(String resourceName) {
     return getResources().get(resourceName);
   }
 
   public void addResource(ResourceEntity resource) {
-    if (resources==null) {
+    if (resources == null) {
       resources = new HashMap<String, ResourceEntity>();
     }
     resources.put(resource.getName(), resource);
   }
 
-  // lazy loading /////////////////////////////////////////////////////////////
+  // lazy loading
+  // /////////////////////////////////////////////////////////////
   public Map<String, ResourceEntity> getResources() {
-    if (resources==null && id!=null) {
-      List<ResourceEntity> resourcesList = Context
-        .getCommandContext()
-        .getResourceEntityManager()
-        .findResourcesByDeploymentId(id);
+    if (resources == null && id != null) {
+      List<ResourceEntity> resourcesList = Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
       resources = new HashMap<String, ResourceEntity>();
-      for (ResourceEntity resource: resourcesList) {
+      for (ResourceEntity resource : resourcesList) {
         resources.put(resource.getName(), resource);
       }
     }
@@ -79,46 +78,48 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
     persistentState.put("tenantId", tenantId);
     return persistentState;
   }
-  
-  // Deployed artifacts manipulation //////////////////////////////////////////
+
+  // Deployed artifacts manipulation
+  // //////////////////////////////////////////
   public void addDeployedArtifact(Object deployedArtifact) {
     if (deployedArtifacts == null) {
       deployedArtifacts = new HashMap<Class<?>, List<Object>>();
     }
-    
+
     Class<?> clazz = deployedArtifact.getClass();
     List<Object> artifacts = deployedArtifacts.get(clazz);
     if (artifacts == null) {
       artifacts = new ArrayList<Object>();
       deployedArtifacts.put(clazz, artifacts);
     }
-    
+
     artifacts.add(deployedArtifact);
   }
-  
+
   @SuppressWarnings("unchecked")
   public <T> List<T> getDeployedArtifacts(Class<T> clazz) {
     return (List<T>) deployedArtifacts.get(clazz);
   }
 
-  // getters and setters //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
   public String getId() {
     return id;
   }
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
   public String getCategory() {
     return category;
   }
@@ -126,23 +127,23 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   public void setCategory(String category) {
     this.category = category;
   }
-  
+
   public String getTenantId() {
-  	return tenantId;
+    return tenantId;
   }
 
   public void setTenantId(String tenantId) {
-  	this.tenantId = tenantId;
+    this.tenantId = tenantId;
   }
 
   public void setResources(Map<String, ResourceEntity> resources) {
     this.resources = resources;
   }
-  
+
   public Date getDeploymentTime() {
     return deploymentTime;
   }
-  
+
   public void setDeploymentTime(Date deploymentTime) {
     this.deploymentTime = deploymentTime;
   }
@@ -150,17 +151,24 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   public boolean isNew() {
     return isNew;
   }
-  
+
   public void setNew(boolean isNew) {
     this.isNew = isNew;
   }
 
-  
-  // common methods  //////////////////////////////////////////////////////////
+  public String getEngineVersion() {
+    return engineVersion;
+  }
+
+  public void setEngineVersion(String engineVersion) {
+    this.engineVersion = engineVersion;
+  }
+
+  // common methods //////////////////////////////////////////////////////////
 
   @Override
   public String toString() {
     return "DeploymentEntity[id=" + id + ", name=" + name + "]";
   }
-  
+
 }

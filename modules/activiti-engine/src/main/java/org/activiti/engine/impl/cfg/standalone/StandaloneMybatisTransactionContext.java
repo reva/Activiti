@@ -25,33 +25,32 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tom Baeyens
  */
 public class StandaloneMybatisTransactionContext implements TransactionContext {
-  
+
   private static Logger log = LoggerFactory.getLogger(StandaloneMybatisTransactionContext.class);
 
   protected CommandContext commandContext;
-  protected Map<TransactionState,List<TransactionListener>> stateTransactionListeners = null;
-  
+  protected Map<TransactionState, List<TransactionListener>> stateTransactionListeners;
+
   public StandaloneMybatisTransactionContext(CommandContext commandContext) {
     this.commandContext = commandContext;
   }
 
   public void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener) {
-    if (stateTransactionListeners==null) {
+    if (stateTransactionListeners == null) {
       stateTransactionListeners = new HashMap<TransactionState, List<TransactionListener>>();
     }
     List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
-    if (transactionListeners==null) {
+    if (transactionListeners == null) {
       transactionListeners = new ArrayList<TransactionListener>();
       stateTransactionListeners.put(transactionState, transactionListeners);
     }
     transactionListeners.add(transactionListener);
   }
-  
+
   public void commit() {
     log.debug("firing event committing...");
     fireTransactionEvent(TransactionState.COMMITTING);
@@ -62,14 +61,14 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
   }
 
   protected void fireTransactionEvent(TransactionState transactionState) {
-    if (stateTransactionListeners==null) {
+    if (stateTransactionListeners == null) {
       return;
     }
     List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
-    if (transactionListeners==null) {
+    if (transactionListeners == null) {
       return;
     }
-    for (TransactionListener transactionListener: transactionListeners) {
+    for (TransactionListener transactionListener : transactionListeners) {
       transactionListener.execute(commandContext);
     }
   }
@@ -83,17 +82,17 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
       try {
         log.debug("firing event rolling back...");
         fireTransactionEvent(TransactionState.ROLLINGBACK);
-        
+
       } catch (Throwable exception) {
-        log.info("Exception during transaction: {}",exception.getMessage());
+        log.info("Exception during transaction: {}", exception.getMessage());
         commandContext.exception(exception);
       } finally {
         log.debug("rolling back ibatis sql session...");
         getDbSqlSession().rollback();
       }
-      
+
     } catch (Throwable exception) {
-      log.info("Exception during transaction: {}",exception.getMessage());
+      log.info("Exception during transaction: {}", exception.getMessage());
       commandContext.exception(exception);
 
     } finally {

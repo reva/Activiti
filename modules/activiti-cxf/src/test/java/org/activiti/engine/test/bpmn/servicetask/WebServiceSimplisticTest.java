@@ -26,7 +26,7 @@ public class WebServiceSimplisticTest extends AbstractWebServiceTaskTest {
   protected boolean isValidating() {
     return false;
   }
-  
+
   @Deployment
   public void testWebServiceInvocationWithSimplisticDataFlow() throws Exception {
     Map<String, Object> variables = new HashMap<String, Object>();

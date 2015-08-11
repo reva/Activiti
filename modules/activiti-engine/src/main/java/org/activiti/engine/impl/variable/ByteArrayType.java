@@ -12,14 +12,13 @@
  */
 package org.activiti.engine.impl.variable;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ByteArrayType implements VariableType {
 
   private static final long serialVersionUID = 1L;
-  
+
   public String getTypeName() {
     return "bytes";
   }
@@ -37,7 +36,7 @@ public class ByteArrayType implements VariableType {
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
     return byte[].class.isAssignableFrom(value.getClass());

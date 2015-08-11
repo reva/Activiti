@@ -22,62 +22,64 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * <p>This is a simple implementation of the {@link JobExecutor} using self-managed
- * threads for performing background work.</p>
+ * <p>
+ * This is a simple implementation of the {@link JobExecutor} using self-managed threads for performing background work.
+ * </p>
  * 
- * <p>This implementation uses a {@link ThreadPoolExecutor} backed by a queue to which
- * work is submitted.</p>
+ * <p>
+ * This implementation uses a {@link ThreadPoolExecutor} backed by a queue to which work is submitted.
+ * </p>
  * 
- * <p><em>NOTE: use this class in environments in which self-management of threads 
+ * <p>
+ * <em>NOTE: use this class in environments in which self-management of threads 
  * is permitted. Consider using a different thread-management strategy in 
- * J(2)EE-Environments.</em></p>
+ * J(2)EE-Environments.</em>
+ * </p>
  * 
  * @author Daniel Meyer
  */
 public class DefaultJobExecutor extends JobExecutor {
-  
+
   private static Logger log = LoggerFactory.getLogger(DefaultJobExecutor.class);
-  
+
   protected int queueSize = 3;
   protected int corePoolSize = 3;
   protected int maxPoolSize = 10;
-  protected long keepAliveTime = 0L;
+  protected long keepAliveTime;
 
   protected BlockingQueue<Runnable> threadPoolQueue;
   protected ThreadPoolExecutor threadPoolExecutor;
-    
+
   protected void startExecutingJobs() {
-    if (threadPoolQueue==null) {
+    if (threadPoolQueue == null) {
       threadPoolQueue = new ArrayBlockingQueue<Runnable>(queueSize);
     }
-    if (threadPoolExecutor==null) {
-      threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
+    if (threadPoolExecutor == null) {
+      threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);
       threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
     }
-    startJobAcquisitionThread(); 
+    startJobAcquisitionThread();
   }
-    
+
   protected void stopExecutingJobs() {
     stopJobAcquisitionThread();
-    
+
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();
 
     // Waits for 1 minute to finish all currently executing jobs
     try {
-      if(!threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS)) {
-        log.warn("Timeout during shutdown of job executor. "
-                + "The current running jobs could not end within 60 seconds after shutdown operation.");        
-      }              
+      if (!threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS)) {
+        log.warn("Timeout during shutdown of job executor. " + "The current running jobs could not end within 60 seconds after shutdown operation.");
+      }
     } catch (InterruptedException e) {
       log.warn("Interrupted while shutting down the job executor. ", e);
     }
 
     threadPoolExecutor = null;
   }
-  
+
   public void executeJobs(List<String> jobIds) {
     try {
       threadPoolExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
@@ -85,21 +87,22 @@ public class DefaultJobExecutor extends JobExecutor {
       rejectedJobsHandler.jobsRejected(this, jobIds);
     }
   }
-  
-  // getters and setters ////////////////////////////////////////////////////// 
-  
+
+  // getters and setters
+  // //////////////////////////////////////////////////////
+
   public int getQueueSize() {
     return queueSize;
   }
-  
+
   public void setQueueSize(int queueSize) {
     this.queueSize = queueSize;
   }
-  
+
   public int getCorePoolSize() {
     return corePoolSize;
   }
-  
+
   public void setCorePoolSize(int corePoolSize) {
     this.corePoolSize = corePoolSize;
   }
@@ -111,16 +114,16 @@ public class DefaultJobExecutor extends JobExecutor {
   public void setMaxPoolSize(int maxPoolSize) {
     this.maxPoolSize = maxPoolSize;
   }
-  
+
   public long getKeepAliveTime() {
-		return keepAliveTime;
-	}
+    return keepAliveTime;
+  }
 
-	public void setKeepAliveTime(long keepAliveTime) {
-		this.keepAliveTime = keepAliveTime;
-	}
+  public void setKeepAliveTime(long keepAliveTime) {
+    this.keepAliveTime = keepAliveTime;
+  }
 
-	public BlockingQueue<Runnable> getThreadPoolQueue() {
+  public BlockingQueue<Runnable> getThreadPoolQueue() {
     return threadPoolQueue;
   }
 
@@ -131,10 +134,9 @@ public class DefaultJobExecutor extends JobExecutor {
   public ThreadPoolExecutor getThreadPoolExecutor() {
     return threadPoolExecutor;
   }
-  
+
   public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
     this.threadPoolExecutor = threadPoolExecutor;
   }
-    
-}
 
+}

@@ -21,10 +21,10 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Frederik Heremans
  * @author Saeid Mirzaei
+ * @author Joram Barrez
  */
 public class FailedJobListener implements TransactionListener {
   private static final Logger log = LoggerFactory.getLogger(FailedJobListener.class);
@@ -32,21 +32,21 @@ public class FailedJobListener implements TransactionListener {
   protected CommandExecutor commandExecutor;
   protected String jobId;
   protected Throwable exception;
-  
+
   public FailedJobListener(CommandExecutor commandExecutor, String jobId) {
     this.commandExecutor = commandExecutor;
     this.jobId = jobId;
   }
-  
+
   public void execute(CommandContext commandContext) {
     CommandConfig commandConfig = commandExecutor.getDefaultConfig().transactionRequiresNew();
-	  FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
-	  Command<Object> cmd = failedJobCommandFactory.getCommand(jobId, exception);
+    FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
+    Command<Object> cmd = failedJobCommandFactory.getCommand(jobId, exception);
 
-	  log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
-	  commandExecutor.execute(commandConfig, cmd);
+    log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
+    commandExecutor.execute(commandConfig, cmd);
   }
-  
+
   public void setException(Throwable exception) {
     this.exception = exception;
   }

@@ -22,7 +22,7 @@ public class InclusiveGateway extends Gateway {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(InclusiveGateway otherElement) {
     super.setValues(otherElement);
   }

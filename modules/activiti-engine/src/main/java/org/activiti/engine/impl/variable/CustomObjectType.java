@@ -12,14 +12,13 @@
  */
 package org.activiti.engine.impl.variable;
 
-
 /**
  * Custom object type
  * 
  * @author Esteban Robles Luna
  */
 public class CustomObjectType implements VariableType {
-  
+
   protected String typeName;
   protected Class<?> theClass;
 
@@ -27,7 +26,7 @@ public class CustomObjectType implements VariableType {
     this.theClass = theClass;
     this.typeName = typeName;
   }
-  
+
   public String getTypeName() {
     return this.typeName;
   }
@@ -37,7 +36,7 @@ public class CustomObjectType implements VariableType {
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
     return this.theClass.isAssignableFrom(value.getClass());

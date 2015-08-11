@@ -17,8 +17,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 
 /**
- * Expression that always returns the same value when <code>getValue</code> is
- * called. Setting of the value is not supported.
+ * Expression that always returns the same value when <code>getValue</code> is called. Setting of the value is not supported.
  * 
  * @author Frederik Heremans
  */
@@ -34,11 +33,11 @@ public class FixedValue implements Expression {
   public Object getValue(VariableScope variableScope) {
     return value;
   }
-  
+
   public void setValue(Object value, VariableScope variableScope) {
     throw new ActivitiException("Cannot change fixed value");
   }
-  
+
   public String getExpressionText() {
     return value.toString();
   }

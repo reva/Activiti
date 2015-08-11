@@ -16,23 +16,22 @@ package org.activiti.engine.test.bpmn.mail;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.subethamail.wiser.Wiser;
 
-
 /**
  * @author Joram Barrez
  */
 public abstract class EmailTestCase extends PluggableActivitiTestCase {
-  
+
   protected Wiser wiser;
-  
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    
+
     boolean serverUpAndRunning = false;
     while (!serverUpAndRunning) {
       wiser = new Wiser();
       wiser.setPort(5025);
-      
+
       try {
         wiser.start();
         serverUpAndRunning = true;
@@ -43,14 +42,14 @@ public abstract class EmailTestCase extends PluggableActivitiTestCase {
       }
     }
   }
-  
+
   @Override
   protected void tearDown() throws Exception {
     wiser.stop();
-    
+
     // Fix for slow Jenkins
     Thread.sleep(250L);
-    
+
     super.tearDown();
   }
 

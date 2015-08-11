@@ -15,12 +15,11 @@ package org.activiti.engine.test.bpmn.async;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
-
 public class AsyncListener implements ExecutionListener {
 
   private static final long serialVersionUID = 1L;
 
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     execution.setVariable("listener", "listener invoked");
   }
 }

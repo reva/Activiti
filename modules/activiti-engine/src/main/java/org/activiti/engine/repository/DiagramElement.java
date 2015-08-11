@@ -17,14 +17,14 @@ import java.io.Serializable;
 
 /**
  * Represents a diagram node.
- *
+ * 
  * @author Falko Menge
  */
 abstract public class DiagramElement implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  
-  protected String id = null;
+
+  protected String id;
 
   public DiagramElement() {
   }
@@ -43,13 +43,14 @@ abstract public class DiagramElement implements Serializable {
   public void setId(String id) {
     this.id = id;
   }
-  
+
   @Override
   public String toString() {
     return "id=" + getId();
   }
 
   public abstract boolean isNode();
+
   public abstract boolean isEdge();
 
 }

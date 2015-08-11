@@ -17,7 +17,7 @@ public class LogMDC {
   public static final String LOG_MDC_BUSINESS_KEY = "mdcBusinessKey";
   public static final String LOG_MDC_TASK_ID = "mdcTaskId";
 
-  static boolean enabled = false;
+  static boolean enabled;
 
   public static boolean isMDCEnabled() {
     return enabled;
@@ -36,7 +36,6 @@ public class LogMDC {
       MDC.put(LOG_MDC_PROCESSINSTANCE_ID, e.getProcessInstanceId());
     if (e.getProcessBusinessKey() != null)
       MDC.put(LOG_MDC_BUSINESS_KEY, e.getProcessBusinessKey());
-    
 
   }
 

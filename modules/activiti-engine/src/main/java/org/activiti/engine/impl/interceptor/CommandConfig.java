@@ -13,17 +13,17 @@ public class CommandConfig {
 
   private boolean contextReusePossible;
   private TransactionPropagation propagation;
-  
+
   public CommandConfig() {
     this.contextReusePossible = true;
     this.propagation = TransactionPropagation.REQUIRED;
   }
-  
+
   public CommandConfig(boolean contextReusePossible) {
     this.contextReusePossible = contextReusePossible;
     this.propagation = TransactionPropagation.REQUIRED;
   }
-  
+
   protected CommandConfig(CommandConfig commandConfig) {
     this.contextReusePossible = commandConfig.contextReusePossible;
     this.propagation = commandConfig.propagation;
@@ -32,7 +32,7 @@ public class CommandConfig {
   public boolean isContextReusePossible() {
     return contextReusePossible;
   }
-  
+
   public TransactionPropagation getTransactionPropagation() {
     return propagation;
   }
@@ -42,7 +42,7 @@ public class CommandConfig {
     config.contextReusePossible = contextReusePossible;
     return config;
   }
-  
+
   public CommandConfig transactionRequired() {
     CommandConfig config = new CommandConfig(this);
     config.propagation = TransactionPropagation.REQUIRED;

@@ -15,7 +15,6 @@ package org.activiti.rest.service.api.engine.variable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -27,14 +26,14 @@ public class IntegerRestVariableConverter implements RestVariableConverter {
   }
 
   @Override
-  public Class< ? > getVariableType() {
+  public Class<?> getVariableType() {
     return Integer.class;
   }
 
   @Override
   public Object getVariableValue(RestVariable result) {
-    if(result.getValue() != null) {
-      if(!(result.getValue() instanceof Number)) {
+    if (result.getValue() != null) {
+      if (!(result.getValue() instanceof Number)) {
         throw new ActivitiIllegalArgumentException("Converter can only convert integers");
       }
       return ((Number) result.getValue()).intValue();
@@ -44,8 +43,8 @@ public class IntegerRestVariableConverter implements RestVariableConverter {
 
   @Override
   public void convertVariableValue(Object variableValue, RestVariable result) {
-    if(variableValue != null) {
-      if(!(variableValue instanceof Integer)) {
+    if (variableValue != null) {
+      if (!(variableValue instanceof Integer)) {
         throw new ActivitiIllegalArgumentException("Converter can only convert integers");
       }
       result.setValue(variableValue);

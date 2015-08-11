@@ -24,70 +24,63 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Wendel Kerr
  */
 public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources="org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
+  @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testParticipantUserLink() {
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
-    
-    String processInstanceId = runtimeService
-      .createProcessInstanceQuery()
-      .singleResult()
-      .getId();
-    
+
+    String processInstanceId = runtimeService.createProcessInstanceQuery().singleResult().getId();
+
     runtimeService.addParticipantUser(processInstanceId, "kermit");
-    
+
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
-    
+
     assertNull(identityLink.getGroupId());
     assertEquals("kermit", identityLink.getUserId());
     assertEquals(IdentityLinkType.PARTICIPANT, identityLink.getType());
     assertEquals(processInstanceId, identityLink.getProcessInstanceId());
-    
+
     assertEquals(1, identityLinks.size());
 
     runtimeService.deleteParticipantUser(processInstanceId, "kermit");
-    
+
     assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
   }
 
-  @Deployment(resources="org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
+  @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testCandidateGroupLink() {
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
-    
-    String processInstanceId = runtimeService
-      .createProcessInstanceQuery()
-      .singleResult()
-      .getId();
-    
+
+    String processInstanceId = runtimeService.createProcessInstanceQuery().singleResult().getId();
+
     runtimeService.addParticipantGroup(processInstanceId, "muppets");
-    
+
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
-    
+
     assertEquals("muppets", identityLink.getGroupId());
     assertNull("kermit", identityLink.getUserId());
     assertEquals(IdentityLinkType.PARTICIPANT, identityLink.getType());
     assertEquals(processInstanceId, identityLink.getProcessInstanceId());
-    
+
     assertEquals(1, identityLinks.size());
-    
+
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<Event> processInstanceEvents = runtimeService.getProcessInstanceEvents(processInstanceId);
       assertEquals(1, processInstanceEvents.size());
-      Event processIsntanceEvent = processInstanceEvents.get(0);
-      assertEquals(Event.ACTION_ADD_GROUP_LINK, processIsntanceEvent.getAction());
-      List<String> processInstanceEventMessageParts = processIsntanceEvent.getMessageParts();
+      Event processInstanceEvent = processInstanceEvents.get(0);
+      assertEquals(Event.ACTION_ADD_GROUP_LINK, processInstanceEvent.getAction());
+      List<String> processInstanceEventMessageParts = processInstanceEvent.getMessageParts();
       assertEquals("muppets", processInstanceEventMessageParts.get(0));
       assertEquals(IdentityLinkType.PARTICIPANT, processInstanceEventMessageParts.get(1));
       assertEquals(2, processInstanceEventMessageParts.size());
     }
-    
+
     runtimeService.deleteParticipantGroup(processInstanceId, "muppets");
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
@@ -104,64 +97,58 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
   }
 
-   private Event findProcessInstanceEvent(List<Event> processInstanceEvents, String action) {
-    for (Event event: processInstanceEvents) {
+  private Event findProcessInstanceEvent(List<Event> processInstanceEvents, String action) {
+    for (Event event : processInstanceEvents) {
       if (action.equals(event.getAction())) {
         return event;
       }
     }
-    throw new AssertionFailedError("no process instance event found with action "+action);
+    throw new AssertionFailedError("no process instance event found with action " + action);
   }
 
-  @Deployment(resources="org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
+  @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testCustomTypeUserLink() {
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
-    
-    String processInstanceId = runtimeService
-      .createProcessInstanceQuery()
-      .singleResult()
-      .getId();
-    
+
+    String processInstanceId = runtimeService.createProcessInstanceQuery().singleResult().getId();
+
     runtimeService.addUserIdentityLink(processInstanceId, "kermit", "interestee");
-    
+
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
-    
+
     assertNull(identityLink.getGroupId());
     assertEquals("kermit", identityLink.getUserId());
     assertEquals("interestee", identityLink.getType());
     assertEquals(processInstanceId, identityLink.getProcessInstanceId());
-    
+
     assertEquals(1, identityLinks.size());
 
     runtimeService.deleteUserIdentityLink(processInstanceId, "kermit", "interestee");
-    
+
     assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
   }
 
-  @Deployment(resources="org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
+  @Deployment(resources = "org/activiti/engine/test/api/runtime/IdentityLinksProcess.bpmn20.xml")
   public void testCustomLinkGroupLink() {
     runtimeService.startProcessInstanceByKey("IdentityLinksProcess");
-    
-    String processInstanceId = runtimeService
-      .createProcessInstanceQuery()
-      .singleResult()
-      .getId();
-    
+
+    String processInstanceId = runtimeService.createProcessInstanceQuery().singleResult().getId();
+
     runtimeService.addGroupIdentityLink(processInstanceId, "muppets", "playing");
-    
+
     List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
     IdentityLink identityLink = identityLinks.get(0);
-    
+
     assertEquals("muppets", identityLink.getGroupId());
     assertNull("kermit", identityLink.getUserId());
     assertEquals("playing", identityLink.getType());
     assertEquals(processInstanceId, identityLink.getProcessInstanceId());
-    
+
     assertEquals(1, identityLinks.size());
 
     runtimeService.deleteGroupIdentityLink(processInstanceId, "muppets", "playing");
-    
+
     assertEquals(0, runtimeService.getIdentityLinksForProcessInstance(processInstanceId).size());
   }
 

@@ -19,25 +19,21 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-
 /**
- * Simple process test to validate the current implementation protoype.
+ * Simple process test to validate the current implementation prototype.
  * 
- * @author Joram Barrez 
+ * @author Joram Barrez
  */
 public class TaskAssigneeTest extends PluggableActivitiTestCase {
 
   @Deployment
-  public void testTaskAssignee() {    
-    
+  public void testTaskAssignee() {
+
     // Start process instance
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExampleProcess");
 
     // Get task list
-    List<Task> tasks = taskService
-      .createTaskQuery()
-      .taskAssignee("kermit")
-      .list();
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
     assertEquals(1, tasks.size());
     Task myTask = tasks.get(0);
     assertEquals("Schedule meeting", myTask.getName());

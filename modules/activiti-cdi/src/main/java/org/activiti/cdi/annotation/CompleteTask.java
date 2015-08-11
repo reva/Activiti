@@ -23,24 +23,24 @@ import javax.interceptor.InterceptorBinding;
 import org.activiti.cdi.BusinessProcess;
 
 /**
- * Annotation signaling that a task is to be completed after the annotated
- * method returns. Requires that the current unit of work (conversation 
- * or request) is associated with a task. This has the same effect as
- * calling {@link BusinessProcess#completeTask()}.
+ * Annotation signaling that a task is to be completed after the annotated method returns. Requires that the current unit of work (conversation or request) is associated with a task. This has the same
+ * effect as calling {@link BusinessProcess#completeTask()}.
  * 
  * <p />
- * Example: after this method returns, the current task is completed 
+ * Example: after this method returns, the current task is completed
+ * 
  * <pre>
  * {@code @CompleteTask} 
  * public void respond(String response, Message message) {
  *  message.setResponse(response);
- * } 
+ * }
  * </pre>
+ * 
  * If the annotated method throws an exception, the task is not completed.
  * 
  * @see BusinessProcess#startTask(String)
  * @see BusinessProcess#completeTask()
- *  
+ * 
  * @author Daniel Meyer
  */
 @InterceptorBinding

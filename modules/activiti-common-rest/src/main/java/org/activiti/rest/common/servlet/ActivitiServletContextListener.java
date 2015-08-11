@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  */
 public class ActivitiServletContextListener implements ServletContextListener {
-  
+
   protected static final Logger LOGGER = LoggerFactory.getLogger(ActivitiServletContextListener.class);
 
   public void contextInitialized(ServletContextEvent event) {

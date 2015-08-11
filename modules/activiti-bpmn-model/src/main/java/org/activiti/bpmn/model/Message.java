@@ -19,10 +19,10 @@ public class Message extends BaseElement {
 
   protected String name;
   protected String itemRef;
-  
+
   public Message() {
   }
-  
+
   public Message(String id, String name, String itemRef) {
     this.id = id;
     this.name = name;
@@ -44,13 +44,13 @@ public class Message extends BaseElement {
   public void setItemRef(String itemRef) {
     this.itemRef = itemRef;
   }
-  
+
   public Message clone() {
     Message clone = new Message();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(Message otherElement) {
     super.setValues(otherElement);
     setName(otherElement.getName());

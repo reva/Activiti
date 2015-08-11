@@ -20,19 +20,21 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.runtime.Execution;
 
-
 /**
  * @author Daniel Meyer
  * @author Joram Barrez
  */
 public class SignalEventReceivedCmd implements Command<Void> {
-    
+
   protected final String eventName;
   protected final String executionId;
   protected final Serializable payload;
@@ -43,65 +45,65 @@ public class SignalEventReceivedCmd implements Command<Void> {
     this.eventName = eventName;
     this.executionId = executionId;
     if (processVariables != null) {
-    	if (processVariables instanceof Serializable){
-    		this.payload = (Serializable) processVariables;
-    	}
-    	else{	
-    		this.payload = new HashMap<String, Object>(processVariables);
-    	}
-    }
-    else{
-    	this.payload = null;
+      if (processVariables instanceof Serializable) {
+        this.payload = (Serializable) processVariables;
+      } else {
+        this.payload = new HashMap<String, Object>(processVariables);
+      }
+    } else {
+      this.payload = null;
     }
     this.async = false;
     this.tenantId = tenantId;
   }
 
   public SignalEventReceivedCmd(String eventName, String executionId, boolean async, String tenantId) {
-  	this.eventName = eventName;
-  	this.executionId = executionId;
-  	this.async = async;
-  	this.payload = null;
-  	this.tenantId = tenantId;
+    this.eventName = eventName;
+    this.executionId = executionId;
+    this.async = async;
+    this.payload = null;
+    this.tenantId = tenantId;
   }
 
   public Void execute(CommandContext commandContext) {
-    
+
     List<SignalEventSubscriptionEntity> signalEvents = null;
-    
-    if(executionId == null) {
-       signalEvents = commandContext.getEventSubscriptionEntityManager()
-        .findSignalEventSubscriptionsByEventName(eventName, tenantId);              
+
+    if (executionId == null) {
+      signalEvents = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(eventName, tenantId);
     } else {
-      
+
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
-      
+
       if (execution == null) {
         throw new ActivitiObjectNotFoundException("Cannot find execution with id '" + executionId + "'", Execution.class);
       }
-      
+
       if (execution.isSuspended()) {
-        throw new ActivitiException("Cannot throw signal event '" + eventName 
-                + "' because execution '" + executionId + "' is suspended");
+        throw new ActivitiException("Cannot throw signal event '" + eventName + "' because execution '" + executionId + "' is suspended");
       }
-      
-      signalEvents = commandContext.getEventSubscriptionEntityManager()
-        .findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
-      
-      if(signalEvents.isEmpty()) {
-        throw new ActivitiException("Execution '"+executionId+"' has not subscribed to a signal event with name '"+eventName+"'.");      
+
+      signalEvents = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
+
+      if (signalEvents.isEmpty()) {
+        throw new ActivitiException("Execution '" + executionId + "' has not subscribed to a signal event with name '" + eventName + "'.");
       }
     }
-        
-    
+
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : signalEvents) {
-      // We only throw the event to globally scoped signals. 
-      // Process instance scoped signals must be thrown within the process itself 
+      // We only throw the event to globally scoped signals.
+      // Process instance scoped signals must be thrown within the process itself
       if (signalEventSubscriptionEntity.isGlobalScoped()) {
+        
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventName, 
+                payload, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
+                signalEventSubscriptionEntity.getProcessDefinitionId()));
+        
         signalEventSubscriptionEntity.eventReceived(payload, async);
       }
     }
-    
+
     return null;
   }
 

@@ -19,21 +19,20 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class SaveModelCmd implements Command<Void>, Serializable {
-  
+
   private static final long serialVersionUID = 1L;
   protected ModelEntity model;
-  
+
   public SaveModelCmd(ModelEntity model) {
     this.model = model;
   }
-  
+
   public Void execute(CommandContext commandContext) {
-    if(model == null) {
+    if (model == null) {
       throw new ActivitiIllegalArgumentException("model is null");
     }
     if (model.getId() == null) {

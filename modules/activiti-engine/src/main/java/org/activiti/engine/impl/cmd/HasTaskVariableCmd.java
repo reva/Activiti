@@ -22,7 +22,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
-
 /**
  * @author Frederik Heremans
  */
@@ -40,28 +39,26 @@ public class HasTaskVariableCmd implements Command<Boolean>, Serializable {
   }
 
   public Boolean execute(CommandContext commandContext) {
-    if(taskId == null) {
+    if (taskId == null) {
       throw new ActivitiIllegalArgumentException("taskId is null");
     }
-    if(variableName == null) {
+    if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
-    
-    TaskEntity task = commandContext
-      .getTaskEntityManager()
-      .findTaskById(taskId);
-    
-    if (task==null) {
-      throw new ActivitiObjectNotFoundException("task "+taskId+" doesn't exist", Task.class);
+
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
     }
     boolean hasVariable = false;
-    
+
     if (isLocal) {
       hasVariable = task.hasVariableLocal(variableName);
     } else {
       hasVariable = task.hasVariable(variableName);
     }
-    
+
     return hasVariable;
   }
 }

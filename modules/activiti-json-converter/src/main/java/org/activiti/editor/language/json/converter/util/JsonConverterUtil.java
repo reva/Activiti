@@ -21,7 +21,7 @@ import org.activiti.editor.constants.StencilConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class JsonConverterUtil implements EditorJsonConstants, StencilConstants {
-  
+
   public static String getPropertyValueAsString(String name, JsonNode objectNode) {
     String propertyValue = null;
     JsonNode propertyNode = getProperty(name, objectNode);
@@ -30,24 +30,24 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     }
     return propertyValue;
   }
-  
+
   public static boolean getPropertyValueAsBoolean(String name, JsonNode objectNode) {
     return getPropertyValueAsBoolean(name, objectNode, false);
   }
-  
+
   public static boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
     boolean result = defaultValue;
     String stringValue = getPropertyValueAsString(name, objectNode);
-    
+
     if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue) || "true".equalsIgnoreCase(stringValue)) {
       result = true;
     } else if (PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue)) {
       result = false;
     }
-    
+
     return result;
   }
-  
+
   public static List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
     List<String> resultList = new ArrayList<String>();
     JsonNode propertyNode = getProperty(name, objectNode);
@@ -60,7 +60,7 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     }
     return resultList;
   }
-  
+
   public static JsonNode getProperty(String name, JsonNode objectNode) {
     JsonNode propertyNode = null;
     if (objectNode.get(EDITOR_SHAPE_PROPERTIES) != null) {

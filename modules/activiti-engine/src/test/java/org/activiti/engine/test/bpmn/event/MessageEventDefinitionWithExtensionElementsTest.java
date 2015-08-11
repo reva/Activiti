@@ -33,15 +33,15 @@ public class MessageEventDefinitionWithExtensionElementsTest {
     BpmnModel bpmnModelMock = Mockito.mock(BpmnModel.class);
     Message messageMock = Mockito.mock(Message.class);
     @SuppressWarnings("unchecked")
-    Map<String,List<ExtensionElement>> extensionElementMap = Mockito.mock(Map.class);
-    
+    Map<String, List<ExtensionElement>> extensionElementMap = Mockito.mock(Map.class);
+
     Mockito.when(bpmnParseMock.getBpmnModel()).thenReturn(bpmnModelMock);
     Mockito.when(messageEventDefinitionMock.getMessageRef()).thenReturn("messageId");
     Mockito.when(bpmnModelMock.containsMessageId("messageId")).thenReturn(true);
     Mockito.when(bpmnModelMock.getMessage("messageId")).thenReturn(messageMock);
     Mockito.when(messageMock.getName()).thenReturn("MessageWithExtensionElements");
     Mockito.when(messageMock.getExtensionElements()).thenReturn(extensionElementMap);
-    
+
     MessageEventDefinitionParseHandler handler = new MessageEventDefinitionParseHandler();
     handler.parse(bpmnParseMock, messageEventDefinitionMock);
 

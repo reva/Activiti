@@ -25,16 +25,16 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return SequenceFlow.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_SEQUENCE_FLOW;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     SequenceFlow sequenceFlow = new SequenceFlow();
@@ -43,9 +43,9 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     sequenceFlow.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
     sequenceFlow.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
     sequenceFlow.setSkipExpression(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SKIP_EXPRESSION));
-    
+
     parseChildElements(getXMLElementName(), sequenceFlow, model, xtr);
-    
+
     return sequenceFlow;
   }
 
@@ -58,11 +58,11 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
       writeDefaultAttribute(ATTRIBUTE_FLOW_SKIP_EXPRESSION, sequenceFlow.getSkipExpression(), xtw);
     }
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     SequenceFlow sequenceFlow = (SequenceFlow) element;
-    
+
     if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
       xtw.writeStartElement(ELEMENT_FLOW_CONDITION);
       xtw.writeAttribute(XSI_PREFIX, XSI_NAMESPACE, "type", "tFormalExpression");

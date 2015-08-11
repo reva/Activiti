@@ -27,12 +27,13 @@ public class TimeCycleParser extends BaseChildElementParser {
   public String getElementName() {
     return ATTRIBUTE_TIMER_CYCLE;
   }
-  
+
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof TimerEventDefinition == false) return;
+    if (parentElement instanceof TimerEventDefinition == false)
+      return;
 
     TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
-    
+
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE))) {
       eventDefinition.setEndDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE));
     }

@@ -20,7 +20,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -34,7 +33,7 @@ public class SetUserInfoCmd implements Command<Object>, Serializable {
   protected String value;
   protected String accountPassword;
   protected Map<String, String> accountDetails;
-  
+
   public SetUserInfoCmd(String userId, String key, String value) {
     this.userId = userId;
     this.type = IdentityInfoEntity.TYPE_USERINFO;
@@ -43,9 +42,7 @@ public class SetUserInfoCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
-    commandContext
-      .getIdentityInfoEntityManager()
-      .setUserInfo(userId, userPassword, type, key, value, accountPassword, accountDetails);
+    commandContext.getIdentityInfoEntityManager().setUserInfo(userId, userPassword, type, key, value, accountPassword, accountDetails);
     return null;
   }
 }

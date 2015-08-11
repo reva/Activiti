@@ -31,9 +31,9 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class SimpleProcessTest extends SpringActivitiTestCase {
 
-  @Autowired 
+  @Autowired
   protected CamelContext camelContext;
-	
+
   protected MockEndpoint service1;
 
   protected MockEndpoint service2;
@@ -45,28 +45,25 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
     service2.reset();
     camelContext.addRoutes(new RouteBuilder() {
 
-  		@Override
-  		public void configure() throws Exception {
-  		  from("direct:start").to("activiti:camelProcess");	   	
-        from("activiti:camelProcess:serviceTask1").setBody().property("var1")
-          .to("mock:service1").setProperty("var2").constant("var2")
-          .setBody().properties();
+      @Override
+      public void configure() throws Exception {
+        from("direct:start").to("activiti:camelProcess");
+        from("activiti:camelProcess:serviceTask1").setBody().property("var1").to("mock:service1").setProperty("var2").constant("var2").setBody().properties();
         from("direct:receive").to("activiti:camelProcess:receive");
-        from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
-          .to("mock:service2");
-  		}
-  	});
+        from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true").to("mock:service2");
+      }
+    });
   }
-  
+
   public void tearDown() throws Exception {
     List<Route> routes = camelContext.getRoutes();
-    for (Route r: routes) {
+    for (Route r : routes) {
       camelContext.stopRoute(r.getId());
       camelContext.removeRoute(r.getId());
     }
   }
-  
-  @Deployment(resources = {"process/example.bpmn20.xml"})
+
+  @Deployment(resources = { "process/example.bpmn20.xml" })
   public void testRunProcess() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
     ProducerTemplate tpl = ctx.createProducerTemplate();
@@ -74,10 +71,9 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
 
     Exchange exchange = ctx.getEndpoint("direct:start").createExchange();
     exchange.getIn().setBody(Collections.singletonMap("var1", "ala"));
-    tpl.send("direct:start", exchange);   
+    tpl.send("direct:start", exchange);
     String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
 
-   
     tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
     assertProcessEnded(instanceId);
@@ -88,7 +84,7 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
     assertEquals("var2", m.get("var2"));
   }
 
-  @Deployment(resources = {"process/example.bpmn20.xml"})
+  @Deployment(resources = { "process/example.bpmn20.xml" })
   public void testRunProcessByKey() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
     ProducerTemplate tpl = ctx.createProducerTemplate();
@@ -97,8 +93,7 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
 
     tpl.sendBodyAndProperty("direct:start", Collections.singletonMap("var1", "ala"), ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
 
-    String instanceId = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("key1")
-        .singleResult().getProcessInstanceId();
+    String instanceId = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("key1").singleResult().getProcessInstanceId();
     tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
 
     assertProcessEnded(instanceId);

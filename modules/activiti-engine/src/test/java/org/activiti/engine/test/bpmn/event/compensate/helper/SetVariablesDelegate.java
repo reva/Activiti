@@ -18,22 +18,22 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
-
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Daniel Meyer
  */
 public class SetVariablesDelegate implements JavaDelegate {
-  
-  public static Map<Object, Integer> variablesMap = new HashMap<Object, Integer>(); 
-  
-  // activiti creates a single instance of the delegate
-  protected int lastInt = 0;
 
-  public void execute(DelegateExecution execution) throws Exception {
-    Object nrOfCompletedInstances = execution.getVariableLocal("nrOfCompletedInstances");    
-    variablesMap.put(nrOfCompletedInstances, lastInt);    
-    execution.setVariableLocal("variable", lastInt);    
+  public static Map<Object, Integer> variablesMap = new HashMap<Object, Integer>();
+
+  // activiti creates a single instance of the delegate
+  protected int lastInt;
+
+  public void execute(DelegateExecution execution) {
+    Object nrOfCompletedInstances = execution.getVariable("nrOfCompletedInstances");
+    variablesMap.put(nrOfCompletedInstances, lastInt);
+    ((ExecutionEntity) execution).getParent().setVariableLocal("variable", lastInt);
     lastInt++;
   }
 

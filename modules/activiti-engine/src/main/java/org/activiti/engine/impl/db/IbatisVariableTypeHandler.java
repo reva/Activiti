@@ -25,7 +25,6 @@ import org.activiti.engine.impl.variable.VariableTypes;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
-
 /**
  * @author Dave Syer
  */
@@ -57,10 +56,8 @@ public class IbatisVariableTypeHandler implements TypeHandler<VariableType> {
   }
 
   protected VariableTypes getVariableTypes() {
-    if (variableTypes==null) {
-      variableTypes = Context
-        .getProcessEngineConfiguration()
-        .getVariableTypes();
+    if (variableTypes == null) {
+      variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
     }
     return variableTypes;
   }

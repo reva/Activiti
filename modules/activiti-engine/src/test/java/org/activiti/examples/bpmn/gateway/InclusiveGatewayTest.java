@@ -35,8 +35,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   private static final String TASK3_NAME = "Call customer";
 
   /**
-   * The test process has an OR gateway where, the 'input' variable is used to
-   * select the expected outgoing sequence flow.
+   * The test process has an OR gateway where, the 'input' variable is used to select the expected outgoing sequence flow.
    */
   @Deployment
   public void testDecisionFunctionality() {

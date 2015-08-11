@@ -37,44 +37,44 @@ import org.springframework.web.bind.annotation.RestController;
 public class JobResource {
 
   private static final String EXECUTE_ACTION = "execute";
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected ManagementService managementService;
 
-  @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
   public JobResponse getJob(@PathVariable String jobId, HttpServletRequest request) {
     Job job = getJobFromResponse(jobId);
-    
+
     return restResponseFactory.createJobResponse(job);
   }
 
-  @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.DELETE)
   public void deleteJob(@PathVariable String jobId, HttpServletResponse response) {
     try {
       managementService.deleteJob(jobId);
-    } catch(ActivitiObjectNotFoundException aonfe) {
+    } catch (ActivitiObjectNotFoundException aonfe) {
       // Re-throw to have consistent error-messaging acrosse REST-api
-      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
     }
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
-  
-  @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.POST)
-  public void executeJobAction(@PathVariable String jobId, @RequestBody RestActionRequest actionRequest, HttpServletResponse response) { 
-    if (actionRequest == null || ! EXECUTE_ACTION.equals(actionRequest.getAction())) {
+
+  @RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.POST)
+  public void executeJobAction(@PathVariable String jobId, @RequestBody RestActionRequest actionRequest, HttpServletResponse response) {
+    if (actionRequest == null || !EXECUTE_ACTION.equals(actionRequest.getAction())) {
       throw new ActivitiIllegalArgumentException("Invalid action, only 'execute' is supported.");
     }
-    
+
     try {
       managementService.executeJob(jobId);
-    } catch(ActivitiObjectNotFoundException aonfe) {
+    } catch (ActivitiObjectNotFoundException aonfe) {
       // Re-throw to have consistent error-messaging acrosse REST-api
-      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
+      throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);
     }
-    
+
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 

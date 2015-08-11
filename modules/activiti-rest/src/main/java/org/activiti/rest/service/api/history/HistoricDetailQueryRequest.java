@@ -15,8 +15,6 @@ package org.activiti.rest.service.api.history;
 
 import org.activiti.rest.common.api.PaginateRequest;
 
-
-
 /**
  * @author Tijs Rademakers
  */
@@ -29,7 +27,7 @@ public class HistoricDetailQueryRequest extends PaginateRequest {
   private String taskId;
   private Boolean selectOnlyFormProperties;
   private Boolean selectOnlyVariableUpdates;
-  
+
   public String getId() {
     return id;
   }
@@ -41,7 +39,7 @@ public class HistoricDetailQueryRequest extends PaginateRequest {
   public String getProcessInstanceId() {
     return processInstanceId;
   }
-  
+
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }

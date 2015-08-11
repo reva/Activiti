@@ -24,7 +24,6 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -35,7 +34,7 @@ public class JuelFormEngine implements FormEngine {
   }
 
   public Object renderStartForm(StartFormData startForm) {
-    if (startForm.getFormKey()==null) {
+    if (startForm.getFormKey() == null) {
       return null;
     }
     String formTemplateString = getFormTemplateString(startForm, startForm.getFormKey());
@@ -44,7 +43,7 @@ public class JuelFormEngine implements FormEngine {
   }
 
   public Object renderTaskForm(TaskFormData taskForm) {
-    if (taskForm.getFormKey()==null) {
+    if (taskForm.getFormKey() == null) {
       return null;
     }
     String formTemplateString = getFormTemplateString(taskForm, taskForm.getFormKey());
@@ -55,16 +54,13 @@ public class JuelFormEngine implements FormEngine {
 
   protected String getFormTemplateString(FormData formInstance, String formKey) {
     String deploymentId = formInstance.getDeploymentId();
-    
-    ResourceEntity resourceStream = Context
-      .getCommandContext()
-      .getResourceEntityManager()
-      .findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
-    
+
+    ResourceEntity resourceStream = Context.getCommandContext().getResourceEntityManager().findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
+
     if (resourceStream == null) {
-      throw new ActivitiObjectNotFoundException("Form with formKey '"+formKey+"' does not exist", String.class);
+      throw new ActivitiObjectNotFoundException("Form with formKey '" + formKey + "' does not exist", String.class);
     }
-    
+
     byte[] resourceBytes = resourceStream.getBytes();
     String encoding = "UTF-8";
     String formTemplateString = "";

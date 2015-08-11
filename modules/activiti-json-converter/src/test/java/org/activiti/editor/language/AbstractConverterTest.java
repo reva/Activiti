@@ -24,20 +24,20 @@ public abstract class AbstractConverterTest {
     BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
     return bpmnModel;
   }
-  
+
   protected BpmnModel convertToJsonAndBack(BpmnModel bpmnModel) {
     ObjectNode modelNode = new BpmnJsonConverter().convertToJson(bpmnModel);
     bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
     return bpmnModel;
   }
-  
+
   protected EventDefinition extractEventDefinition(FlowElement flowElement) {
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof Event);
-    Event event = (Event)flowElement;
+    Event event = (Event) flowElement;
     assertFalse(event.getEventDefinitions().isEmpty());
     return event.getEventDefinitions().get(0);
   }
-  
+
   protected abstract String getResource();
 }

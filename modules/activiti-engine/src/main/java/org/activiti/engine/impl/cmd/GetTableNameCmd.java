@@ -12,17 +12,15 @@ public class GetTableNameCmd implements Command<String>, Serializable {
 
   private Class<?> entityClass;
 
-  public GetTableNameCmd(Class< ? > entityClass) {
+  public GetTableNameCmd(Class<?> entityClass) {
     this.entityClass = entityClass;
   }
 
   public String execute(CommandContext commandContext) {
-    if(entityClass == null) {
+    if (entityClass == null) {
       throw new ActivitiIllegalArgumentException("entityClass is null");
     }
-    return commandContext
-      .getTableDataManager()
-      .getTableName(entityClass, true);
+    return commandContext.getTableDataManager().getTableName(entityClass, true);
   }
 
 }

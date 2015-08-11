@@ -32,14 +32,13 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 // Not Serializable
-public class CreateAttachmentCmd implements Command<Attachment> {  
-  
+public class CreateAttachmentCmd implements Command<Attachment> {
+
   protected String attachmentType;
   protected String taskId;
   protected String processInstanceId;
@@ -47,7 +46,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
   protected String attachmentDescription;
   protected InputStream content;
   protected String url;
-  
+
   public CreateAttachmentCmd(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content, String url) {
     this.attachmentType = attachmentType;
     this.taskId = taskId;
@@ -57,11 +56,11 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     this.content = content;
     this.url = url;
   }
-  
+
   public Attachment execute(CommandContext commandContext) {
 
     verifyParameters(commandContext);
-    
+
     AttachmentEntity attachment = new AttachmentEntity();
     attachment.setName(attachmentName);
     attachment.setDescription(attachmentDescription);
@@ -71,10 +70,10 @@ public class CreateAttachmentCmd implements Command<Attachment> {
     attachment.setUrl(url);
     attachment.setUserId(Authentication.getAuthenticatedUserId());
     attachment.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-    
+
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
     dbSqlSession.insert(attachment);
-    
+
     if (content != null) {
       byte[] bytes = IoUtil.readInputStream(content, attachmentName);
       ByteArrayEntity byteArray = ByteArrayEntity.createAndInsert(bytes);
@@ -82,25 +81,25 @@ public class CreateAttachmentCmd implements Command<Attachment> {
       attachment.setContent(byteArray);
     }
 
-    commandContext.getHistoryManager()
-      .createAttachmentComment(taskId, processInstanceId, attachmentName, true);
-    
-    if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	// Forced to fetch the process-instance to associate the right process definition
-    	String processDefinitionId = null;
-    	if(attachment.getProcessInstanceId() != null) {
-    		ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
-    		if(process != null) {
-    			processDefinitionId = process.getProcessDefinitionId();
-    		}
-    	}
-    	
-    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
-    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+    commandContext.getHistoryManager().createAttachmentComment(taskId, processInstanceId, attachmentName, true);
+
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      // Forced to fetch the process-instance to associate the right
+      // process definition
+      String processDefinitionId = null;
+      if (attachment.getProcessInstanceId() != null) {
+        ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+        if (process != null) {
+          processDefinitionId = process.getProcessDefinitionId();
+        }
+      }
+
+      commandContext.getProcessEngineConfiguration().getEventDispatcher()
+          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+      commandContext.getProcessEngineConfiguration().getEventDispatcher()
+          .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, attachment, processInstanceId, processInstanceId, processDefinitionId));
     }
-    
+
     return attachment;
   }
 
@@ -116,7 +115,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
         throw new ActivitiException("It is not allowed to add an attachment to a suspended task");
       }
     }
-    
+
     if (processInstanceId != null) {
       ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
 

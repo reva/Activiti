@@ -18,21 +18,20 @@ import org.activiti.engine.impl.cmd.GetNextIdBlockCmd;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DbIdGenerator implements IdGenerator {
 
   protected int idBlockSize;
-  protected long nextId = 0;
+  protected long nextId;
   protected long lastId = -1;
-  
+
   protected CommandExecutor commandExecutor;
   protected CommandConfig commandConfig;
-  
+
   public synchronized String getNextId() {
-    if (lastId<nextId) {
+    if (lastId < nextId) {
       getNewBlock();
     }
     long _nextId = nextId++;
@@ -52,7 +51,7 @@ public class DbIdGenerator implements IdGenerator {
   public void setIdBlockSize(int idBlockSize) {
     this.idBlockSize = idBlockSize;
   }
-  
+
   public CommandExecutor getCommandExecutor() {
     return commandExecutor;
   }
@@ -60,11 +59,11 @@ public class DbIdGenerator implements IdGenerator {
   public void setCommandExecutor(CommandExecutor commandExecutor) {
     this.commandExecutor = commandExecutor;
   }
-  
+
   public CommandConfig getCommandConfig() {
     return commandConfig;
   }
-  
+
   public void setCommandConfig(CommandConfig commandConfig) {
     this.commandConfig = commandConfig;
   }

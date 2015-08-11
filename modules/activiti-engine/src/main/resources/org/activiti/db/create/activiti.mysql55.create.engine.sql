@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.18.0.0', 1);
+values ('schema.version', '6.0.0.0', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.18.0.0)', 1);
+values ('schema.history', 'create(6.0.0.0)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -30,6 +30,7 @@ create table ACT_RE_DEPLOYMENT (
     CATEGORY_ varchar(255),
     TENANT_ID_ varchar(255) default '',
     DEPLOY_TIME_ timestamp,
+    ENGINE_VERSION_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -58,6 +59,7 @@ create table ACT_RU_EXECUTION (
     PARENT_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     SUPER_EXEC_ varchar(64),
+    ROOT_PROC_INST_ID_ varchar(64),
     ACT_ID_ varchar(255),
     IS_ACTIVE_ TINYINT,
     IS_CONCURRENT_ TINYINT,
@@ -107,6 +109,7 @@ create table ACT_RE_PROCDEF (
     HAS_GRAPHICAL_NOTATION_ TINYINT,
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
+    ENGINE_VERSION_ varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -193,6 +196,7 @@ create table ACT_EVT_LOG (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
+create index ACT_IDX_EXEC_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
@@ -217,13 +221,13 @@ alter table ACT_RU_EXECUTION
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PARENT 
     foreign key (PARENT_ID_) 
-    references ACT_RU_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_) on delete cascade;
     
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
     references ACT_RU_EXECUTION (ID_);
-
+    
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 
     foreign key (PROC_DEF_ID_) 

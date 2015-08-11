@@ -13,12 +13,11 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-
-
 /**
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
 public class TransactionActivityBehavior extends SubProcessActivityBehavior {
-  
+
+  private static final long serialVersionUID = 1L;
 
 }

@@ -24,18 +24,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ProcessInstanceVariableDataResource extends BaseExecutionVariableResource {
 
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", method = RequestMethod.GET)
-  public @ResponseBody byte[] getVariableData(@PathVariable("processInstanceId") String processInstanceId, 
-      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", method = RequestMethod.GET)
+  public @ResponseBody
+  byte[] getVariableData(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
       HttpServletRequest request, HttpServletResponse response) {
-    
+
     Execution execution = getProcessInstanceFromRequest(processInstanceId);
     return getVariableDataByteArray(execution, variableName, scope, response);
   }

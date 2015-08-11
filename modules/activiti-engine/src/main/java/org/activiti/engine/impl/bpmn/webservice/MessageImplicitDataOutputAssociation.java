@@ -19,13 +19,12 @@ import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * An implicit data output association between a source and a target.
- * source is a property in the message and target is a variable in the current execution context
+ * An implicit data output association between a source and a target. source is a property in the message and target is a variable in the current execution context
  * 
  * @author Esteban Robles Luna
  */
 public class MessageImplicitDataOutputAssociation extends AbstractDataAssociation {
-	
+
   private static final long serialVersionUID = 1L;
 
   public MessageImplicitDataOutputAssociation(String targetRef, Expression sourceExpression) {

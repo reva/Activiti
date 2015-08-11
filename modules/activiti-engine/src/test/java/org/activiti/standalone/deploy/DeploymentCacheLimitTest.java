@@ -15,7 +15,7 @@ package org.activiti.standalone.deploy;
 import java.text.MessageFormat;
 
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 
@@ -23,37 +23,33 @@ import org.activiti.engine.repository.Deployment;
  * @author Joram Barrez
  */
 public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
-  
+
   public DeploymentCacheLimitTest() {
     super("org/activiti/standalone/deploy/deployment.cache.limit.test.activiti.cfg.xml");
   }
 
   public void testDeploymentCacheLimit() {
-    int processDefinitionCacheLimit = 3; // This is set in the configuration above
-    
-    DefaultDeploymentCache<ProcessDefinitionEntity> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionEntity>) 
-              processEngineConfiguration.getProcessDefinitionCache();
+    int processDefinitionCacheLimit = 3; // This is set in the configuration
+                                         // above
+
+    DefaultDeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionCacheEntry>) processEngineConfiguration.getProcessDefinitionCache();
     assertEquals(0, processDefinitionCache.size());
-    
-    
-    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile(
-            "/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
+
+    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile("/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
     for (int i = 1; i <= 5; i++) {
-      repositoryService.createDeployment()
-              .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
-              .deploy();
-      
+      repositoryService.createDeployment().addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i)).deploy();
+
       if (i < processDefinitionCacheLimit) {
         assertEquals(i, processDefinitionCache.size());
       } else {
         assertEquals(processDefinitionCacheLimit, processDefinitionCache.size());
       }
     }
-    
+
     // Cleanup
     for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
       repositoryService.deleteDeployment(deployment.getId(), true);
     }
   }
-  
+
 }

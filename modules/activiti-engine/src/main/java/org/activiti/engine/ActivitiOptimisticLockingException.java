@@ -12,10 +12,8 @@
  */
 package org.activiti.engine;
 
-
 /**
- * Exception that is thrown when an optimistic locking occurs in the datastore 
- * caused by concurrent access of the same data entry. 
+ * Exception that is thrown when an optimistic locking occurs in the datastore caused by concurrent access of the same data entry.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez

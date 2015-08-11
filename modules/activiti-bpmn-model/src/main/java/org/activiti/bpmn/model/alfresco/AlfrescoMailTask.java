@@ -9,7 +9,7 @@ public class AlfrescoMailTask extends ServiceTask {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(AlfrescoMailTask otherElement) {
     super.setValues(otherElement);
   }

@@ -52,8 +52,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
 /**
- * Test class to do basic testing against an OSGi container using 
- * the Activiti blueprint functionality
+ * Test class to do basic testing against an OSGi container using the Activiti blueprint functionality
  * 
  * @author Tijs Rademakers
  */
@@ -64,16 +63,16 @@ public class BlueprintBasicTest {
 
   @Inject
   protected BundleContext ctx;
-  
+
   @Inject
   protected ProcessEngine processEngine;
-  
+
   @Inject
   protected RuntimeService runtimeService;
-  
+
   @Inject
   protected RepositoryService repositoryService;
-  
+
   @Inject
   protected HistoryService historyService;
 
@@ -98,26 +97,18 @@ public class BlueprintBasicTest {
         mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.0.2"),
         mavenBundle().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint.core").version("1.0.0"),
         mavenBundle().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy").version("1.0.0"),
-        mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.0.0"),
-        mavenBundle().groupId("org.osgi").artifactId("org.osgi.enterprise").version("4.2.0"),
+        mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.0.0"), mavenBundle().groupId("org.osgi").artifactId("org.osgi.enterprise").version("4.2.0"),
         bundle("reference:file:target/classes"));
-    
+
     Option[] optionArray = OptionUtils.combine(coreBundles, CoreOptions.junitBundles(),
-        provision(createTestBundleWithProcessEngineConfiguration(), 
-            createTestBundleWithProcessDefinition(), 
-            createTestBundleWithTask()));
+        provision(createTestBundleWithProcessEngineConfiguration(), createTestBundleWithProcessDefinition(), createTestBundleWithTask()));
     return optionArray;
   }
-  
-  
+
   protected InputStream createTestBundleWithProcessEngineConfiguration() {
     try {
-      return TinyBundles
-          .bundle()
-          .add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/config/context.xml")))
-          .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.config")
-          .set(Constants.DYNAMICIMPORT_PACKAGE, "*")
-          .build();
+      return TinyBundles.bundle().add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/config/context.xml")))
+          .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.config").set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
     } catch (FileNotFoundException fnfe) {
       fail("Failure in createTestBundleWithProcessEngineConfiguration " + fnfe.toString());
       return null;
@@ -126,26 +117,18 @@ public class BlueprintBasicTest {
 
   protected InputStream createTestBundleWithProcessDefinition() {
     try {
-      return TinyBundles
-          .bundle()
-          .add("OSGI-INF/activiti/example.bpmn20.xml", new FileInputStream(new File("src/test/resources/processes/example.bpmn20.xml")))
+      return TinyBundles.bundle().add("OSGI-INF/activiti/example.bpmn20.xml", new FileInputStream(new File("src/test/resources/processes/example.bpmn20.xml")))
           .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.example").build();
     } catch (FileNotFoundException fnfe) {
       fail("Failure in createTestBundleWithProcessDefinition " + fnfe.toString());
       return null;
     }
   }
-  
+
   protected InputStream createTestBundleWithTask() {
     try {
-      return TinyBundles
-          .bundle()
-          .add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/task/context.xml")))
-          .add(SimpleBean.class)
-          .add(ActivityBehaviourBean.class)
-          .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.task")
-          .set(Constants.DYNAMICIMPORT_PACKAGE, "*")
-          .build();
+      return TinyBundles.bundle().add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/task/context.xml"))).add(SimpleBean.class).add(ActivityBehaviourBean.class)
+          .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.task").set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
     } catch (FileNotFoundException fnfe) {
       fail("Failure in createTestBundleWithTask " + fnfe.toString());
       return null;
@@ -170,15 +153,10 @@ public class BlueprintBasicTest {
     Thread.sleep(5000);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("osgiProcess");
     assertTrue(processInstance.isEnded());
-    HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery()
-        .processInstanceId(processInstance.getId())
-        .variableName("visited")
-        .singleResult();
+    HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("visited").singleResult();
     assertTrue((Boolean) variable.getValue());
-    HistoricVariableInstance activityBehaviourVisited = historyService.createHistoricVariableInstanceQuery()
-            .processInstanceId(processInstance.getId())
-            .variableName("visitedActivityBehaviour")
-            .singleResult();
+    HistoricVariableInstance activityBehaviourVisited = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("visitedActivityBehaviour")
+        .singleResult();
     assertTrue((Boolean) activityBehaviourVisited.getValue());
   }
 }

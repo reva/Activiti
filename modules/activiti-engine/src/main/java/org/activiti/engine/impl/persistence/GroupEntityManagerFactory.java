@@ -17,13 +17,12 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 
-
 /**
  * @author Joram Barrez
  */
 public class GroupEntityManagerFactory implements SessionFactory {
 
-  public Class< ? > getSessionType() {
+  public Class<?> getSessionType() {
     return GroupIdentityManager.class;
   }
 

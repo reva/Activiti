@@ -23,7 +23,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -42,40 +41,38 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
   }
 
   public Map<String, Object> execute(CommandContext commandContext) {
-  	
-  	// Verify existance of execution
-    if(executionId == null) {
+
+    // Verify existance of execution
+    if (executionId == null) {
       throw new ActivitiIllegalArgumentException("executionId is null");
     }
-    
-    ExecutionEntity execution = commandContext
-      .getExecutionEntityManager()
-      .findExecutionById(executionId);
-    
-    if (execution==null) {
-      throw new ActivitiObjectNotFoundException("execution "+executionId+" doesn't exist", Execution.class);
+
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+
+    if (execution == null) {
+      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
 
     if (variableNames == null || variableNames.isEmpty()) {
-    	
-    	// Fetch all
-    	
-    	if (isLocal) {
-    		return execution.getVariablesLocal();
-    	} else {
-    		return execution.getVariables();
-    	}
-    	
+
+      // Fetch all
+
+      if (isLocal) {
+        return execution.getVariablesLocal();
+      } else {
+        return execution.getVariables();
+      }
+
     } else {
-    	
-    	// Fetch specific collection of variables
-    	if (isLocal) {
-    		return execution.getVariablesLocal(variableNames, false);
-    	} else {
-    		return execution.getVariables(variableNames, false);
-    	}
-    	
+
+      // Fetch specific collection of variables
+      if (isLocal) {
+        return execution.getVariablesLocal(variableNames, false);
+      } else {
+        return execution.getVariables(variableNames, false);
+      }
+
     }
-    
+
   }
 }

@@ -18,15 +18,14 @@ import java.io.Serializable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
-
 /**
  * @author Frederik Heremans
  */
 @Entity
 public class CompoundIdJPAEntity implements Serializable {
-  
+
   private static final long serialVersionUID = 1L;
-  
+
   @EmbeddedId
   private EmbeddableCompoundId id;
 
@@ -37,9 +36,9 @@ public class CompoundIdJPAEntity implements Serializable {
   public void setId(EmbeddableCompoundId id) {
     this.id = id;
   }
-  
+
   @Override
   public boolean equals(Object obj) {
-    return id.equals(((CompoundIdJPAEntity)obj).getId());
+    return id.equals(((CompoundIdJPAEntity) obj).getId());
   }
 }

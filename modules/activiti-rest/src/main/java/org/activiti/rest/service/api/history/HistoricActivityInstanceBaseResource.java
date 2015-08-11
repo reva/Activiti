@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.history;
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,6 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 
 /**
  * @author Tijs Rademakers
@@ -46,37 +44,37 @@ public class HistoricActivityInstanceBaseResource {
     allowedSortProperties.put("startTime", HistoricActivityInstanceQueryProperty.START);
     allowedSortProperties.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected HistoryService historyService;
-  
-  protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest, Map<String,String> allRequestParams) {
+
+  protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest, Map<String, String> allRequestParams) {
     HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
     // Populate query based on request
     if (queryRequest.getActivityId() != null) {
       query.activityId(queryRequest.getActivityId());
     }
-    
+
     if (queryRequest.getActivityInstanceId() != null) {
       query.activityInstanceId(queryRequest.getActivityInstanceId());
     }
-    
+
     if (queryRequest.getActivityName() != null) {
       query.activityName(queryRequest.getActivityName());
     }
-    
+
     if (queryRequest.getActivityType() != null) {
       query.activityType(queryRequest.getActivityType());
     }
-    
+
     if (queryRequest.getExecutionId() != null) {
       query.executionId(queryRequest.getExecutionId());
     }
-    
+
     if (queryRequest.getFinished() != null) {
       Boolean finished = queryRequest.getFinished();
       if (finished) {
@@ -85,32 +83,31 @@ public class HistoricActivityInstanceBaseResource {
         query.unfinished();
       }
     }
-    
+
     if (queryRequest.getTaskAssignee() != null) {
       query.taskAssignee(queryRequest.getTaskAssignee());
     }
-    
+
     if (queryRequest.getProcessInstanceId() != null) {
       query.processInstanceId(queryRequest.getProcessInstanceId());
     }
-    
+
     if (queryRequest.getProcessDefinitionId() != null) {
       query.processDefinitionId(queryRequest.getProcessDefinitionId());
     }
-    
-    if(queryRequest.getTenantId() != null) {
-    	query.activityTenantId(queryRequest.getTenantId());
-    }
-    
-    if(queryRequest.getTenantIdLike() != null) {
-    	query.activityTenantIdLike(queryRequest.getTenantIdLike());
-    }
-    
-    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
-    	query.activityWithoutTenantId();
+
+    if (queryRequest.getTenantId() != null) {
+      query.activityTenantId(queryRequest.getTenantId());
     }
 
-    return new HistoricActivityInstancePaginateList(restResponseFactory).paginateList(
-        allRequestParams, queryRequest, query, "startTime", allowedSortProperties);
+    if (queryRequest.getTenantIdLike() != null) {
+      query.activityTenantIdLike(queryRequest.getTenantIdLike());
+    }
+
+    if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+      query.activityWithoutTenantId();
+    }
+
+    return new HistoricActivityInstancePaginateList(restResponseFactory).paginateList(allRequestParams, queryRequest, query, "startTime", allowedSortProperties);
   }
 }

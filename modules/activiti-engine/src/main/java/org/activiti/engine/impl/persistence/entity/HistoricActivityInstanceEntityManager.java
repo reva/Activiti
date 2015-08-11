@@ -21,20 +21,19 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.AbstractManager;
-
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class HistoricActivityInstanceEntityManager extends AbstractManager {
+public class HistoricActivityInstanceEntityManager extends AbstractEntityManager<HistoricActivityInstanceEntity> {
 
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
     }
   }
-  
+
   public void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
     getDbSqlSession().insert(historicActivityInstance);
   }
@@ -43,7 +42,7 @@ public class HistoricActivityInstanceEntityManager extends AbstractManager {
     Map<String, String> parameters = new HashMap<String, String>();
     parameters.put("activityId", activityId);
     parameters.put("processInstanceId", processInstanceId);
-  
+
     return (HistoricActivityInstanceEntity) getDbSqlSession().selectOne("selectHistoricActivityInstance", parameters);
   }
 

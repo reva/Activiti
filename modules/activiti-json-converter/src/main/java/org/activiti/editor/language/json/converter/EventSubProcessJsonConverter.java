@@ -28,41 +28,39 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Tijs Rademakers
  */
 public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter {
-    
-    public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-            Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    
-        fillJsonTypes(convertersToBpmnMap);
-        fillBpmnTypes(convertersToJsonMap);
-    }
-  
-    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-        convertersToBpmnMap.put(STENCIL_EVENT_SUB_PROCESS, EventSubProcessJsonConverter.class);
-    }
-  
-    public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-        convertersToJsonMap.put(EventSubProcess.class, EventSubProcessJsonConverter.class);
-    }
-    
-    protected String getStencilId(BaseElement baseElement) {
-        return STENCIL_EVENT_SUB_PROCESS;
-    }
 
-    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
-        SubProcess subProcess = (SubProcess) baseElement;
-        propertiesNode.put("activitytype", "Event-Sub-Process");
-        propertiesNode.put("subprocesstype", "Embedded");
-        ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
-        GraphicInfo graphicInfo = model.getGraphicInfo(subProcess.getId());
-        processor.processFlowElements(subProcess, model, subProcessShapesArrayNode,
-                graphicInfo.getX(), graphicInfo.getY());
-        flowElementNode.put("childShapes", subProcessShapesArrayNode);
-    }
-  
-    protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-        EventSubProcess subProcess = new EventSubProcess();
-        JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
-        processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap, model);
-        return subProcess;
-    }
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+
+    fillJsonTypes(convertersToBpmnMap);
+    fillBpmnTypes(convertersToJsonMap);
+  }
+
+  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+    convertersToBpmnMap.put(STENCIL_EVENT_SUB_PROCESS, EventSubProcessJsonConverter.class);
+  }
+
+  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    convertersToJsonMap.put(EventSubProcess.class, EventSubProcessJsonConverter.class);
+  }
+
+  protected String getStencilId(BaseElement baseElement) {
+    return STENCIL_EVENT_SUB_PROCESS;
+  }
+
+  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+    SubProcess subProcess = (SubProcess) baseElement;
+    propertiesNode.put("activitytype", "Event-Sub-Process");
+    propertiesNode.put("subprocesstype", "Embedded");
+    ArrayNode subProcessShapesArrayNode = objectMapper.createArrayNode();
+    GraphicInfo graphicInfo = model.getGraphicInfo(subProcess.getId());
+    processor.processFlowElements(subProcess, model, subProcessShapesArrayNode, graphicInfo.getX(), graphicInfo.getY());
+    flowElementNode.put("childShapes", subProcessShapesArrayNode);
+  }
+
+  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+    EventSubProcess subProcess = new EventSubProcess();
+    JsonNode childShapesArray = elementNode.get(EDITOR_CHILD_SHAPES);
+    processor.processJsonElements(childShapesArray, modelNode, subProcess, shapeMap, model);
+    return subProcess;
+  }
 }

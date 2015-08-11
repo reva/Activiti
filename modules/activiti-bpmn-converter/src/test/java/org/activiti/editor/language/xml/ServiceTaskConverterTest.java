@@ -21,7 +21,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
@@ -29,11 +29,11 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "servicetaskmodel.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("servicetask");
     assertNotNull(flowElement);
@@ -42,7 +42,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     ServiceTask serviceTask = (ServiceTask) flowElement;
     assertEquals("servicetask", serviceTask.getId());
     assertEquals("Service task", serviceTask.getName());
-    
+
     List<FieldExtension> fields = serviceTask.getFieldExtensions();
     assertEquals(2, fields.size());
     FieldExtension field = fields.get(0);
@@ -51,7 +51,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     field = fields.get(1);
     assertEquals("testField2", field.getFieldName());
     assertEquals("${test}", field.getExpression());
-    
+
     List<ActivitiListener> listeners = serviceTask.getExecutionListeners();
     assertEquals(3, listeners.size());
     ActivitiListener listener = listeners.get(0);
@@ -66,7 +66,7 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${delegateExpression}", listener.getImplementation());
     assertEquals("start", listener.getEvent());
-    
+
     assertEquals("R5/PT5M", serviceTask.getFailedJobRetryTimeCycleValue());
   }
 }

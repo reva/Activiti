@@ -18,30 +18,39 @@ public class ExtensionElement extends BaseElement {
   public String getElementText() {
     return elementText;
   }
+
   public void setElementText(String elementText) {
     this.elementText = elementText;
   }
+
   public String getName() {
     return name;
   }
+
   public void setName(String name) {
     this.name = name;
   }
+
   public String getNamespacePrefix() {
     return namespacePrefix;
   }
+
   public void setNamespacePrefix(String namespacePrefix) {
     this.namespacePrefix = namespacePrefix;
   }
+
   public String getNamespace() {
     return namespace;
   }
+
   public void setNamespace(String namespace) {
     this.namespace = namespace;
   }
+
   public Map<String, List<ExtensionElement>> getChildElements() {
     return childElements;
   }
+
   public void addChildElement(ExtensionElement childElement) {
     if (childElement != null && StringUtils.isNotEmpty(childElement.getName())) {
       List<ExtensionElement> elementList = null;
@@ -52,23 +61,24 @@ public class ExtensionElement extends BaseElement {
       this.childElements.get(childElement.getName()).add(childElement);
     }
   }
+
   public void setChildElements(Map<String, List<ExtensionElement>> childElements) {
     this.childElements = childElements;
   }
-  
+
   public ExtensionElement clone() {
     ExtensionElement clone = new ExtensionElement();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(ExtensionElement otherElement) {
     setName(otherElement.getName());
     setNamespacePrefix(otherElement.getNamespacePrefix());
     setNamespace(otherElement.getNamespace());
     setElementText(otherElement.getElementText());
     setAttributes(otherElement.getAttributes());
-    
+
     childElements = new LinkedHashMap<String, List<ExtensionElement>>();
     if (otherElement.getChildElements() != null && !otherElement.getChildElements().isEmpty()) {
       for (String key : otherElement.getChildElements().keySet()) {

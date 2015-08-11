@@ -20,56 +20,56 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
-
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class CommentEntityManager extends AbstractManager {
-  
-  public void delete(PersistentObject persistentObject) {
+public class CommentEntityManager extends AbstractEntityManager<CommentEntity> {
+
+  public void delete(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.delete(persistentObject);
-    
-    Comment comment = (Comment) persistentObject;
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	// Forced to fetch the process-instance to associate the right process definition
-    	String processDefinitionId = null;
-    	String processInstanceId = comment.getProcessInstanceId();
-    	if(comment.getProcessInstanceId() != null) {
-    		ExecutionEntity process = getProcessInstanceManager().findExecutionById(comment.getProcessInstanceId());
-    		if(process != null) {
-    			processDefinitionId = process.getProcessDefinitionId();
-    		}
-    	}
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
+    super.delete(commentEntity, false);
+
+    Comment comment = (Comment) commentEntity;
+    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      // Forced to fetch the process-instance to associate the right
+      // process definition
+      String processDefinitionId = null;
+      String processInstanceId = comment.getProcessInstanceId();
+      if (comment.getProcessInstanceId() != null) {
+        ExecutionEntity process = getProcessInstanceManager().findExecutionById(comment.getProcessInstanceId());
+        if (process != null) {
+          processDefinitionId = process.getProcessDefinitionId();
+        }
+      }
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
     }
   }
 
-  public void insert(PersistentObject persistentObject) {
+  public void insert(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.insert(persistentObject);
-    
-    Comment comment = (Comment) persistentObject;
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	// Forced to fetch the process-instance to associate the right process definition
-    	String processDefinitionId = null;
-    	String processInstanceId = comment.getProcessInstanceId();
-    	if(comment.getProcessInstanceId() != null) {
-    		ExecutionEntity process = getProcessInstanceManager().findExecutionById(comment.getProcessInstanceId());
-    		if(process != null) {
-    			processDefinitionId = process.getProcessDefinitionId();
-    		}
-    	}
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
+    super.insert(commentEntity, false);
+
+    Comment comment = (Comment) commentEntity;
+    if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      // Forced to fetch the process-instance to associate the right
+      // process definition
+      String processDefinitionId = null;
+      String processInstanceId = comment.getProcessInstanceId();
+      if (comment.getProcessInstanceId() != null) {
+        ExecutionEntity process = getProcessInstanceManager().findExecutionById(comment.getProcessInstanceId());
+        if (process != null) {
+          processDefinitionId = process.getProcessDefinitionId();
+        }
+      }
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
+      getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
     }
   }
 
@@ -78,7 +78,7 @@ public class CommentEntityManager extends AbstractManager {
     checkHistoryEnabled();
     return getDbSqlSession().selectList("selectCommentsByTaskId", taskId);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByTaskIdAndType(String taskId, String type) {
     checkHistoryEnabled();
@@ -87,7 +87,7 @@ public class CommentEntityManager extends AbstractManager {
     params.put("type", type);
     return getDbSqlSession().selectListWithRawParameter("selectCommentsByTaskIdAndType", params, 0, Integer.MAX_VALUE);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Comment> findCommentsByType(String type) {
     checkHistoryEnabled();
@@ -99,7 +99,7 @@ public class CommentEntityManager extends AbstractManager {
     checkHistoryEnabled();
     return getDbSqlSession().selectList("selectEventsByTaskId", taskId);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<Event> findEventsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
@@ -110,7 +110,7 @@ public class CommentEntityManager extends AbstractManager {
     checkHistoryEnabled();
     getDbSqlSession().delete("deleteCommentsByTaskId", taskId);
   }
-  
+
   public void deleteCommentsByProcessInstanceId(String processInstanceId) {
     checkHistoryEnabled();
     getDbSqlSession().delete("deleteCommentsByProcessInstanceId", processInstanceId);
@@ -129,17 +129,17 @@ public class CommentEntityManager extends AbstractManager {
     params.put("type", type);
     return getDbSqlSession().selectListWithRawParameter("selectCommentsByProcessInstanceIdAndType", params, 0, Integer.MAX_VALUE);
   }
-  
+
   public Comment findComment(String commentId) {
     return getDbSqlSession().selectById(CommentEntity.class, commentId);
   }
-  
+
   public Event findEvent(String commentId) {
     return getDbSqlSession().selectById(CommentEntity.class, commentId);
   }
-  
+
   protected void checkHistoryEnabled() {
-    if(!getHistoryManager().isHistoryEnabled()) {
+    if (!getHistoryManager().isHistoryEnabled()) {
       throw new ActivitiException("In order to use comments, history should be enabled");
     }
   }

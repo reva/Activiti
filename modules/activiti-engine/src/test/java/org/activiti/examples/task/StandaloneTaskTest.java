@@ -61,7 +61,7 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
     assertEquals(1, tasks.size());
     assertEquals("testTask", tasks.get(0).getName());
-    
+
     task.setName("Update name");
     taskService.saveTask(task);
     tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
@@ -82,16 +82,16 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     // TODO: check for historic data when implemented!
     assertNull(taskService.createTaskQuery().taskId(taskId).singleResult());
   }
-  
+
   public void testOptimisticLockingThrownOnMultipleUpdates() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
     String taskId = task.getId();
-    
+
     // first modification
     Task task1 = taskService.createTaskQuery().taskId(taskId).singleResult();
     Task task2 = taskService.createTaskQuery().taskId(taskId).singleResult();
-    
+
     task1.setDescription("first modification");
     taskService.saveTask(task1);
 
@@ -101,13 +101,13 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
       taskService.saveTask(task2);
       fail("should get an exception here as the task was modified by someone else.");
     } catch (ActivitiOptimisticLockingException expected) {
-      //  exception was thrown as expected
+      // exception was thrown as expected
     }
-    
+
     taskService.deleteTask(taskId, true);
   }
-  
-  // See http://jira.codehaus.org/browse/ACT-1290 
+
+  // See http://jira.codehaus.org/browse/ACT-1290
   public void testRevisionUpdatedOnSave() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
@@ -120,28 +120,28 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
     task.setDescription("second modification");
     taskService.saveTask(task);
     assertEquals(3, ((TaskEntity) task).getRevision());
-    
+
     taskService.deleteTask(task.getId(), true);
   }
 
-  // See http://jira.codehaus.org/browse/ACT-1290 
+  // See http://jira.codehaus.org/browse/ACT-1290
   public void testRevisionUpdatedOnSaveWhenFetchedUsingQuery() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
     assertEquals(1, ((TaskEntity) task).getRevision());
-    
+
     task.setAssignee("kermit");
     taskService.saveTask(task);
     assertEquals(2, ((TaskEntity) task).getRevision());
-    
+
     // Now fetch the task through the query api
     task = taskService.createTaskQuery().singleResult();
     assertEquals(2, ((TaskEntity) task).getRevision());
     task.setPriority(1);
     taskService.saveTask(task);
-    
+
     assertEquals(3, ((TaskEntity) task).getRevision());
-    
+
     taskService.deleteTask(task.getId(), true);
   }
   

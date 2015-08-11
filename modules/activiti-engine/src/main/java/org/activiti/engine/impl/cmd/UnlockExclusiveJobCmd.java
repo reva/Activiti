@@ -22,7 +22,6 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -31,23 +30,23 @@ public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
   private static final long serialVersionUID = 1L;
 
   private static Logger log = LoggerFactory.getLogger(UnlockExclusiveJobCmd.class);
-  
+
   protected JobEntity job;
- 
+
   public UnlockExclusiveJobCmd(JobEntity job) {
-  	this.job = job;
+    this.job = job;
   }
 
   public Object execute(CommandContext commandContext) {
-    
+
     if (job == null) {
       throw new ActivitiIllegalArgumentException("job is null");
     }
-    
+
     if (log.isDebugEnabled()) {
       log.debug("Unlocking exclusive job {}", job.getId());
     }
-    
+
     if (job.isExclusive()) {
       if (job.getExecutionId() != null) {
         ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId());
@@ -56,7 +55,7 @@ public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
         }
       }
     }
-    
+
     return null;
   }
 }

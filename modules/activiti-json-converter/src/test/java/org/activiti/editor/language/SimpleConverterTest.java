@@ -19,28 +19,28 @@ public class SimpleConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readJsonFile();
     validateModel(bpmnModel);
   }
-  
-  @Test 
+
+  @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "test.simplemodel.json";
   }
-  
+
   private void validateModel(BpmnModel model) {
     assertEquals("simpleProcess", model.getMainProcess().getId());
     assertEquals("Simple process", model.getMainProcess().getName());
     assertEquals(true, model.getMainProcess().isExecutable());
-    
+
     FlowElement flowElement = model.getMainProcess().getFlowElement("flow1");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SequenceFlow);
     assertEquals("flow1", flowElement.getId());
-    
+
     flowElement = model.getMainProcess().getFlowElement("catchEvent");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof IntermediateCatchEvent);
@@ -51,7 +51,7 @@ public class SimpleConverterTest extends AbstractConverterTest {
     assertTrue(eventDefinition instanceof TimerEventDefinition);
     TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
     assertEquals("PT5M", timerDefinition.getTimeDuration());
-    
+
     flowElement = model.getMainProcess().getFlowElement("flow1Condition");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SequenceFlow);

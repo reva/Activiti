@@ -30,12 +30,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserResource extends BaseUserResource {
 
-  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.GET, produces = "application/json")
   public UserResponse getUser(@PathVariable String userId, HttpServletRequest request) {
     return restResponseFactory.createUserResponse(getUserFromRequest(userId), false);
   }
-  
-  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
+
+  @RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
   public UserResponse updateUser(@PathVariable String userId, @RequestBody UserRequest userRequest, HttpServletRequest request) {
     User user = getUserFromRequest(userId);
     if (userRequest.isEmailChanged()) {
@@ -50,13 +50,13 @@ public class UserResource extends BaseUserResource {
     if (userRequest.isPasswordChanged()) {
       user.setPassword(userRequest.getPassword());
     }
-    
+
     identityService.saveUser(user);
-    
+
     return restResponseFactory.createUserResponse(user, false);
   }
-  
-  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.DELETE)
+
+  @RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.DELETE)
   public void deleteUser(@PathVariable String userId, HttpServletResponse response) {
     User user = getUserFromRequest(userId);
     identityService.deleteUser(user.getId());

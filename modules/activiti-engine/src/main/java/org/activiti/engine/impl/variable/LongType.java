@@ -12,15 +12,13 @@
  */
 package org.activiti.engine.impl.variable;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public class LongType implements VariableType {
 
   private static final long serialVersionUID = 1L;
-  
+
   public String getTypeName() {
     return "long";
   }
@@ -35,7 +33,7 @@ public class LongType implements VariableType {
 
   public void setValue(Object value, ValueFields valueFields) {
     valueFields.setLongValue((Long) value);
-    if (value!=null) {
+    if (value != null) {
       valueFields.setTextValue(value.toString());
     } else {
       valueFields.setTextValue(null);
@@ -43,10 +41,9 @@ public class LongType implements VariableType {
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
-    return Long.class.isAssignableFrom(value.getClass())
-           || long.class.isAssignableFrom(value.getClass());
+    return Long.class.isAssignableFrom(value.getClass()) || long.class.isAssignableFrom(value.getClass());
   }
 }

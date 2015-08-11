@@ -37,24 +37,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinitionResource {
 
-  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.GET, produces = "application/json")
-  public RestIdentityLink getIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, 
-      @PathVariable("identityId") String identityId, HttpServletRequest request) {
-    
+  @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.GET, produces = "application/json")
+  public RestIdentityLink getIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
+      HttpServletRequest request) {
+
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
     validateIdentityLinkArguments(family, identityId);
 
     // Check if identitylink to get exists
     IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
-    
+
     return restResponseFactory.createRestIdentityLink(link);
   }
 
-  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.DELETE)
-  public void deleteIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, 
-      @PathVariable("identityId") String identityId, HttpServletResponse response) {
-    
+  @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.DELETE)
+  public void deleteIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
+      HttpServletResponse response) {
+
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
     validateIdentityLinkArguments(family, identityId);
@@ -66,7 +66,7 @@ public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinition
     } else {
       repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), link.getGroupId());
     }
-    
+
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
@@ -82,7 +82,8 @@ public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinition
   protected IdentityLink getIdentityLink(String family, String identityId, String processDefinitionId) {
     boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
 
-    // Perhaps it would be better to offer getting a single identitylink from
+    // Perhaps it would be better to offer getting a single identitylink
+    // from
     // the API
     List<IdentityLink> allLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
     for (IdentityLink link : allLinks) {

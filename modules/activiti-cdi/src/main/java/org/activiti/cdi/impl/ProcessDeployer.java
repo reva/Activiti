@@ -30,9 +30,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * Used to deploy processes. When the activiti-cdi extension is initialized, the
- * classpath is scanned for a file named {@value #PROCESSES_FILE_NAME}. All
- * processes listed in that file are automatically deployed to the engine.
+ * Used to deploy processes. When the activiti-cdi extension is initialized, the classpath is scanned for a file named {@value #PROCESSES_FILE_NAME}. All processes listed in that file are
+ * automatically deployed to the engine.
  * 
  * @author Daniel Meyer
  */
@@ -45,7 +44,7 @@ public class ProcessDeployer {
   private static Logger logger = LoggerFactory.getLogger(ProcessDeployer.class);
 
   protected final ProcessEngine processEngine;
-    
+
   public ProcessDeployer(ProcessEngine processEngine) {
     this.processEngine = processEngine;
   }
@@ -53,8 +52,7 @@ public class ProcessDeployer {
   /**
    * Deploys a single process
    * 
-   * @return the processDefinitionId of the deployed process as returned by
-   *         {@link ProcessDefinition#getId()}
+   * @return the processDefinitionId of the deployed process as returned by {@link ProcessDefinition#getId()}
    */
   public String deployProcess(String resourceName) {
     logger.debug("Start deploying single process.");

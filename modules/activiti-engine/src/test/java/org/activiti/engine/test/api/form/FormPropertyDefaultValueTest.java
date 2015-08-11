@@ -47,18 +47,13 @@ public class FormPropertyDefaultValueTest extends PluggableActivitiTestCase {
     assertEquals(42L, runtimeService.getVariable(processInstance.getId(), "longProperty"));
     assertEquals(1L, runtimeService.getVariable(processInstance.getId(), "longExpressionProperty"));
   }
-  
+
   @Deployment
   public void testStartFormDefaultValue() throws Exception {
-    String processDefinitionId = repositoryService.createProcessDefinitionQuery()
-      .processDefinitionKey("FormPropertyDefaultValueTest.testDefaultValue")
-      .latestVersion()
-      .singleResult()
-      .getId();
-    
+    String processDefinitionId = repositoryService.createProcessDefinitionQuery().processDefinitionKey("FormPropertyDefaultValueTest.testDefaultValue").latestVersion().singleResult().getId();
+
     StartFormData startForm = formService.getStartFormData(processDefinitionId);
-    
-    
+
     List<FormProperty> formProperties = startForm.getFormProperties();
     assertEquals(4, formProperties.size());
 
@@ -76,7 +71,8 @@ public class FormPropertyDefaultValueTest extends PluggableActivitiTestCase {
       }
     }
 
-    // Override 2 properties. The others should pe posted as the default-value
+    // Override 2 properties. The others should pe posted as the
+    // default-value
     Map<String, String> formDataUpdate = new HashMap<String, String>();
     formDataUpdate.put("longExpressionProperty", "1");
     formDataUpdate.put("booleanProperty", "false");

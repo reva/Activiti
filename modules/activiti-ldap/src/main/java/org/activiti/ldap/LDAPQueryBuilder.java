@@ -25,18 +25,16 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Class with overridable methods that are called when doing the calls to the ldap system.
- * You can extend this class and plug it into the {@link LDAPConfigurator} if the default
- * queries are inadequate for your use case.
+ * Class with overridable methods that are called when doing the calls to the ldap system. You can extend this class and plug it into the {@link LDAPConfigurator} if the default queries are inadequate
+ * for your use case.
  * 
  * @author Joram Barrez
  */
 public class LDAPQueryBuilder {
-  
+
   protected static final Logger LOGGER = LoggerFactory.getLogger(LDAPQueryBuilder.class);
-  
+
   public String buildQueryByUserId(LDAPConfigurator ldapConfigurator, String userId) {
     String searchExpression = null;
     if (ldapConfigurator.getQueryUserByUserId() != null) {
@@ -46,21 +44,21 @@ public class LDAPQueryBuilder {
     }
     return searchExpression;
   }
-  
+
   public String buildQueryGroupsForUser(final LDAPConfigurator ldapConfigurator, final String userId) {
     String searchExpression = null;
     if (ldapConfigurator.getQueryGroupsForUser() != null) {
-      
-      // Fetch the dn of the user 
+
+      // Fetch the dn of the user
       LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
       String userDn = ldapTemplate.execute(new LDAPCallBack<String>() {
-        
+
         public String executeInContext(InitialDirContext initialDirContext) {
-          
+
           String userDnSearch = buildQueryByUserId(ldapConfigurator, userId);
           try {
-        	String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
-            NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, userDnSearch, createSearchControls(ldapConfigurator));
+            String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
+            NamingEnumeration<?> namingEnum = initialDirContext.search(baseDn, userDnSearch, createSearchControls(ldapConfigurator));
             while (namingEnum.hasMore()) { // Should be only one
               SearchResult result = (SearchResult) namingEnum.next();
               return result.getNameInNamespace();
@@ -71,31 +69,28 @@ public class LDAPQueryBuilder {
           }
           return null;
         }
-        
+
       });
-      
+
       searchExpression = MessageFormat.format(ldapConfigurator.getQueryGroupsForUser(), Rdn.escapeValue(userDn));
-      
+
     } else {
       searchExpression = userId;
     }
     return searchExpression;
   }
-  
+
   public String buildQueryByFullNameLike(final LDAPConfigurator ldapConfigurator, String searchText) {
     String searchExpression = null;
     if (ldapConfigurator.getQueryUserByFullNameLike() != null) {
-      searchExpression = MessageFormat.format(ldapConfigurator.getQueryUserByFullNameLike(), 
-              ldapConfigurator.getUserFirstNameAttribute(),
-              searchText,
-              ldapConfigurator.getUserLastNameAttribute(),
-              searchText);
+      searchExpression = MessageFormat.format(ldapConfigurator.getQueryUserByFullNameLike(), ldapConfigurator.getUserFirstNameAttribute(), searchText, ldapConfigurator.getUserLastNameAttribute(),
+          searchText);
     } else {
       throw new ActivitiIllegalArgumentException("No 'queryUserByFullNameLike' configured");
     }
     return searchExpression;
   }
-  
+
   protected SearchControls createSearchControls(LDAPConfigurator ldapConfigurator) {
     SearchControls searchControls = new SearchControls();
     searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);

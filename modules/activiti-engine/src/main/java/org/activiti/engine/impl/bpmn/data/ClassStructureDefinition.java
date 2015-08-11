@@ -21,12 +21,12 @@ public class ClassStructureDefinition implements FieldBaseStructureDefinition {
 
   protected String id;
 
-  protected Class< ? > classStructure;
+  protected Class<?> classStructure;
 
   public ClassStructureDefinition(Class<?> classStructure) {
     this(classStructure.getName(), classStructure);
   }
-  
+
   public ClassStructureDefinition(String id, Class<?> classStructure) {
     this.id = id;
     this.classStructure = classStructure;
@@ -46,7 +46,7 @@ public class ClassStructureDefinition implements FieldBaseStructureDefinition {
     return null;
   }
 
-  public Class< ? > getFieldTypeAt(int index) {
+  public Class<?> getFieldTypeAt(int index) {
     // TODO
     return null;
   }

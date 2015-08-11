@@ -15,24 +15,21 @@ package org.activiti.engine.impl.jobexecutor;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 
 /**
  * 
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
 public class AsyncContinuationJobHandler implements JobHandler {
-  
+
   public final static String TYPE = "async-continuation";
 
   public String getType() {
     return TYPE;
   }
-  
+
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    // ATM only AtomicOperationTransitionCreateScope can be performed asynchronously 
-    AtomicOperation atomicOperation = AtomicOperation.TRANSITION_CREATE_SCOPE;
-    commandContext.performOperation(atomicOperation, execution);
+    commandContext.getAgenda().planContinueProcessSynchronousOperation(execution);
   }
 
 }

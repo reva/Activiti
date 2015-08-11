@@ -14,20 +14,19 @@ package org.activiti.spring.test.servicetask;
 
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Joram Barrez
  */
 public class SentenceToUpperCaseBean {
 
-    protected SentenceGenerator sentenceGenerator;
+  protected SentenceGenerator sentenceGenerator;
 
-    public void setSentence(ActivityExecution execution) {
-        execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
-    }
+  public void setSentence(ActivityExecution execution) {
+    execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
+  }
 
-    public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
-        this.sentenceGenerator = sentenceGenerator;
-    }
+  public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
+    this.sentenceGenerator = sentenceGenerator;
+  }
 
 }

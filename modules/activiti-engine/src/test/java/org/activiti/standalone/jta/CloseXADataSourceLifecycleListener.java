@@ -21,10 +21,8 @@ import org.slf4j.LoggerFactory;
 import bitronix.tm.BitronixTransactionManager;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-
 /**
- * Used in JPA-tests to close the XA-datasource after engine is closed, due to internal caching
- * of datasource, independent of process-engine/spring-context.
+ * Used in JPA-tests to close the XA-datasource after engine is closed, due to internal caching of datasource, independent of process-engine/spring-context.
  * 
  * @author Frederik Heremans
  */
@@ -32,9 +30,9 @@ public class CloseXADataSourceLifecycleListener implements ProcessEngineLifecycl
 
   private PoolingDataSource dataSource;
   private BitronixTransactionManager transactionManager;
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(CloseXADataSourceLifecycleListener.class);
-  
+
   @Override
   public void onProcessEngineBuilt(ProcessEngine processEngine) {
     LOG.info("--------------------- Callback for engine start");
@@ -43,22 +41,20 @@ public class CloseXADataSourceLifecycleListener implements ProcessEngineLifecycl
   @Override
   public void onProcessEngineClosed(ProcessEngine processEngine) {
     LOG.info("--------------------- Callback for engine end");
-    if(dataSource != null) {
+    if (dataSource != null) {
       LOG.info("--------------------- Closing datasource");
       dataSource.close();
     }
-    
-    if(transactionManager != null) {
+
+    if (transactionManager != null) {
       transactionManager.shutdown();
     }
   }
-  
-  
+
   public void setDataSource(PoolingDataSource dataSource) {
     this.dataSource = dataSource;
   }
-  
-  
+
   public void setTransactionManager(BitronixTransactionManager transactionManager) {
     this.transactionManager = transactionManager;
   }

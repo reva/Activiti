@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.cmd; 
+package org.activiti.engine.impl.cmd;
 
 import java.util.Collection;
 
@@ -10,7 +10,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  * @author Joram Barrez
  */
 public class RemoveTaskVariablesCmd extends NeedsActiveTaskCmd<Void> {
-  
+
   private static final long serialVersionUID = 1L;
 
   private final Collection<String> variableNames;
@@ -21,7 +21,7 @@ public class RemoveTaskVariablesCmd extends NeedsActiveTaskCmd<Void> {
     this.variableNames = variableNames;
     this.isLocal = isLocal;
   }
-  
+
   protected Void execute(CommandContext commandContext, TaskEntity task) {
 
     if (isLocal) {
@@ -29,13 +29,13 @@ public class RemoveTaskVariablesCmd extends NeedsActiveTaskCmd<Void> {
     } else {
       task.removeVariables(variableNames);
     }
-    
+
     return null;
   }
-  
+
   @Override
   protected String getSuspendedTaskException() {
     return "Cannot remove variables from a suspended task.";
   }
-  
+
 }

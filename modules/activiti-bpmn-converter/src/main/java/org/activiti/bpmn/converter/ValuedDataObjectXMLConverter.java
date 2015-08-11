@@ -26,20 +26,20 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
-  
+
   private final Pattern xmlChars = Pattern.compile("[<>&]");
   private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
   protected boolean didWriteExtensionStartElement = false;
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return ValuedDataObject.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_DATA_OBJECT;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     ValuedDataObject dataObject = null;
@@ -48,7 +48,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
     String structureRef = xtr.getAttributeValue(null, ATTRIBUTE_DATA_ITEM_REF);
     if (StringUtils.isNotEmpty(structureRef) && structureRef.contains(":")) {
       String dataType = structureRef.substring(structureRef.indexOf(':') + 1);
-      
+
       if (dataType.equals("string")) {
         dataObject = new StringDataObject();
       } else if (dataType.equals("int")) {
@@ -64,24 +64,24 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       } else {
         LOGGER.error("Error converting {}, invalid data type: " + dataType, xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME));
       }
-    
+
     } else {
       // use String as default type
       dataObject = new StringDataObject();
       structureRef = "xsd:string";
     }
-    
+
     if (dataObject != null) {
-      dataObject.setId(xtr.getAttributeValue(null, ATTRIBUTE_DATA_ID)); 
-      dataObject.setName(xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME)); 
-      
+      dataObject.setId(xtr.getAttributeValue(null, ATTRIBUTE_DATA_ID));
+      dataObject.setName(xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME));
+
       BpmnXMLUtil.addXMLLocation(dataObject, xtr);
 
       itemSubjectRef.setStructureRef(structureRef);
-      dataObject.setItemSubjectRef(itemSubjectRef); 
+      dataObject.setItemSubjectRef(itemSubjectRef);
 
       parseChildElements(getXMLElementName(), dataObject, model, xtr);
-      
+
       List<ExtensionElement> valuesElement = dataObject.getExtensionElements().get("value");
       if (valuesElement != null && !valuesElement.isEmpty()) {
         ExtensionElement valueElement = valuesElement.get(0);
@@ -96,7 +96,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
             dataObject.setValue(valueElement.getElementText());
           }
         }
-        
+
         // remove value element
         dataObject.getExtensionElements().remove("value");
       }
@@ -119,7 +119,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
     if (StringUtils.isNotEmpty(dataObject.getId()) && dataObject.getValue() != null) {
 
-      if (didWriteExtensionStartElement == false) { 
+      if (didWriteExtensionStartElement == false) {
         xtw.writeStartElement(ELEMENT_EXTENSIONS);
         didWriteExtensionStartElement = true;
       }
@@ -133,18 +133,15 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
           value = dataObject.getValue().toString();
         }
 
-        if (dataObject instanceof StringDataObject && xmlChars.matcher(value).find())
-        {
+        if (dataObject instanceof StringDataObject && xmlChars.matcher(value).find()) {
           xtw.writeCData(value);
-        }
-        else
-        {
+        } else {
           xtw.writeCharacters(value);
         }
       }
       xtw.writeEndElement();
     }
-    
+
     return didWriteExtensionStartElement;
   }
 

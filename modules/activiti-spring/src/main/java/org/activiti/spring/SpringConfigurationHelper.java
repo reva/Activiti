@@ -24,30 +24,26 @@ import org.springframework.core.io.UrlResource;
 import java.net.URL;
 import java.util.Map;
 
-
 /**
  * @author Tom Baeyens
  */
 class SpringConfigurationHelper {
 
-    private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
+  private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
 
-    private static ProcessEngine buildProcessEngine(URL resource) {
-        log.debug("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
+  private static ProcessEngine buildProcessEngine(URL resource) {
+    log.debug("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
 
-        ApplicationContext applicationContext = new GenericXmlApplicationContext(new UrlResource(resource));
-        Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
-        if ((beansOfType == null)
-                || (beansOfType.isEmpty())
-                ) {
-            throw new ActivitiException("no " + ProcessEngine.class.getName() + " defined in the application context " + resource.toString());
-        }
-
-        ProcessEngine processEngine = beansOfType.values().iterator().next();
-
-        log.debug("==== SPRING PROCESS ENGINE CREATED ==================================================================");
-        return processEngine;
+    ApplicationContext applicationContext = new GenericXmlApplicationContext(new UrlResource(resource));
+    Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
+    if ((beansOfType == null) || (beansOfType.isEmpty())) {
+      throw new ActivitiException("no " + ProcessEngine.class.getName() + " defined in the application context " + resource.toString());
     }
 
+    ProcessEngine processEngine = beansOfType.values().iterator().next();
+
+    log.debug("==== SPRING PROCESS ENGINE CREATED ==================================================================");
+    return processEngine;
+  }
 
 }

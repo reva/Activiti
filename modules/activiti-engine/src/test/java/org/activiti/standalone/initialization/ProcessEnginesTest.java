@@ -23,13 +23,13 @@ import org.activiti.engine.impl.test.PvmTestCase;
  * @author Tom Baeyens
  */
 public class ProcessEnginesTest extends PvmTestCase {
-  
+
   protected void setUp() throws Exception {
     super.setUp();
     ProcessEngines.destroy();
     ProcessEngines.init();
   }
-  
+
   protected void tearDown() throws Exception {
     ProcessEngines.destroy();
     super.tearDown();

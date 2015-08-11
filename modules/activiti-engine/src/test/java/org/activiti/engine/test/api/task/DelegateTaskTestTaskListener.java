@@ -7,7 +7,6 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.task.IdentityLink;
 
-
 public class DelegateTaskTestTaskListener implements TaskListener {
 
   public static final String VARNAME_CANDIDATE_USERS = "candidateUsers";

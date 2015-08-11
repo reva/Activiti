@@ -19,6 +19,7 @@ import javax.persistence.MappedSuperclass;
 
 /**
  * Mapped superclass containing an
+ * 
  * @author Frederik Heremans
  */
 

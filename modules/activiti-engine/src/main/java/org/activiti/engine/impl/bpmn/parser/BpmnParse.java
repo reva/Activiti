@@ -55,10 +55,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.HasDIBounds;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.impl.util.io.ResourceStreamSource;
@@ -97,8 +93,9 @@ public class BpmnParse implements BpmnXMLConstants {
 
   protected boolean validateSchema = true;
   protected boolean validateProcess = true;
-  
+
   protected StreamSource streamSource;
+  protected String sourceSystemId;
 
   protected BpmnModel bpmnModel;
 
@@ -111,27 +108,22 @@ public class BpmnParse implements BpmnXMLConstants {
   protected List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
 
   /** A map for storing sequence flow based on their id during parsing. */
-  protected Map<String, TransitionImpl> sequenceFlows;
+  protected Map<String, SequenceFlow> sequenceFlows;
 
   protected BpmnParseHandlers bpmnParserHandlers;
 
   protected ProcessDefinitionEntity currentProcessDefinition;
 
-  protected FlowElement currentFlowElement;
+  protected Process currentProcess;
 
-  protected ActivityImpl currentActivity;
+  protected FlowElement currentFlowElement;
 
   protected LinkedList<SubProcess> currentSubprocessStack = new LinkedList<SubProcess>();
 
-  protected LinkedList<ScopeImpl> currentScopeStack = new LinkedList<ScopeImpl>();
-
   /**
-   * Mapping containing values stored during the first phase of parsing since
-   * other elements can reference these messages.
+   * Mapping containing values stored during the first phase of parsing since other elements can reference these messages.
    * 
-   * All the map's elements are defined outside the process definition(s), which
-   * means that this map doesn't need to be re-initialized for each new process
-   * definition.
+   * All the map's elements are defined outside the process definition(s), which means that this map doesn't need to be re-initialized for each new process definition.
    */
   protected Map<String, MessageDefinition> messages = new HashMap<String, MessageDefinition>();
   protected Map<String, StructureDefinition> structures = new HashMap<String, StructureDefinition>();
@@ -160,77 +152,83 @@ public class BpmnParse implements BpmnXMLConstants {
   }
 
   protected void initializeXSDItemDefinitions() {
-    this.itemDefinitions.put("http://www.w3.org/2001/XMLSchema:string", new ItemDefinition("http://www.w3.org/2001/XMLSchema:string",
-            new ClassStructureDefinition(String.class)));
+    this.itemDefinitions.put("http://www.w3.org/2001/XMLSchema:string", new ItemDefinition("http://www.w3.org/2001/XMLSchema:string", new ClassStructureDefinition(String.class)));
   }
 
   public BpmnParse deployment(DeploymentEntity deployment) {
     this.deployment = deployment;
     return this;
   }
-  
+
   public BpmnParse execute() {
     try {
 
-    	ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+      ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
       BpmnXMLConverter converter = new BpmnXMLConverter();
-      
+
       boolean enableSafeBpmnXml = false;
       String encoding = null;
       if (processEngineConfiguration != null) {
         enableSafeBpmnXml = processEngineConfiguration.isEnableSafeBpmnXml();
         encoding = processEngineConfiguration.getXmlEncoding();
       }
-      
+
       if (encoding != null) {
         bpmnModel = converter.convertToBpmnModel(streamSource, validateSchema, enableSafeBpmnXml, encoding);
       } else {
         bpmnModel = converter.convertToBpmnModel(streamSource, validateSchema, enableSafeBpmnXml);
       }
-      
+
       // XSD validation goes first, then process/semantic validation
       if (validateProcess) {
-      	ProcessValidator processValidator = processEngineConfiguration.getProcessValidator();
-      	if (processValidator == null) {
-      		LOGGER.warn("Process should be validated, but no process validator is configured on the process engine configuration!");
-      	} else {
-      		List<ValidationError> validationErrors = processValidator.validate(bpmnModel);
-      		if(validationErrors != null && !validationErrors.isEmpty()) {
-      			
-      			StringBuilder warningBuilder = new StringBuilder();
-	      		StringBuilder errorBuilder = new StringBuilder();
-	      		
-	          for (ValidationError error : validationErrors) {
-	          	if (error.isWarning()) {
-	          		warningBuilder.append(error.toString());
-	          		warningBuilder.append("\n");
-	          	} else {
-	          		errorBuilder.append(error.toString());
-	          		errorBuilder.append("\n");
-	          	}
-	          }
-	           
-	          // Throw exception if there is any error
-	          if (errorBuilder.length() > 0) {
-	          	throw new ActivitiException("Errors while parsing:\n" + errorBuilder.toString());
-	          }
-	          
-	          // Write out warnings (if any)
-	          if (warningBuilder.length() > 0) {
-	          	LOGGER.warn("Following warnings encountered during process validation: " + warningBuilder.toString());
-	          }
-	          
-      		}
-      	}
+        ProcessValidator processValidator = processEngineConfiguration.getProcessValidator();
+        if (processValidator == null) {
+          LOGGER.warn("Process should be validated, but no process validator is configured on the process engine configuration!");
+        } else {
+          List<ValidationError> validationErrors = processValidator.validate(bpmnModel);
+          if (validationErrors != null && !validationErrors.isEmpty()) {
+
+            StringBuilder warningBuilder = new StringBuilder();
+            StringBuilder errorBuilder = new StringBuilder();
+
+            for (ValidationError error : validationErrors) {
+              if (error.isWarning()) {
+                warningBuilder.append(error.toString());
+                warningBuilder.append("\n");
+              } else {
+                errorBuilder.append(error.toString());
+                errorBuilder.append("\n");
+              }
+            }
+
+            // Throw exception if there is any error
+            if (errorBuilder.length() > 0) {
+              throw new ActivitiException("Errors while parsing:\n" + errorBuilder.toString());
+            }
+
+            // Write out warnings (if any)
+            if (warningBuilder.length() > 0) {
+              LOGGER.warn("Following warnings encountered during process validation: " + warningBuilder.toString());
+            }
+
+          }
+        }
       }
-      
-      // Validation successfull (or no validation)
+
+      // Validation successful (or no validation)
+
+      // Continue with creating side artifacts: imports, item defs, messages and operations
       createImports();
       createItemDefinitions();
       createMessages();
       createOperations();
-      transformProcessDefinitions();
-      
+
+      // Attach logic to the processes (eg. map ActivityBehaviors to bpmn model elements)
+      applyParseHandlers();
+
+      // Finally, process the diagram interchange info
+      processDI();
+
     } catch (Exception e) {
       if (e instanceof ActivitiException) {
         throw (ActivitiException) e;
@@ -299,6 +297,15 @@ public class BpmnParse implements BpmnXMLConstants {
     }
     this.streamSource = streamSource;
   }
+  
+  public String getSourceSystemId() {
+    return sourceSystemId;
+  }
+
+  public BpmnParse setSourceSystemId(String sourceSystemId) {
+    this.sourceSystemId = sourceSystemId;
+    return this;
+  }
 
   protected void createImports() {
     for (Import theImport : bpmnModel.getImports()) {
@@ -316,7 +323,7 @@ public class BpmnParse implements BpmnXMLConstants {
       return this.importers.get(theImport.getImportType());
     } else {
       if (theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/")) {
-        Class< ? > wsdlImporterClass;
+        Class<?> wsdlImporterClass;
         try {
           wsdlImporterClass = Class.forName("org.activiti.engine.impl.webservice.CxfWSDLImporter", true, Thread.currentThread().getContextClassLoader());
           XMLImporter newInstance = (XMLImporter) wsdlImporterClass.newInstance();
@@ -350,7 +357,7 @@ public class BpmnParse implements BpmnXMLConstants {
 
       try {
         // it is a class
-        Class< ? > classStructure = ReflectUtil.loadClass(itemDefinitionElement.getStructureRef());
+        Class<?> classStructure = ReflectUtil.loadClass(itemDefinitionElement.getStructureRef());
         structure = new ClassStructureDefinition(classStructure);
       } catch (ActivitiException e) {
         // it is a reference to a different structure
@@ -392,36 +399,36 @@ public class BpmnParse implements BpmnXMLConstants {
   /**
    * Parses the 'definitions' root element
    */
-  protected void transformProcessDefinitions() {
-    sequenceFlows = new HashMap<String, TransitionImpl>();
+  protected void applyParseHandlers() {
+    sequenceFlows = new HashMap<String, SequenceFlow>();
     for (Process process : bpmnModel.getProcesses()) {
+      currentProcess = process;
       if (process.isExecutable()) {
         bpmnParserHandlers.parseElement(this, process);
       }
-    }
-
-    if (!processDefinitions.isEmpty()) {
-      processDI();
     }
   }
 
   public void processFlowElements(Collection<FlowElement> flowElements) {
 
     // Parsing the elements is done in a strict order of types,
-    // as otherwise certain information might not be available when parsing a
+    // as otherwise certain information might not be available when parsing
+    // a
     // certain type.
-    
+
     // Using lists as we want to keep the order in which they are defined
     List<SequenceFlow> sequenceFlowToParse = new ArrayList<SequenceFlow>();
     List<BoundaryEvent> boundaryEventsToParse = new ArrayList<BoundaryEvent>();
-    
-    // Flow elements that depend on other elements are parse after the first run-through
+
+    // Flow elements that depend on other elements are parse after the first
+    // run-through
     List<FlowElement> defferedFlowElementsToParse = new ArrayList<FlowElement>();
 
     // Activities are parsed first
     for (FlowElement flowElement : flowElements) {
 
-      // Sequence flow are also flow elements, but are only parsed once everyactivity is found
+      // Sequence flow are also flow elements, but are only parsed once
+      // every activity is found
       if (flowElement instanceof SequenceFlow) {
         sequenceFlowToParse.add((SequenceFlow) flowElement);
       } else if (flowElement instanceof BoundaryEvent) {
@@ -433,13 +440,14 @@ public class BpmnParse implements BpmnXMLConstants {
       }
 
     }
-    
+
     // Deferred elements
     for (FlowElement flowElement : defferedFlowElementsToParse) {
       bpmnParserHandlers.parseElement(this, flowElement);
     }
 
-    // Boundary events are parsed after all the regular activities are parsed
+    // Boundary events are parsed after all the regular activities are
+    // parsed
     for (BoundaryEvent boundaryEvent : boundaryEventsToParse) {
       bpmnParserHandlers.parseElement(this, boundaryEvent);
     }
@@ -448,55 +456,57 @@ public class BpmnParse implements BpmnXMLConstants {
     for (SequenceFlow sequenceFlow : sequenceFlowToParse) {
       bpmnParserHandlers.parseElement(this, sequenceFlow);
     }
-   
+
   }
 
   // Diagram interchange
   // /////////////////////////////////////////////////////////////////
 
   public void processDI() {
+
+    if (processDefinitions.isEmpty()) {
+      return;
+    }
+
     if (!bpmnModel.getLocationMap().isEmpty()) {
 
       // Verify if all referenced elements exist
       for (String bpmnReference : bpmnModel.getLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-        	// ACT-1625: don't warn when	artifacts are referenced from DI
-        	if (bpmnModel.getArtifact(bpmnReference) == null) {
-        	  // check if it's a Pool or Lane, then DI is ok
+          // ACT-1625: don't warn when artifacts are referenced from
+          // DI
+          if (bpmnModel.getArtifact(bpmnReference) == null) {
+            // Check if it's a Pool or Lane, then DI is ok
             if (bpmnModel.getPool(bpmnReference) == null && bpmnModel.getLane(bpmnReference) == null) {
               LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
             }
-        	}
-        } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
+          }
+        } else if (!(bpmnModel.getFlowElement(bpmnReference) instanceof FlowNode)) {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a flow node");
         }
       }
       for (String bpmnReference : bpmnModel.getFlowLocationMap().keySet()) {
         if (bpmnModel.getFlowElement(bpmnReference) == null) {
-          // ACT-1625: don't warn when	artifacts are referenced from DI
-        	if (bpmnModel.getArtifact(bpmnReference) == null) {
-        		LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
-        	}	
-        } else if (! (bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
+          // ACT-1625: don't warn when artifacts are referenced from
+          // DI
+          if (bpmnModel.getArtifact(bpmnReference) == null) {
+            LOGGER.warn("Invalid reference in diagram interchange definition: could not find " + bpmnReference);
+          }
+        } else if (!(bpmnModel.getFlowElement(bpmnReference) instanceof SequenceFlow)) {
           LOGGER.warn("Invalid reference in diagram interchange definition: " + bpmnReference + " does not reference a sequence flow");
         }
       }
-      
+
       for (Process process : bpmnModel.getProcesses()) {
         if (!process.isExecutable()) {
           continue;
         }
-        
+
         // Parse diagram interchange information
         ProcessDefinitionEntity processDefinition = getProcessDefinition(process.getId());
         if (processDefinition != null) {
           processDefinition.setGraphicalNotationDefined(true);
-          for (String shapeId : bpmnModel.getLocationMap().keySet()) {
-            if (processDefinition.findActivity(shapeId) != null) {
-              createBPMNShape(shapeId, bpmnModel.getGraphicInfo(shapeId), processDefinition);
-            }
-          }
-
+          
           for (String edgeId : bpmnModel.getFlowLocationMap().keySet()) {
             if (bpmnModel.getFlowElement(edgeId) != null) {
               createBPMNEdge(edgeId, bpmnModel.getFlowLocationGraphicInfo(edgeId));
@@ -506,39 +516,18 @@ public class BpmnParse implements BpmnXMLConstants {
       }
     }
   }
-  
-  public void createBPMNShape(String key, GraphicInfo graphicInfo, ProcessDefinitionEntity processDefinition) {
-    ActivityImpl activity = processDefinition.findActivity(key);
-    if (activity != null) {
-      createDIBounds(graphicInfo, activity);
-
-    } else {
-      org.activiti.engine.impl.pvm.process.Lane lane = processDefinition.getLaneForId(key);
-
-      if (lane != null) {
-        // The shape represents a lane
-        createDIBounds(graphicInfo, lane);
-      }
-    }
-  }
-
-  protected void createDIBounds(GraphicInfo graphicInfo, HasDIBounds target) {
-    target.setX((int) graphicInfo.getX());
-    target.setY((int) graphicInfo.getY());
-    target.setWidth((int) graphicInfo.getWidth());
-    target.setHeight((int) graphicInfo.getHeight());
-  }
 
   public void createBPMNEdge(String key, List<GraphicInfo> graphicList) {
     FlowElement flowElement = bpmnModel.getFlowElement(key);
     if (flowElement != null && sequenceFlows.containsKey(key)) {
-      TransitionImpl sequenceFlow = sequenceFlows.get(key);
+      SequenceFlow sequenceFlow = sequenceFlows.get(key);
       List<Integer> waypoints = new ArrayList<Integer>();
       for (GraphicInfo waypointInfo : graphicList) {
         waypoints.add((int) waypointInfo.getX());
         waypoints.add((int) waypointInfo.getY());
       }
       sequenceFlow.setWaypoints(waypoints);
+      
     } else if (bpmnModel.getArtifact(key) != null) {
       // it's an association, so nothing to do
     } else {
@@ -570,28 +559,28 @@ public class BpmnParse implements BpmnXMLConstants {
   /*
    * ------------------- GETTERS AND SETTERS -------------------
    */
-  
+
   public boolean isValidateSchema() {
-		return validateSchema;
-	}
+    return validateSchema;
+  }
 
-	public void setValidateSchema(boolean validateSchema) {
-		this.validateSchema = validateSchema;
-	}
+  public void setValidateSchema(boolean validateSchema) {
+    this.validateSchema = validateSchema;
+  }
 
-	public boolean isValidateProcess() {
-		return validateProcess;
-	}
+  public boolean isValidateProcess() {
+    return validateProcess;
+  }
 
-	public void setValidateProcess(boolean validateProcess) {
-		this.validateProcess = validateProcess;
-	}
-	
-	public List<ProcessDefinitionEntity> getProcessDefinitions() {
-		return processDefinitions;
-	}
+  public void setValidateProcess(boolean validateProcess) {
+    this.validateProcess = validateProcess;
+  }
 
-	public String getTargetNamespace() {
+  public List<ProcessDefinitionEntity> getProcessDefinitions() {
+    return processDefinitions;
+  }
+
+  public String getTargetNamespace() {
     return targetNamespace;
   }
 
@@ -643,7 +632,7 @@ public class BpmnParse implements BpmnXMLConstants {
     this.expressionManager = expressionManager;
   }
 
-  public Map<String, TransitionImpl> getSequenceFlows() {
+  public Map<String, SequenceFlow> getSequenceFlows() {
     return sequenceFlows;
   }
 
@@ -687,12 +676,12 @@ public class BpmnParse implements BpmnXMLConstants {
     this.currentFlowElement = currentFlowElement;
   }
 
-  public ActivityImpl getCurrentActivity() {
-    return currentActivity;
+  public Process getCurrentProcess() {
+    return currentProcess;
   }
 
-  public void setCurrentActivity(ActivityImpl currentActivity) {
-    this.currentActivity = currentActivity;
+  public void setCurrentProcess(Process currentProcess) {
+    this.currentProcess = currentProcess;
   }
 
   public void setCurrentSubProcess(SubProcess subProcess) {
@@ -706,17 +695,4 @@ public class BpmnParse implements BpmnXMLConstants {
   public void removeCurrentSubProcess() {
     currentSubprocessStack.pop();
   }
-
-  public void setCurrentScope(ScopeImpl scope) {
-    currentScopeStack.push(scope);
-  }
-
-  public ScopeImpl getCurrentScope() {
-    return currentScopeStack.peek();
-  }
-
-  public void removeCurrentScope() {
-    currentScopeStack.pop();
-  }
-  
 }

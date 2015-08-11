@@ -12,16 +12,18 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-
 
 /**
  * @author Joram Barrez
  */
 public class NoneEndEventActivityBehavior extends FlowNodeActivityBehavior {
-  
-  public void execute(ActivityExecution execution) throws Exception {
-    execution.end();
+
+  private static final long serialVersionUID = 1L;
+
+  public void execute(ActivityExecution execution) {
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution);
   }
 
 }

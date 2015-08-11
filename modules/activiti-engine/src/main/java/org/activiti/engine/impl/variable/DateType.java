@@ -14,7 +14,6 @@ package org.activiti.engine.impl.variable;
 
 import java.util.Date;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -29,7 +28,7 @@ public class DateType implements VariableType {
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
     return Date.class.isAssignableFrom(value.getClass());
@@ -37,15 +36,15 @@ public class DateType implements VariableType {
 
   public Object getValue(ValueFields valueFields) {
     Long longValue = valueFields.getLongValue();
-    if (longValue!=null) {
+    if (longValue != null) {
       return new Date(longValue);
     }
     return null;
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    if (value!=null) {
-      valueFields.setLongValue(((Date)value).getTime());
+    if (value != null) {
+      valueFields.setLongValue(((Date) value).getTime());
     } else {
       valueFields.setLongValue(null);
     }

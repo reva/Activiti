@@ -21,14 +21,13 @@ import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavior implements ActivityBehavior, ExecutionListener {
-  
+
   protected JavaDelegate javaDelegate;
-  
+
   protected ServiceTaskJavaDelegateActivityBehavior() {
   }
 
@@ -36,18 +35,16 @@ public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavio
     this.javaDelegate = javaDelegate;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     execute((DelegateExecution) execution);
     leave(execution);
   }
-  
-  public void notify(DelegateExecution execution) throws Exception {
+
+  public void notify(DelegateExecution execution) {
     execute((DelegateExecution) execution);
   }
-  
-  public void execute(DelegateExecution execution) throws Exception {
-    Context.getProcessEngineConfiguration()
-      .getDelegateInterceptor()
-      .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));    
+
+  public void execute(DelegateExecution execution) {
+    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));
   }
 }

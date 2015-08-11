@@ -16,12 +16,11 @@ package org.activiti.engine.test.bpmn.multiinstance;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-
 /**
  * @author Joram Barrez
  */
 public class TaskCompletionListener implements TaskListener {
-  
+
   public void notify(DelegateTask delegateTask) {
     Integer counter = (Integer) delegateTask.getVariable("taskListenerCounter");
     if (counter == null) {

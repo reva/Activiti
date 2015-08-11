@@ -42,10 +42,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class FormServiceTest extends PluggableActivitiTestCase {
 
-  @Deployment(resources = { "org/activiti/examples/taskforms/VacationRequest_deprecated_forms.bpmn20.xml", 
-      "org/activiti/examples/taskforms/approve.form",
-      "org/activiti/examples/taskforms/request.form", 
-      "org/activiti/examples/taskforms/adjustRequest.form" })
+  @Deployment(resources = { "org/activiti/examples/taskforms/VacationRequest_deprecated_forms.bpmn20.xml", "org/activiti/examples/taskforms/approve.form",
+      "org/activiti/examples/taskforms/request.form", "org/activiti/examples/taskforms/adjustRequest.form" })
   public void testGetStartFormByProcessDefinitionId() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, processDefinitions.size());
@@ -112,9 +110,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     }
   }
 
-  @Deployment(resources = { "org/activiti/engine/test/api/form/FormsProcess.bpmn20.xml", 
-      "org/activiti/engine/test/api/form/start.form",
-      "org/activiti/engine/test/api/form/task.form" })
+  @Deployment(resources = { "org/activiti/engine/test/api/form/FormsProcess.bpmn20.xml", "org/activiti/engine/test/api/form/start.form", "org/activiti/engine/test/api/form/task.form" })
   public void testTaskFormPropertyDefaultsAndFormRendering() {
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
     StartFormData startForm = formService.getStartFormData(procDefId);
@@ -186,8 +182,8 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     Address address = new Address();
     address.setStreet("broadway");
     runtimeService.setVariable(processInstanceId, "address", address);
-    
-    runtimeService.signal(runtimeService.createExecutionQuery().processInstanceId(processInstanceId).singleResult().getId());
+
+    runtimeService.trigger(runtimeService.createExecutionQuery().processInstanceId(processInstanceId).onlyChildExecutions().singleResult().getId());
 
     String taskId = taskService.createTaskQuery().singleResult().getId();
     TaskFormData taskFormData = formService.getTaskFormData(taskId);
@@ -208,11 +204,11 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     FormProperty propertyStreet = formProperties.get(3);
     assertEquals("street", propertyStreet.getId());
     assertEquals("broadway", propertyStreet.getValue());
-    
+
     FormProperty propertyFree = formProperties.get(4);
     assertEquals("free", propertyFree.getId());
     assertEquals("true", propertyFree.getValue());
-    
+
     FormProperty propertyDouble = formProperties.get(5);
     assertEquals("double", propertyDouble.getId());
     assertEquals("45.5", propertyDouble.getValue());
@@ -251,7 +247,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertEquals("rubensstraat", address.getStreet());
     assertEquals(expectedVariables, variables);
   }
-  
+
   @Deployment
   public void testFormPropertyExpression() {
     Map<String, Object> varMap = new HashMap<String, Object>();
@@ -316,17 +312,17 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     expectedValues.put("right", "Go Right");
     expectedValues.put("up", "Go Up");
     expectedValues.put("down", "Go Down");
-    
+
     // ACT-1023: check if ordering is retained
     Iterator<Entry<String, String>> expectedValuesIterator = expectedValues.entrySet().iterator();
-    for(Entry<String, String> entry : values.entrySet()) {
+    for (Entry<String, String> entry : values.entrySet()) {
       Entry<String, String> expectedEntryAtLocation = expectedValuesIterator.next();
       assertEquals(expectedEntryAtLocation.getKey(), entry.getKey());
       assertEquals(expectedEntryAtLocation.getValue(), entry.getValue());
     }
     assertEquals(expectedValues, values);
   }
-  
+
   @Deployment
   public void testInvalidFormKeyReference() {
     try {
@@ -336,7 +332,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("Form with formKey 'IDoNotExist' does not exist", e.getMessage());
     }
   }
-  
+
   @Deployment
   public void testSubmitStartFormDataWithBusinessKey() {
     Map<String, String> properties = new HashMap<String, String>();
@@ -414,7 +410,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     String actualFormKey = formService.getTaskFormKey(task.getProcessDefinitionId(), task.getTaskDefinitionKey());
     assertEquals(expectedFormKey, actualFormKey);
   }
-  
+
   @Deployment
   public void testGetTaskFormKeyWithExpression() {
     runtimeService.startProcessInstanceByKey("FormsProcess", CollectionUtil.singletonMap("dynamicKey", "test"));
@@ -422,57 +418,57 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertNotNull(task);
     assertEquals("test", formService.getTaskFormData(task.getId()).getFormKey());
   }
-  
+
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testSubmitTaskFormData() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, processDefinitions.size());
     ProcessDefinition processDefinition = processDefinitions.get(0);
-    
+
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
     assertNotNull(processInstance);
-    
+
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
-    
+
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("room", "5b");
-    
+
     formService.submitTaskFormData(task.getId(), properties);
-    
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNull(task);
-    
+
   }
-  
+
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testSaveFormData() {
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
     assertEquals(1, processDefinitions.size());
     ProcessDefinition processDefinition = processDefinitions.get(0);
-    
+
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinition.getKey());
     assertNotNull(processInstance);
-    
+
     Task task = null;
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
-    
+
     String taskId = task.getId();
-    
+
     Map<String, String> properties = new HashMap<String, String>();
     properties.put("room", "5b");
-    
+
     Map<String, String> expectedVariables = new HashMap<String, String>();
     expectedVariables.put("room", "5b");
-    
+
     formService.saveFormData(task.getId(), properties);
-    
+
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertEquals(taskId, task.getId());
-    
+
     Map<String, Object> variables = taskService.getVariables(taskId);
     assertEquals(expectedVariables, variables);
-    
+
   }
 }

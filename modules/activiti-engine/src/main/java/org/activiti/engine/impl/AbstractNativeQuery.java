@@ -31,8 +31,7 @@ import org.apache.commons.lang3.StringUtils;
  * 
  * @author Bernd Ruecker (camunda)
  */
-public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> implements Command<Object>, NativeQuery<T, U>,
-        Serializable {
+public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implements Command<Object>, NativeQuery<T, U>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -44,7 +43,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
   protected transient CommandContext commandContext;
 
   protected int maxResults = Integer.MAX_VALUE;
-  protected int firstResult = 0;
+  protected int firstResult;
   protected ResultType resultType;
 
   private Map<String, Object> parameters = new HashMap<String, Object>();
@@ -92,13 +91,13 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
     }
     return executeList(Context.getCommandContext(), getParameterMap(), 0, Integer.MAX_VALUE);
   }
-  
+
   @SuppressWarnings("unchecked")
   public List<U> listPage(int firstResult, int maxResults) {
-    this.firstResult =firstResult;
+    this.firstResult = firstResult;
     this.maxResults = maxResults;
     this.resultType = ResultType.LIST_PAGE;
-    if (commandExecutor!=null) {
+    if (commandExecutor != null) {
       return (List<U>) commandExecutor.execute(this);
     }
     return executeList(Context.getCommandContext(), getParameterMap(), firstResult, maxResults);
@@ -125,11 +124,11 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
       } else {
         parameterMap.put("orderBy", "RES.ID_ asc");
       }
-      
+
       int firstRow = firstResult + 1;
       parameterMap.put("firstRow", firstRow);
       int lastRow = 0;
-      if(maxResults == Integer.MAX_VALUE) {
+      if (maxResults == Integer.MAX_VALUE) {
         lastRow = maxResults;
       }
       lastRow = firstResult + maxResults + 1;
@@ -146,12 +145,12 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
 
   /**
    * Executes the actual query to retrieve the list of results.
-   * @param maxResults 
-   * @param firstResult 
+   * 
+   * @param maxResults
+   * @param firstResult
    * 
    * @param page
-   *          used if the results must be paged. If null, no paging will be
-   *          applied.
+   *          used if the results must be paged. If null, no paging will be applied.
    */
   public abstract List<U> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults);
 

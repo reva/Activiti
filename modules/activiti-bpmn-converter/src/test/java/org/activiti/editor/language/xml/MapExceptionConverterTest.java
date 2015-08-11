@@ -47,11 +47,11 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
       fail("wrong exception thrown. XmlException expected, " + e.getClass() + " thrown");
     }
   }
-  
+
   @Test
-  public void  testMapExceptionWithNoExceptionClass() throws Exception {
-    resourceName = "mapException/mapExceptionNoExceptionClass.bpmn"; 
-      
+  public void testMapExceptionWithNoExceptionClass() throws Exception {
+    resourceName = "mapException/mapExceptionNoExceptionClass.bpmn";
+
     BpmnModel bpmnModel = readXMLFile();
     FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
     assertNotNull(flowElement);
@@ -62,10 +62,8 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
     assertEquals(1, serviceTask.getMapExceptions().size());
     assertNotNull(serviceTask.getMapExceptions().get(0).getClassName());
     assertEquals(0, serviceTask.getMapExceptions().get(0).getClassName().length());
-      
-        
-  }
 
+  }
 
   @Test
   public void connvertXMLToModel() throws Exception {
@@ -96,13 +94,15 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
     assertEquals("com.activiti.Something2", serviceTask.getMapExceptions().get(1).getClassName());
     assertFalse(serviceTask.getMapExceptions().get(1).isAndChildren());
 
-    // check a normal mapException, with no hasChildren Defined, default should
+    // check a normal mapException, with no hasChildren Defined, default
+    // should
     // be false
     assertEquals("myErrorCode3", serviceTask.getMapExceptions().get(2).getErrorCode());
     assertEquals("com.activiti.Something3", serviceTask.getMapExceptions().get(2).getClassName());
     assertFalse(serviceTask.getMapExceptions().get(2).isAndChildren());
 
-    // if no map exception is defined, getMapException should return a not null
+    // if no map exception is defined, getMapException should return a not
+    // null
     // empty list
     FlowElement flowElement1 = model.getMainProcess().getFlowElement("servicetaskWithNoMapException");
     assertNotNull(flowElement1);

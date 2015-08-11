@@ -25,15 +25,13 @@ import org.junit.Test;
  * @author Tijs Rademakers
  */
 public class MuleHttpBasicAuthTest extends AbstractMuleTest {
-  
+
   @Test
   public void httpWithBasicAuth() throws Exception {
     Assert.assertTrue(muleContext.isStarted());
-    
+
     ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    Deployment deployment = processEngine.getRepositoryService().createDeployment()
-         .addClasspathResource("org/activiti/mule/testHttpBasicAuth.bpmn20.xml")
-         .deploy();
+    Deployment deployment = processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/mule/testHttpBasicAuth.bpmn20.xml").deploy();
     RuntimeService runtimeService = processEngine.getRuntimeService();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
     Assert.assertFalse(processInstance.isEnded());
@@ -45,7 +43,7 @@ public class MuleHttpBasicAuthTest extends AbstractMuleTest {
     assertAndEnsureCleanDb(processEngine);
     ProcessEngines.destroy();
   }
-  
+
   @Override
   protected String getConfigResources() {
     return "mule-http-basicauth-config.xml";

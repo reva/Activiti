@@ -16,7 +16,6 @@ import org.activiti.engine.impl.javax.el.ValueExpression;
 import org.activiti.engine.impl.javax.el.VariableMapper;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */

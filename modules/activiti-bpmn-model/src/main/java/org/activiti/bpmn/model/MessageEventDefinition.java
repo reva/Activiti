@@ -12,7 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -27,13 +26,13 @@ public class MessageEventDefinition extends EventDefinition {
   public void setMessageRef(String messageRef) {
     this.messageRef = messageRef;
   }
-  
+
   public MessageEventDefinition clone() {
     MessageEventDefinition clone = new MessageEventDefinition();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(MessageEventDefinition otherDefinition) {
     super.setValues(otherDefinition);
     setMessageRef(otherDefinition.getMessageRef());

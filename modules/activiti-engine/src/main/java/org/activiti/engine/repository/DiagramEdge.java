@@ -15,16 +15,15 @@ package org.activiti.engine.repository;
 
 import java.util.List;
 
-
 /**
  * Stores waypoints of a diagram edge.
- *
+ * 
  * @author Falko Menge
  */
 public class DiagramEdge extends DiagramElement {
 
   private static final long serialVersionUID = 1L;
-  
+
   private List<DiagramEdgeWaypoint> waypoints;
 
   public DiagramEdge() {

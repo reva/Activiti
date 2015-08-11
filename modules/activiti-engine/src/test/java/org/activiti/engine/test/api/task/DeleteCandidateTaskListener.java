@@ -1,4 +1,3 @@
-
 package org.activiti.engine.test.api.task;
 
 import org.activiti.engine.delegate.DelegateTask;

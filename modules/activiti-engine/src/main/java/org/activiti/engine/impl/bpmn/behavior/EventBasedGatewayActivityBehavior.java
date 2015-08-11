@@ -15,16 +15,19 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior {
-  
+
   @Override
-  public void execute(ActivityExecution execution) throws Exception {
-    // the event based gateway doesn't really do anything
-    // ignoring outgoing sequence flows (they're only parsed for the diagram)
+  public void execute(ActivityExecution execution) {
+    
+    // The event based gateway simply leaves directly, in the default BPMN 2.0 way 
+    // (taking all sequence flow in parallel)
+    leave(execution);
+    
   }
-  
+
 }

@@ -51,13 +51,12 @@ public class BundleDelegatingClassLoader extends ClassLoader {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected Class findClass(final String name) throws ClassNotFoundException {
     try {
-      return AccessController
-          .doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
-            public Class<?> run() throws ClassNotFoundException {
-              return bundle.loadClass(name);
-            }
+      return AccessController.doPrivileged(new PrivilegedExceptionAction<Class<?>>() {
+        public Class<?> run() throws ClassNotFoundException {
+          return bundle.loadClass(name);
+        }
 
-          });
+      });
     } catch (PrivilegedActionException e) {
       Exception cause = e.getException();
 
@@ -84,14 +83,13 @@ public class BundleDelegatingClassLoader extends ClassLoader {
   protected Enumeration findResources(final String name) throws IOException {
     Enumeration<URL> urls;
     try {
-      urls = AccessController
-          .doPrivileged(new PrivilegedExceptionAction<Enumeration<URL>>() {
+      urls = AccessController.doPrivileged(new PrivilegedExceptionAction<Enumeration<URL>>() {
 
-            public Enumeration<URL> run() throws IOException {
-              return (Enumeration<URL>) bundle.getResources(name);
-            }
+        public Enumeration<URL> run() throws IOException {
+          return (Enumeration<URL>) bundle.getResources(name);
+        }
 
-          });
+      });
     } catch (PrivilegedActionException e) {
       Exception cause = e.getException();
 
@@ -109,8 +107,7 @@ public class BundleDelegatingClassLoader extends ClassLoader {
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  protected Class loadClass(String name, boolean resolve)
-      throws ClassNotFoundException {
+  protected Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
     Class clazz;
     try {
       clazz = findClass(name);
@@ -119,14 +116,10 @@ public class BundleDelegatingClassLoader extends ClassLoader {
         try {
           clazz = classLoader.loadClass(name);
         } catch (ClassNotFoundException e) {
-          throw new ClassNotFoundException(name + " from bundle "
-              + bundle.getBundleId() + " (" + bundle.getSymbolicName() + ")",
-              cnfe);
+          throw new ClassNotFoundException(name + " from bundle " + bundle.getBundleId() + " (" + bundle.getSymbolicName() + ")", cnfe);
         }
       } else {
-        throw new ClassNotFoundException(name + " from bundle "
-            + bundle.getBundleId() + " (" + bundle.getSymbolicName() + ")",
-            cnfe);
+        throw new ClassNotFoundException(name + " from bundle " + bundle.getBundleId() + " (" + bundle.getSymbolicName() + ")", cnfe);
       }
     }
     if (resolve) {

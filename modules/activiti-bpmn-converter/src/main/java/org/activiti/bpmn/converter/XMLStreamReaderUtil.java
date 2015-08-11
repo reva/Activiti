@@ -22,20 +22,20 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  */
 public class XMLStreamReaderUtil {
-  
+
   protected static final Logger LOGGER = LoggerFactory.getLogger(XMLStreamReaderUtil.class);
 
   public static String moveDown(XMLStreamReader xtr) {
     try {
       while (xtr.hasNext()) {
         int event = xtr.next();
-        switch ( event ) {
-          case XMLStreamConstants.END_DOCUMENT:
-            return null;
-          case XMLStreamConstants.START_ELEMENT:
-            return xtr.getLocalName();
-          case XMLStreamConstants.END_ELEMENT:
-            return null;
+        switch (event) {
+        case XMLStreamConstants.END_DOCUMENT:
+          return null;
+        case XMLStreamConstants.START_ELEMENT:
+          return xtr.getLocalName();
+        case XMLStreamConstants.END_ELEMENT:
+          return null;
         }
       }
     } catch (Exception e) {
@@ -43,17 +43,17 @@ public class XMLStreamReaderUtil {
     }
     return null;
   }
-  
-  public static boolean moveToEndOfElement(XMLStreamReader xtr, String elementName ) {
+
+  public static boolean moveToEndOfElement(XMLStreamReader xtr, String elementName) {
     try {
-      while (xtr.hasNext() ) {
+      while (xtr.hasNext()) {
         int event = xtr.next();
-        switch ( event ) {
-          case XMLStreamConstants.END_DOCUMENT:
-            return false;
-          case XMLStreamConstants.END_ELEMENT:
-            if (xtr.getLocalName().equals(elementName))
-              return true;
+        switch (event) {
+        case XMLStreamConstants.END_DOCUMENT:
+          return false;
+        case XMLStreamConstants.END_ELEMENT:
+          if (xtr.getLocalName().equals(elementName))
+            return true;
           break;
         }
       }

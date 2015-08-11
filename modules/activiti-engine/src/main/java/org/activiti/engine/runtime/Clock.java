@@ -11,7 +11,7 @@ public interface Clock extends ClockReader {
   void setCurrentTime(Date currentTime);
 
   void setCurrentCalendar(Calendar currentTime);
-  
+
   void reset();
 
 }

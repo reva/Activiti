@@ -1,11 +1,11 @@
 package org.activiti.bpmn.model;
 
 public class DataStore extends BaseElement {
-  
+
   protected String name;
   protected String dataState;
   protected String itemSubjectRef;
-  
+
   public String getName() {
     return name;
   }
@@ -35,7 +35,7 @@ public class DataStore extends BaseElement {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(DataStore otherElement) {
     super.setValues(otherElement);
     setName(otherElement.getName());

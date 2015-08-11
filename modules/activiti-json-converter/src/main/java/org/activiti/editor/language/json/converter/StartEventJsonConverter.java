@@ -33,13 +33,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class StartEventJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+
     fillJsonTypes(convertersToBpmnMap);
     fillBpmnTypes(convertersToJsonMap);
   }
-  
+
   public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
     convertersToBpmnMap.put(STENCIL_EVENT_START_NONE, StartEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_START_TIMER, StartEventJsonConverter.class);
@@ -47,11 +46,11 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
     convertersToBpmnMap.put(STENCIL_EVENT_START_MESSAGE, StartEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_START_SIGNAL, StartEventJsonConverter.class);
   }
-  
+
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
     convertersToJsonMap.put(StartEvent.class, StartEventJsonConverter.class);
   }
-  
+
   protected String getStencilId(BaseElement baseElement) {
     Event event = (Event) baseElement;
     if (event.getEventDefinitions().size() > 0) {
@@ -64,23 +63,23 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
         return STENCIL_EVENT_START_MESSAGE;
       } else if (eventDefinition instanceof SignalEventDefinition) {
         return STENCIL_EVENT_START_SIGNAL;
-      } 
+      }
     }
     return STENCIL_EVENT_START_NONE;
   }
-  
+
   protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
     StartEvent startEvent = (StartEvent) baseElement;
     if (StringUtils.isNotEmpty(startEvent.getInitiator())) {
-    	propertiesNode.put(PROPERTY_NONE_STARTEVENT_INITIATOR, startEvent.getInitiator());
+      propertiesNode.put(PROPERTY_NONE_STARTEVENT_INITIATOR, startEvent.getInitiator());
     }
     if (StringUtils.isNotEmpty(startEvent.getFormKey())) {
-    	propertiesNode.put(PROPERTY_FORMKEY, startEvent.getFormKey());
+      propertiesNode.put(PROPERTY_FORMKEY, startEvent.getFormKey());
     }
     addFormProperties(startEvent.getFormProperties(), propertiesNode);
     addEventProperties(startEvent, propertiesNode);
   }
-  
+
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     StartEvent startEvent = new StartEvent();
     startEvent.setInitiator(getPropertyValueAsString(PROPERTY_NONE_STARTEVENT_INITIATOR, elementNode));
@@ -90,16 +89,16 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter {
       if (StringUtils.isNotEmpty(formKey)) {
         startEvent.setFormKey(formKey);
       }
-    	convertJsonToFormProperties(elementNode, startEvent);
-    	
+      convertJsonToFormProperties(elementNode, startEvent);
+
     } else if (STENCIL_EVENT_START_TIMER.equals(stencilId)) {
-    	convertJsonToTimerDefinition(elementNode, startEvent);
+      convertJsonToTimerDefinition(elementNode, startEvent);
     } else if (STENCIL_EVENT_START_ERROR.equals(stencilId)) {
-    	convertJsonToErrorDefinition(elementNode, startEvent);
+      convertJsonToErrorDefinition(elementNode, startEvent);
     } else if (STENCIL_EVENT_START_MESSAGE.equals(stencilId)) {
-    	convertJsonToMessageDefinition(elementNode, startEvent);
+      convertJsonToMessageDefinition(elementNode, startEvent);
     } else if (STENCIL_EVENT_START_SIGNAL.equals(stencilId)) {
-    	convertJsonToSignalDefinition(elementNode, startEvent);
+      convertJsonToSignalDefinition(elementNode, startEvent);
     }
     return startEvent;
   }

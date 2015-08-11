@@ -13,13 +13,11 @@
 
 package org.activiti.engine.impl.interceptor;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public interface SessionFactory {
-  
+
   Class<?> getSessionType();
 
   Session openSession();

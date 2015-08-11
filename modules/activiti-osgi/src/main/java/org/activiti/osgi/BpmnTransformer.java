@@ -67,8 +67,7 @@ public class BpmnTransformer {
     m.getMainAttributes().putValue(BUNDLE_MANIFESTVERSION, "2");
     m.getMainAttributes().putValue(BUNDLE_SYMBOLICNAME, str[0]);
     m.getMainAttributes().putValue(BUNDLE_VERSION, str[1]);
-    m.getMainAttributes()
-        .putValue(BUNDLE_ACTIVITI_HEADER, "OSGI-INF/activiti/");
+    m.getMainAttributes().putValue(BUNDLE_ACTIVITI_HEADER, "OSGI-INF/activiti/");
     // Extract manifest entries from the DOM
     NodeList l = doc.getElementsByTagName("manifest");
     if (l != null) {
@@ -110,12 +109,8 @@ public class BpmnTransformer {
 
   private static final String DEFAULT_VERSION = "0.0.0";
 
-  private static final Pattern ARTIFACT_MATCHER = Pattern
-      .compile(
-          "(.+)(?:-(\\d+)(?:\\.(\\d+)(?:\\.(\\d+))?)?(?:[^a-zA-Z0-9](.*))?)(?:\\.([^\\.]+))",
-          Pattern.DOTALL);
-  private static final Pattern FUZZY_MODIFIDER = Pattern.compile(
-      "(?:\\d+[.-])*(.*)", Pattern.DOTALL);
+  private static final Pattern ARTIFACT_MATCHER = Pattern.compile("(.+)(?:-(\\d+)(?:\\.(\\d+)(?:\\.(\\d+))?)?(?:[^a-zA-Z0-9](.*))?)(?:\\.([^\\.]+))", Pattern.DOTALL);
+  private static final Pattern FUZZY_MODIFIDER = Pattern.compile("(?:\\d+[.-])*(.*)", Pattern.DOTALL);
 
   public static String[] extractNameVersionType(String url) {
     Matcher m = ARTIFACT_MATCHER.matcher(url);
@@ -166,8 +161,7 @@ public class BpmnTransformer {
     }
     for (int i = 0; i < modifier.length(); i++) {
       char c = modifier.charAt(i);
-      if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z')
-          || (c >= 'A' && c <= 'Z') || c == '_' || c == '-') {
+      if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_' || c == '-') {
         result.append(c);
       }
     }
@@ -182,8 +176,7 @@ public class BpmnTransformer {
     return db.parse(url.toString());
   }
 
-  protected static void copyInputStream(InputStream in, OutputStream out)
-      throws Exception {
+  protected static void copyInputStream(InputStream in, OutputStream out) throws Exception {
     byte[] buffer = new byte[4096];
     int len = in.read(buffer);
     while (len >= 0) {

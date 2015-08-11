@@ -21,7 +21,6 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -32,24 +31,21 @@ public class RulesDeployerTest extends ResourceActivitiTestCase {
   }
 
   @SuppressWarnings("unchecked")
-  @Deployment(
-    resources={"org/activiti/standalone/rules/rulesDeploymentTestProcess.bpmn20.xml",
-            "org/activiti/standalone/rules/simpleRule1.drl"})
+  @Deployment(resources = { "org/activiti/standalone/rules/rulesDeploymentTestProcess.bpmn20.xml", "org/activiti/standalone/rules/simpleRule1.drl" })
   public void testRulesDeployment() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     Order order = new Order();
     order.setItemCount(2);
     variableMap.put("order", order);
-    
+
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("rulesDeployment", variableMap);
     assertNotNull(processInstance);
     assertTrue(processInstance.getProcessDefinitionId().startsWith("rulesDeployment:1"));
-    
+
     runtimeService.getVariable(processInstance.getId(), "order");
     assertTrue(order.isValid());
-    
-    Collection<Object> ruleOutputList = (Collection<Object>)
-        runtimeService.getVariable(processInstance.getId(), "rulesOutput");
+
+    Collection<Object> ruleOutputList = (Collection<Object>) runtimeService.getVariable(processInstance.getId(), "rulesOutput");
     assertNotNull(ruleOutputList);
     assertEquals(1, ruleOutputList.size());
     order = (Order) ruleOutputList.iterator().next();

@@ -12,15 +12,13 @@
  */
 package org.activiti.engine.impl.variable;
 
-
-
 /**
  * @author Frederik Heremans
  */
 public class BooleanType implements VariableType {
 
   private static final long serialVersionUID = 1L;
-  
+
   public String getTypeName() {
     return "boolean";
   }
@@ -30,30 +28,29 @@ public class BooleanType implements VariableType {
   }
 
   public Object getValue(ValueFields valueFields) {
-    if(valueFields.getLongValue() != null) {
-      return valueFields.getLongValue() == 1;     
+    if (valueFields.getLongValue() != null) {
+      return valueFields.getLongValue() == 1;
     }
     return null;
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    if (value==null) {
+    if (value == null) {
       valueFields.setLongValue(null);
     } else {
-      Boolean booleanValue = (Boolean)value;
-      if(booleanValue) {
-        valueFields.setLongValue(1L);        
+      Boolean booleanValue = (Boolean) value;
+      if (booleanValue) {
+        valueFields.setLongValue(1L);
       } else {
-        valueFields.setLongValue(0L);                
+        valueFields.setLongValue(0L);
       }
     }
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
-    return Boolean.class.isAssignableFrom(value.getClass())
-           || boolean.class.isAssignableFrom(value.getClass());
+    return Boolean.class.isAssignableFrom(value.getClass()) || boolean.class.isAssignableFrom(value.getClass());
   }
 }

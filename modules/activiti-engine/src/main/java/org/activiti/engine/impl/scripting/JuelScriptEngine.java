@@ -48,12 +48,10 @@ import org.activiti.engine.impl.javax.el.VariableMapper;
 import org.activiti.engine.impl.juel.SimpleResolver;
 import org.activiti.engine.impl.util.ReflectUtil;
 
-
 /**
  * ScriptEngine that used JUEL for script evaluation and compilation (JSR-223).
  * 
- * Uses EL 1.1 if available, to resolve expressions. Otherwise it reverts to EL
- * 1.0, using {@link ExpressionFactoryResolver}.
+ * Uses EL 1.1 if available, to resolve expressions. Otherwise it reverts to EL 1.0, using {@link ExpressionFactoryResolver}.
  * 
  * @author Frederik Heremans
  */
@@ -78,7 +76,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   }
 
   public CompiledScript compile(Reader reader) throws ScriptException {
-    // Create a String based on the reader and complile it
+    // Create a String based on the reader and compile it
     return compile(readFully(reader));
   }
 
@@ -211,9 +209,9 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   }
 
   public static void importFunctions(ScriptContext ctx, String namespace, Object obj) {
-    Class< ? > clazz = null;
+    Class<?> clazz = null;
     if (obj instanceof Class) {
-      clazz = (Class< ? >) obj;
+      clazz = (Class<?>) obj;
     } else if (obj instanceof String) {
       try {
         clazz = ReflectUtil.loadClass((String) obj);
@@ -257,8 +255,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   }
 
   /**
-   * ValueMapper that uses the ScriptContext to get variable values or value
-   * expressions.
+   * ValueMapper that uses the ScriptContext to get variable values or value expressions.
    * 
    * @author Frederik Heremans
    */

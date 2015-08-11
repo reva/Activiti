@@ -11,7 +11,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class NativeHistoricVariableInstanceQueryImpl extends AbstractNativeQuery<NativeHistoricVariableInstanceQuery, HistoricVariableInstance> implements NativeHistoricVariableInstanceQuery {
 
   private static final long serialVersionUID = 1L;
-  
+
   public NativeHistoricVariableInstanceQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
@@ -20,18 +20,14 @@ public class NativeHistoricVariableInstanceQueryImpl extends AbstractNativeQuery
     super(commandExecutor);
   }
 
- //results ////////////////////////////////////////////////////////////////
-  
+  // results ////////////////////////////////////////////////////////////////
+
   public List<HistoricVariableInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext
-      .getHistoricVariableInstanceEntityManager()
-      .findHistoricVariableInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
-  
+
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext
-        .getHistoricVariableInstanceEntityManager()
-      .findHistoricVariableInstanceCountByNativeQuery(parameterMap);
+    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByNativeQuery(parameterMap);
   }
 
 }

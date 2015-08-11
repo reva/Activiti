@@ -10,7 +10,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  * Command that dispatches a JOB_CANCELLED event and deletes the job entity.
  */
 public class CancelJobCmd extends DeleteJobCmd {
-    
+
   private static final long serialVersionUID = 1L;
 
   public CancelJobCmd(String jobId) {
@@ -29,8 +29,7 @@ public class CancelJobCmd extends DeleteJobCmd {
 
   private void sendCancelEvent(JobEntity jobToDelete) {
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, jobToDelete));
     }
   }
 

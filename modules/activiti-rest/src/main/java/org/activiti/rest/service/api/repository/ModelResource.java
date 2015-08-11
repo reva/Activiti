@@ -24,24 +24,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ModelResource extends BaseModelResource {
 
-  @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value = "/repository/models/{modelId}", method = RequestMethod.GET, produces = "application/json")
   public ModelResponse getModel(@PathVariable String modelId, HttpServletRequest request) {
     Model model = getModelFromRequest(modelId);
-    
+
     return restResponseFactory.createModelResponse(model);
   }
-  
-  @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.PUT, produces = "application/json")
+
+  @RequestMapping(value = "/repository/models/{modelId}", method = RequestMethod.PUT, produces = "application/json")
   public ModelResponse updateModel(@PathVariable String modelId, @RequestBody ModelRequest modelRequest, HttpServletRequest request) {
     Model model = getModelFromRequest(modelId);
-    
+
     if (modelRequest.isCategoryChanged()) {
       model.setCategory(modelRequest.getCategory());
     }
@@ -61,14 +60,14 @@ public class ModelResource extends BaseModelResource {
       model.setVersion(modelRequest.getVersion());
     }
     if (modelRequest.isTenantIdChanged()) {
-    	model.setTenantId(modelRequest.getTenantId());
+      model.setTenantId(modelRequest.getTenantId());
     }
-    
+
     repositoryService.saveModel(model);
     return restResponseFactory.createModelResponse(model);
   }
 
-  @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/repository/models/{modelId}", method = RequestMethod.DELETE)
   public void deleteModel(@PathVariable String modelId, HttpServletResponse response) {
     Model model = getModelFromRequest(modelId);
     repositoryService.deleteModel(model.getId());

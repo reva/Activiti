@@ -21,7 +21,7 @@ import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
  * @author Joram Barrez
  */
 public class CustomListenerFactory extends DefaultListenerFactory {
-  
+
   @Override
   public TaskListener createExpressionTaskListener(ActivitiListener activitiListener) {
     return new TaskListener() {

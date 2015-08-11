@@ -21,12 +21,11 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-
 /**
  * @author Joram Barrez
  */
 public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements UserQuery {
-  
+
   private static final long serialVersionUID = 1L;
   protected String id;
   protected String firstName;
@@ -38,7 +37,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
   protected String emailLike;
   protected String groupId;
   protected String procDefId;
-  
+
   public UserQueryImpl() {
   }
 
@@ -57,7 +56,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.id = id;
     return this;
   }
-  
+
   public UserQuery userFirstName(String firstName) {
     if (firstName == null) {
       throw new ActivitiIllegalArgumentException("Provided firstName is null");
@@ -65,7 +64,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.firstName = firstName;
     return this;
   }
-  
+
   public UserQuery userFirstNameLike(String firstNameLike) {
     if (firstNameLike == null) {
       throw new ActivitiIllegalArgumentException("Provided firstNameLike is null");
@@ -73,7 +72,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.firstNameLike = firstNameLike;
     return this;
   }
-  
+
   public UserQuery userLastName(String lastName) {
     if (lastName == null) {
       throw new ActivitiIllegalArgumentException("Provided lastName is null");
@@ -81,7 +80,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.lastName = lastName;
     return this;
   }
-  
+
   public UserQuery userLastNameLike(String lastNameLike) {
     if (lastNameLike == null) {
       throw new ActivitiIllegalArgumentException("Provided lastNameLike is null");
@@ -89,7 +88,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.lastNameLike = lastNameLike;
     return this;
   }
-  
+
   public UserQuery userFullNameLike(String fullNameLike) {
     if (fullNameLike == null) {
       throw new ActivitiIllegalArgumentException("Provided full name is null");
@@ -97,7 +96,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.fullNameLike = fullNameLike;
     return this;
   }
-  
+
   public UserQuery userEmail(String email) {
     if (email == null) {
       throw new ActivitiIllegalArgumentException("Provided email is null");
@@ -105,7 +104,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.email = email;
     return this;
   }
-  
+
   public UserQuery userEmailLike(String emailLike) {
     if (emailLike == null) {
       throw new ActivitiIllegalArgumentException("Provided emailLike is null");
@@ -113,7 +112,7 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.emailLike = emailLike;
     return this;
   }
-  
+
   public UserQuery memberOfGroup(String groupId) {
     if (groupId == null) {
       throw new ActivitiIllegalArgumentException("Provided groupIds is null or empty");
@@ -121,78 +120,82 @@ public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements Use
     this.groupId = groupId;
     return this;
   }
-  
+
   public UserQuery potentialStarter(String procDefId) {
     if (procDefId == null) {
       throw new ActivitiIllegalArgumentException("Provided processDefinitionId is null or empty");
     }
     this.procDefId = procDefId;
     return this;
-    
+
   }
 
-  //sorting //////////////////////////////////////////////////////////
-  
+  // sorting //////////////////////////////////////////////////////////
+
   public UserQuery orderByUserId() {
     return orderBy(UserQueryProperty.USER_ID);
   }
-  
+
   public UserQuery orderByUserEmail() {
     return orderBy(UserQueryProperty.EMAIL);
   }
-  
+
   public UserQuery orderByUserFirstName() {
     return orderBy(UserQueryProperty.FIRST_NAME);
   }
-  
+
   public UserQuery orderByUserLastName() {
     return orderBy(UserQueryProperty.LAST_NAME);
   }
-  
-  //results //////////////////////////////////////////////////////////
-  
+
+  // results //////////////////////////////////////////////////////////
+
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext
-      .getUserIdentityManager()
-      .findUserCountByQueryCriteria(this);
+    return commandContext.getUserIdentityManager().findUserCountByQueryCriteria(this);
   }
-  
+
   public List<User> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext
-      .getUserIdentityManager()
-      .findUserByQueryCriteria(this, page);
+    return commandContext.getUserIdentityManager().findUserByQueryCriteria(this, page);
   }
-  
-  //getters //////////////////////////////////////////////////////////
+
+  // getters //////////////////////////////////////////////////////////
 
   public String getId() {
     return id;
   }
+
   public String getFirstName() {
     return firstName;
   }
+
   public String getFirstNameLike() {
     return firstNameLike;
   }
+
   public String getLastName() {
     return lastName;
   }
+
   public String getLastNameLike() {
     return lastNameLike;
   }
+
   public String getEmail() {
     return email;
   }
+
   public String getEmailLike() {
     return emailLike;
   }
+
   public String getGroupId() {
     return groupId;
   }
+
   public String getFullNameLike() {
     return fullNameLike;
   }
-  
+
 }

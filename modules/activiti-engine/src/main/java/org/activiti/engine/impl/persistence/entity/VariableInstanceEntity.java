@@ -37,46 +37,44 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   protected String name;
   protected VariableType type;
+  protected String typeName;
 
   protected String processInstanceId;
   protected String executionId;
   protected String taskId;
 
   protected Long longValue;
-  protected Double doubleValue; 
+  protected Double doubleValue;
   protected String textValue;
   protected String textValue2;
   protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
 
   protected Object cachedValue;
   protected boolean forcedUpdate;
-  protected boolean deleted = false;
-  
+  protected boolean deleted;
+
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {
   }
-  
+
   public static void touch(VariableInstanceEntity variableInstance) {
-	  Context.getCommandContext()
-      .getDbSqlSession()
-      .touch(variableInstance);
-	  
+    Context.getCommandContext().getDbSqlSession().touch(variableInstance);
+
   }
-  
+
   public static VariableInstanceEntity createAndInsert(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = create(name, type, value);
 
-    Context.getCommandContext()
-      .getDbSqlSession()
-      .insert(variableInstance);
-  
+    Context.getCommandContext().getDbSqlSession().insert(variableInstance);
+
     return variableInstance;
   }
-  
+
   public static VariableInstanceEntity create(String name, VariableType type, Object value) {
     VariableInstanceEntity variableInstance = new VariableInstanceEntity();
     variableInstance.name = name;
     variableInstance.type = type;
+    variableInstance.typeName = type.getTypeName();
     variableInstance.setValue(value);
     return variableInstance;
   }
@@ -86,20 +84,10 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     this.processInstanceId = execution.getProcessInstanceId();
     forceUpdate();
   }
-  
-  public void forceUpdate() {
-	    forcedUpdate = true;
-	  
-  }
 
-  public void delete() {
-    Context
-      .getCommandContext()
-      .getDbSqlSession()
-      .delete(this);
-    
-    byteArrayRef.delete();
-    deleted = true; 
+  public void forceUpdate() {
+    forcedUpdate = true;
+
   }
 
   public Object getPersistentState() {
@@ -124,17 +112,21 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     }
     return persistentState;
   }
-  
+
   public int getRevisionNext() {
-    return revision+1;
+    return revision + 1;
   }
-  
-  
+
+  public void setDeleted(boolean isDeleted) {
+    this.deleted = isDeleted;
+  }
+
   public boolean isDeleted() {
     return deleted;
   }
 
-  // lazy initialized relations ///////////////////////////////////////////////
+  // lazy initialized relations
+  // ///////////////////////////////////////////////
 
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
@@ -143,9 +135,10 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
   }
-  
-  // byte array value /////////////////////////////////////////////////////////
-  
+
+  // byte array value
+  // /////////////////////////////////////////////////////////
+
   @Override
   public byte[] getBytes() {
     return byteArrayRef.getBytes();
@@ -155,26 +148,16 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public void setBytes(byte[] bytes) {
     byteArrayRef.setValue("var-" + name, bytes);
   }
-  
-  @Override @Deprecated
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayRef.getEntity();
-  }
-  
-  @Override @Deprecated
-  public String getByteArrayValueId() {
-    return byteArrayRef.getId();
+
+  public ByteArrayRef getByteArrayRef() {
+    return byteArrayRef;
   }
 
-  @Override @Deprecated
-  public void setByteArrayValue(byte[] bytes) {
-    setBytes(bytes);
-  }
-
-  // value ////////////////////////////////////////////////////////////////////
+  // value
+  // ////////////////////////////////////////////////////////////////////
 
   public Object getValue() {
-    if (!type.isCachable() || cachedValue==null) {
+    if (!type.isCachable() || cachedValue == null) {
       cachedValue = type.getValue(this);
     }
     return cachedValue;
@@ -182,21 +165,25 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   public void setValue(Object value) {
     type.setValue(value, this);
+    typeName = type.getTypeName();
     cachedValue = value;
   }
 
-  // getters and setters //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
   public String getId() {
     return id;
   }
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public int getRevision() {
     return revision;
   }
+
   public void setRevision(int revision) {
     this.revision = revision;
   }
@@ -205,9 +192,17 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     return name;
   }
 
+  public String getTypeName() {
+    return typeName;
+  }
+  public void setTypeName(String typeName) {
+    this.typeName = typeName;
+  }
+
   public VariableType getType() {
     return type;
   }
+
   public void setType(VariableType type) {
     this.type = type;
   }
@@ -215,33 +210,39 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+
   public String getTaskId() {
     return taskId;
   }
+
   public void setTaskId(String taskId) {
     this.taskId = taskId;
   }
+
   public String getExecutionId() {
     return executionId;
   }
-  
+
   public Long getLongValue() {
     return longValue;
   }
+
   public void setLongValue(Long longValue) {
     this.longValue = longValue;
   }
-  
+
   public Double getDoubleValue() {
     return doubleValue;
   }
+
   public void setDoubleValue(Double doubleValue) {
     this.doubleValue = doubleValue;
   }
-  
+
   public String getTextValue() {
     return textValue;
   }
+
   public void setTextValue(String textValue) {
     this.textValue = textValue;
   }
@@ -249,6 +250,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public String getTextValue2() {
     return textValue2;
   }
+
   public void setTextValue2(String textValue2) {
     this.textValue2 = textValue2;
   }
@@ -256,11 +258,13 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   public Object getCachedValue() {
     return cachedValue;
   }
+
   public void setCachedValue(Object cachedValue) {
     this.cachedValue = cachedValue;
   }
 
-  // misc methods /////////////////////////////////////////////////////////////
+  // misc methods
+  // /////////////////////////////////////////////////////////////
 
   @Override
   public String toString() {
@@ -287,5 +291,5 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     sb.append("]");
     return sb.toString();
   }
-  
+
 }

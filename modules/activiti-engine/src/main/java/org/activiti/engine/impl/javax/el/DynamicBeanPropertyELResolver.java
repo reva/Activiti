@@ -25,13 +25,13 @@ import org.activiti.engine.impl.util.ReflectUtil;
 public class DynamicBeanPropertyELResolver extends ELResolver {
 
   protected Class<?> subject;
-  
+
   protected String readMethodName;
-  
+
   protected String writeMethodName;
-  
+
   protected boolean readOnly;
-  
+
   public DynamicBeanPropertyELResolver(boolean readOnly, Class<?> subject, String readMethodName, String writeMethodName) {
     this.readOnly = readOnly;
     this.subject = subject;
@@ -42,7 +42,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
   public DynamicBeanPropertyELResolver(Class<?> subject, String readMethodName, String writeMethodName) {
     this(false, subject, readMethodName, writeMethodName);
   }
-  
+
   @Override
   public Class<?> getCommonPropertyType(ELContext context, Object base) {
     if (this.subject.isInstance(base)) {
@@ -67,7 +67,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
     if (base == null || this.getCommonPropertyType(context, base) == null) {
       return null;
     }
-    
+
     String propertyName = property.toString();
 
     try {
@@ -89,7 +89,7 @@ public class DynamicBeanPropertyELResolver extends ELResolver {
     if (base == null || this.getCommonPropertyType(context, base) == null) {
       return;
     }
-    
+
     String propertyName = property.toString();
     try {
       ReflectUtil.invoke(base, this.writeMethodName, new Object[] { propertyName, value });

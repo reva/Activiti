@@ -15,8 +15,8 @@ package org.activiti.engine.form;
 
 import org.activiti.engine.task.Task;
 
-
-/** Specific {@link FormData} for completing a task.
+/**
+ * Specific {@link FormData} for completing a task.
  * 
  * @author Tom Baeyens
  */

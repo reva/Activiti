@@ -19,15 +19,14 @@ import org.activiti.engine.identity.User;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
  * @author Frederik Heremans
  */
 public class BaseUserResource {
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected IdentityService identityService;
 

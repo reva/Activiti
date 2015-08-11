@@ -37,8 +37,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ModelCollectionResource extends BaseModelResource {
 
- private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
-  
+  private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
+
   static {
     allowedSortProperties.put("id", ModelQueryProperty.MODEL_ID);
     allowedSortProperties.put("category", ModelQueryProperty.MODEL_CATEGORY);
@@ -49,11 +49,11 @@ public class ModelCollectionResource extends BaseModelResource {
     allowedSortProperties.put("version", ModelQueryProperty.MODEL_VERSION);
     allowedSortProperties.put("tenantId", ModelQueryProperty.MODEL_TENANT_ID);
   }
-  
-  @RequestMapping(value="/repository/models", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getModels(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+
+  @RequestMapping(value = "/repository/models", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getModels(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     ModelQuery modelQuery = repositoryService.createModelQuery();
-    
+
     if (allRequestParams.containsKey("id")) {
       modelQuery.modelId(allRequestParams.get("id"));
     }
@@ -104,14 +104,13 @@ public class ModelCollectionResource extends BaseModelResource {
     if (allRequestParams.containsKey("withoutTenantId")) {
       boolean withoutTenantId = Boolean.valueOf(allRequestParams.get("withoutTenantId"));
       if (withoutTenantId) {
-      	modelQuery.modelWithoutTenantId();
+        modelQuery.modelWithoutTenantId();
       }
     }
-    return new ModelsPaginateList(restResponseFactory)
-        .paginateList(allRequestParams, modelQuery, "id", allowedSortProperties);
+    return new ModelsPaginateList(restResponseFactory).paginateList(allRequestParams, modelQuery, "id", allowedSortProperties);
   }
-  
-  @RequestMapping(value="/repository/models", method = RequestMethod.POST, produces = "application/json")
+
+  @RequestMapping(value = "/repository/models", method = RequestMethod.POST, produces = "application/json")
   public ModelResponse createModel(@RequestBody ModelRequest modelRequest, HttpServletRequest request, HttpServletResponse response) {
     Model model = repositoryService.newModel();
     model.setCategory(modelRequest.getCategory());

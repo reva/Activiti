@@ -24,16 +24,16 @@ import org.activiti.bpmn.model.EndEvent;
  * @author Tijs Rademakers
  */
 public class EndEventXMLConverter extends BaseBpmnXMLConverter {
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return EndEvent.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_EVENT_END;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     EndEvent endEvent = new EndEvent();
@@ -43,7 +43,7 @@ public class EndEventXMLConverter extends BaseBpmnXMLConverter {
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception { 
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
 
   @Override

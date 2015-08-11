@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-
-
 /**
  * @author Tom Baeyens
  */
@@ -21,7 +19,9 @@ public class StringType implements VariableType {
 
   private final int maxLength;
 
-  public StringType(int maxLength) {this.maxLength = maxLength;}
+  public StringType(int maxLength) {
+    this.maxLength = maxLength;
+  }
 
   public String getTypeName() {
     return "string";
@@ -40,7 +40,7 @@ public class StringType implements VariableType {
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
     if (String.class.isAssignableFrom(value.getClass())) {

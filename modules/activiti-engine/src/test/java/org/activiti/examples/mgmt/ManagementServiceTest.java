@@ -29,26 +29,26 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
   public void testTableCount() {
     Map<String, Long> tableCount = managementService.getTableCount();
-    
+
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
-    
-    assertEquals(new Long(3), tableCount.get(tablePrefix+"ACT_GE_PROPERTY"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_GE_BYTEARRAY"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_RE_DEPLOYMENT"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_RU_EXECUTION"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_ID_GROUP"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_ID_MEMBERSHIP"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_ID_USER"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_RE_PROCDEF"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_RU_TASK"));
-    assertEquals(new Long(0), tableCount.get(tablePrefix+"ACT_RU_IDENTITYLINK"));
+
+    assertEquals(new Long(3), tableCount.get(tablePrefix + "ACT_GE_PROPERTY"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_EXECUTION"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_ID_GROUP"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_ID_MEMBERSHIP"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_ID_USER"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_PROCDEF"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_TASK"));
+    assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK"));
   }
 
   public void testGetTableMetaData() {
-    
+
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
-    
-    TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix+"ACT_RU_TASK");
+
+    TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix + "ACT_RU_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
     assertEquals(19, tableMetaData.getColumnNames().size());
 
@@ -57,14 +57,14 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
     assertTrue(assigneeIndex >= 0);
     assertTrue(createTimeIndex >= 0);
-    
-    assertOneOf(new String [] {"VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR"}, tableMetaData.getColumnTypes().get(assigneeIndex));
-    assertOneOf(new String [] {"TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME"}, tableMetaData.getColumnTypes().get(createTimeIndex));
+
+    assertOneOf(new String[] { "VARCHAR", "NVARCHAR2", "nvarchar", "NVARCHAR" }, tableMetaData.getColumnTypes().get(assigneeIndex));
+    assertOneOf(new String[] { "TIMESTAMP", "TIMESTAMP(6)", "datetime", "DATETIME" }, tableMetaData.getColumnTypes().get(createTimeIndex));
   }
-  
+
   private void assertOneOf(String[] possibleValues, String currentValue) {
-    for(String value : possibleValues) {
-      if(currentValue.equals(value)) {
+    for (String value : possibleValues) {
+      if (currentValue.equals(value)) {
         return;
       }
     }

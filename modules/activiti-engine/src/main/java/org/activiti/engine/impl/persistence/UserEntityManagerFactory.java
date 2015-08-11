@@ -17,13 +17,12 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 
-
 /**
  * @author Joram Barrez
  */
 public class UserEntityManagerFactory implements SessionFactory {
 
-  public Class< ? > getSessionType() {
+  public Class<?> getSessionType() {
     return UserIdentityManager.class;
   }
 

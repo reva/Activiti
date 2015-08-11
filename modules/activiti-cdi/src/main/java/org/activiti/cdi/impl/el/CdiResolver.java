@@ -24,10 +24,8 @@ import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 
-
 /**
- * Resolver wrapping an instance of javax.el.ELResolver obtained from the
- * {@link BeanManager}. Allows activiti-engine to resolve Cdi-Beans.
+ * Resolver wrapping an instance of javax.el.ELResolver obtained from the {@link BeanManager}. Allows activiti-engine to resolve Cdi-Beans.
  * 
  * @author Daniel Meyer
  */
@@ -66,7 +64,7 @@ public class CdiResolver extends ELResolver {
   }
 
   @Override
-  public Class< ? > getCommonPropertyType(ELContext context, Object base) {
+  public Class<?> getCommonPropertyType(ELContext context, Object base) {
     return getWrappedResolver().getCommonPropertyType(this.context, base);
   }
 
@@ -76,7 +74,7 @@ public class CdiResolver extends ELResolver {
   }
 
   @Override
-  public Class< ? > getType(ELContext context, Object base, Object property) {
+  public Class<?> getType(ELContext context, Object base, Object property) {
     return getWrappedResolver().getType(this.context, base, property);
   }
 
@@ -105,7 +103,7 @@ public class CdiResolver extends ELResolver {
   }
 
   @Override
-  public Object invoke(ELContext context, Object base, Object method, java.lang.Class< ? >[] paramTypes, Object[] params) {
+  public Object invoke(ELContext context, Object base, Object method, java.lang.Class<?>[] paramTypes, Object[] params) {
     Object result = getWrappedResolver().invoke(this.context, base, method, paramTypes, params);
     context.setPropertyResolved(result != null);
     return result;

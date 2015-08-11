@@ -37,8 +37,7 @@ public class ClassLoaderWrapper extends ClassLoader {
    * {@inheritDoc}
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  protected synchronized Class loadClass(String name, boolean resolve)
-      throws ClassNotFoundException {
+  protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
     //
     // Check if class is in the loaded classes cache
     //

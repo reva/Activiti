@@ -23,14 +23,13 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class FormPropertyHandler implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String id;
   protected String name;
   protected AbstractFormType type;
@@ -40,12 +39,12 @@ public class FormPropertyHandler implements Serializable {
   protected String variableName;
   protected Expression variableExpression;
   protected Expression defaultExpression;
-  
+
   public FormProperty createFormProperty(ExecutionEntity execution) {
     FormPropertyImpl formProperty = new FormPropertyImpl(this);
     Object modelValue = null;
-    
-    if (execution!=null) {
+
+    if (execution != null) {
       if (variableName != null || variableExpression == null) {
         final String varName = variableName != null ? variableName : id;
         if (execution.hasVariable(varName)) {
@@ -57,8 +56,10 @@ public class FormPropertyHandler implements Serializable {
         modelValue = variableExpression.getValue(execution);
       }
     } else {
-      // Execution is null, the form-property is used in a start-form. Default value
-      // should be available (ACT-1028) even though no execution is available.
+      // Execution is null, the form-property is used in a start-form.
+      // Default value
+      // should be available (ACT-1028) even though no execution is
+      // available.
       if (defaultExpression != null) {
         modelValue = defaultExpression.getValue(NoExecutionVariableScope.getSharedInstance());
       }
@@ -72,22 +73,22 @@ public class FormPropertyHandler implements Serializable {
     } else if (modelValue != null) {
       formProperty.setValue(modelValue.toString());
     }
-    
+
     return formProperty;
   }
 
   public void submitFormProperty(ExecutionEntity execution, Map<String, String> properties) {
     if (!isWritable && properties.containsKey(id)) {
-      throw new ActivitiException("form property '"+id+"' is not writable");
+      throw new ActivitiException("form property '" + id + "' is not writable");
     }
-    
+
     if (isRequired && !properties.containsKey(id) && defaultExpression == null) {
-      throw new ActivitiException("form property '"+id+"' is required");
+      throw new ActivitiException("form property '" + id + "' is required");
     }
     boolean propertyExits = false;
     Object modelValue = null;
     if (properties.containsKey(id)) {
-    	propertyExits = true;
+      propertyExits = true;
       final String propertyValue = properties.remove(id);
       if (type != null) {
         modelValue = type.convertFormValueToModelValue(propertyValue);
@@ -101,7 +102,7 @@ public class FormPropertyHandler implements Serializable {
       } else if (expressionValue != null) {
         modelValue = expressionValue.toString();
       } else if (isRequired) {
-        throw new ActivitiException("form property '"+id+"' is required");
+        throw new ActivitiException("form property '" + id + "' is required");
       }
     }
     if (propertyExits || (modelValue != null)) {
@@ -115,72 +116,73 @@ public class FormPropertyHandler implements Serializable {
     }
   }
 
-  // getters and setters //////////////////////////////////////////////////////
-  
+  // getters and setters
+  // //////////////////////////////////////////////////////
+
   public String getId() {
     return id;
   }
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
   public AbstractFormType getType() {
     return type;
   }
-  
+
   public void setType(AbstractFormType type) {
     this.type = type;
   }
-  
+
   public boolean isReadable() {
     return isReadable;
   }
-  
+
   public void setReadable(boolean isReadable) {
     this.isReadable = isReadable;
   }
-  
+
   public boolean isRequired() {
     return isRequired;
   }
-  
+
   public void setRequired(boolean isRequired) {
     this.isRequired = isRequired;
   }
-  
+
   public String getVariableName() {
     return variableName;
   }
-  
+
   public void setVariableName(String variableName) {
     this.variableName = variableName;
   }
-  
+
   public Expression getVariableExpression() {
     return variableExpression;
   }
-  
+
   public void setVariableExpression(Expression variableExpression) {
     this.variableExpression = variableExpression;
   }
-  
+
   public Expression getDefaultExpression() {
     return defaultExpression;
   }
-  
+
   public void setDefaultExpression(Expression defaultExpression) {
     this.defaultExpression = defaultExpression;
   }
-  
+
   public boolean isWritable() {
     return isWritable;
   }

@@ -43,23 +43,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupCollectionResource {
 
   protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
-  
+
   static {
     properties.put("id", GroupQueryProperty.GROUP_ID);
     properties.put("name", GroupQueryProperty.NAME);
     properties.put("type", GroupQueryProperty.TYPE);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected IdentityService identityService;
-  
-  @RequestMapping(value="/identity/groups", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getGroups(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+
+  @RequestMapping(value = "/identity/groups", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getGroups(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     GroupQuery query = identityService.createGroupQuery();
-    
+
     if (allRequestParams.containsKey("id")) {
       query.groupId(allRequestParams.get("id"));
     }
@@ -79,30 +79,30 @@ public class GroupCollectionResource {
       query.potentialStarter(allRequestParams.get("potentialStarter"));
     }
 
-    return new GroupPaginateList(restResponseFactory)
-        .paginateList(allRequestParams, query, "id", properties);
+    return new GroupPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
   }
-  
-  @RequestMapping(value="/identity/groups", method = RequestMethod.POST, produces = "application/json")
+
+  @RequestMapping(value = "/identity/groups", method = RequestMethod.POST, produces = "application/json")
   public GroupResponse createGroup(@RequestBody GroupRequest groupRequest, HttpServletRequest httpRequest, HttpServletResponse response) {
     if (groupRequest.getId() == null) {
       throw new ActivitiIllegalArgumentException("Id cannot be null.");
     }
 
-    // Check if a user with the given ID already exists so we return a CONFLICT
+    // Check if a user with the given ID already exists so we return a
+    // CONFLICT
     if (identityService.createGroupQuery().groupId(groupRequest.getId()).count() > 0) {
       throw new ActivitiConflictException("A group with id '" + groupRequest.getId() + "' already exists.");
     }
-    
+
     Group created = identityService.newGroup(groupRequest.getId());
     created.setId(groupRequest.getId());
     created.setName(groupRequest.getName());
     created.setType(groupRequest.getType());
     identityService.saveGroup(created);
-    
+
     response.setStatus(HttpStatus.CREATED.value());
-    
+
     return restResponseFactory.createGroupResponse(created);
   }
-  
+
 }

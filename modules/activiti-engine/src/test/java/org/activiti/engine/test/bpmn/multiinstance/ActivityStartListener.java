@@ -16,13 +16,12 @@ package org.activiti.engine.test.bpmn.multiinstance;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
-
 /**
  * @author Joram Barrez
  */
 public class ActivityStartListener implements ExecutionListener {
-  
-  public void notify(DelegateExecution execution) throws Exception {
+
+  public void notify(DelegateExecution execution) {
     Integer counter = (Integer) execution.getVariable("executionListenerCounter");
     if (counter == null) {
       counter = 0;

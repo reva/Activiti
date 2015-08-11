@@ -29,40 +29,49 @@ public class BusinessRuleTask extends Task {
   public boolean isExclude() {
     return exclude;
   }
+
   public void setExclude(boolean exclude) {
     this.exclude = exclude;
   }
+
   public String getResultVariableName() {
     return resultVariableName;
   }
+
   public void setResultVariableName(String resultVariableName) {
     this.resultVariableName = resultVariableName;
   }
+
   public List<String> getRuleNames() {
     return ruleNames;
   }
+
   public void setRuleNames(List<String> ruleNames) {
     this.ruleNames = ruleNames;
   }
+
   public List<String> getInputVariables() {
     return inputVariables;
   }
+
   public void setInputVariables(List<String> inputVariables) {
     this.inputVariables = inputVariables;
   }
+
   public String getClassName() {
     return className;
   }
+
   public void setClassName(String className) {
     this.className = className;
   }
-  
+
   public BusinessRuleTask clone() {
     BusinessRuleTask clone = new BusinessRuleTask();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(BusinessRuleTask otherElement) {
     super.setValues(otherElement);
     setResultVariableName(otherElement.getResultVariableName());

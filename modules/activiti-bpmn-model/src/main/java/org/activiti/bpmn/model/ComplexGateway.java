@@ -22,7 +22,7 @@ public class ComplexGateway extends Gateway {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(ComplexGateway otherElement) {
     super.setValues(otherElement);
   }

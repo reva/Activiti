@@ -19,16 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 /**
  * Stores a two-dimensional graph layout.
- *
+ * 
  * @author Falko Menge
  */
 public class DiagramLayout implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   private Map<String, DiagramElement> elements;
 
   public DiagramLayout(Map<String, DiagramElement> elements) {
@@ -43,7 +42,7 @@ public class DiagramLayout implements Serializable {
       return null;
     }
   }
-  
+
   public DiagramEdge getEdge(String id) {
     DiagramElement element = getElements().get(id);
     if (element instanceof DiagramEdge) {
@@ -52,11 +51,11 @@ public class DiagramLayout implements Serializable {
       return null;
     }
   }
-  
+
   public Map<String, DiagramElement> getElements() {
     return elements;
   }
-  
+
   public void setElements(Map<String, DiagramElement> elements) {
     this.elements = elements;
   }
@@ -71,5 +70,5 @@ public class DiagramLayout implements Serializable {
     }
     return nodes;
   }
-  
+
 }

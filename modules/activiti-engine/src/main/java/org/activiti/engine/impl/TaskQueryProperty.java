@@ -32,15 +32,13 @@ import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.TaskQuery;
 
-
-
 /**
  * Contains the possible properties that can be used in a {@link TaskQuery}.
  * 
  * @author Joram Barrez
  */
 public class TaskQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, TaskQueryProperty> properties = new HashMap<String, TaskQueryProperty>();
@@ -58,7 +56,7 @@ public class TaskQueryProperty implements QueryProperty {
   public static final TaskQueryProperty DUE_DATE = new TaskQueryProperty("RES.DUE_DATE_");
   public static final TaskQueryProperty TENANT_ID = new TaskQueryProperty("RES.TENANT_ID_");
   public static final TaskQueryProperty TASK_DEFINITION_KEY = new TaskQueryProperty("RES.TASK_DEF_KEY_");
-  
+
   private String name;
 
   public TaskQueryProperty(String name) {
@@ -69,7 +67,7 @@ public class TaskQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static TaskQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

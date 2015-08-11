@@ -16,7 +16,7 @@ public class EmptyModelTest extends AbstractConverterTest {
       // exception expected
     }
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     try {
@@ -26,7 +26,7 @@ public class EmptyModelTest extends AbstractConverterTest {
       // exception expected
     }
   }
-  
+
   protected String getResource() {
     return "empty.bpmn";
   }

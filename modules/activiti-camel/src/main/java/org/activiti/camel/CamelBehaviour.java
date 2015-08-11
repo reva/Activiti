@@ -17,10 +17,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
@@ -30,23 +31,27 @@ import org.apache.camel.impl.DefaultExchange;
 public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBehavior {
 
   private static final long serialVersionUID = 1L;
-  
+
   private Collection<ContextProvider> contextProviders;
 
   public CamelBehaviour(Collection<ContextProvider> camelContext) {
     this.contextProviders = camelContext;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     ActivitiEndpoint ae = createEndpoint(execution);
     Exchange ex = createExchange(execution, ae);
-    ae.process(ex);
+    try {
+      ae.process(ex);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
     execution.setVariables(ExchangeUtils.prepareVariables(ex, ae));
     performDefaultOutgoingBehavior(execution);
   }
 
   private ActivitiEndpoint createEndpoint(ActivityExecution execution) {
-    String uri = "activiti://" + getProcessName(execution) + ":" + execution.getActivity().getId();
+    String uri = "activiti://" + getProcessKey(execution) + ":" + execution.getCurrentActivityId();
     return getEndpoint(getContext(execution), uri);
   }
 
@@ -56,21 +61,20 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
         return (ActivitiEndpoint) e;
       }
     }
-    throw new RuntimeException("Activiti endpoint not defined for " + key);    
+    throw new RuntimeException("Activiti endpoint not defined for " + key);
   }
 
   private CamelContext getContext(ActivityExecution execution) {
-    String processName = getProcessName(execution);
+    String processKey = getProcessKey(execution);
     String names = "";
     for (ContextProvider provider : contextProviders) {
-      CamelContext ctx = provider.getContext(processName);
+      CamelContext ctx = provider.getContext(processKey);
       if (ctx != null) {
         return ctx;
       }
     }
-    throw new RuntimeException("Could not find camel context for " + processName + " names are " + names);
+    throw new RuntimeException("Could not find camel context for " + processKey + " names are " + names);
   }
-
 
   private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
     Exchange ex = new DefaultExchange(getContext(activityExecution));
@@ -81,14 +85,14 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
       }
     }
     if (endpoint.isCopyVariablesToBodyAsMap()) {
-      ex.getIn().setBody(new HashMap<String,Object>(variables));
+      ex.getIn().setBody(new HashMap<String, Object>(variables));
     }
     return ex;
   }
 
-  private String getProcessName(ActivityExecution execution) {
-    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
-    return processDefinition.getKey();
+  private String getProcessKey(ActivityExecution execution) {
+    Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    return process.getId();
   }
 
 }

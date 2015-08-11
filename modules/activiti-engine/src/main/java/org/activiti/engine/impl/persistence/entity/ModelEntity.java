@@ -23,7 +23,6 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.repository.Model;
 
-
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
@@ -31,7 +30,7 @@ import org.activiti.engine.repository.Model;
 public class ModelEntity implements Model, HasRevision, PersistentObject, Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String id;
   protected int revision = 1;
   protected String name;
@@ -61,28 +60,29 @@ public class ModelEntity implements Model, HasRevision, PersistentObject, Serial
     return persistentState;
   }
 
-  // getters and setters //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
   public String getId() {
     return id;
   }
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getName() {
     return name;
   }
-  
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
   public String getKey() {
     return key;
   }
-  
+
   public void setKey(String key) {
     this.key = key;
   }
@@ -102,11 +102,11 @@ public class ModelEntity implements Model, HasRevision, PersistentObject, Serial
   public void setCreateTime(Date createTime) {
     this.createTime = createTime;
   }
-  
+
   public Date getLastUpdateTime() {
     return lastUpdateTime;
   }
-  
+
   public void setLastUpdateTime(Date lastUpdateTime) {
     this.lastUpdateTime = lastUpdateTime;
   }
@@ -126,7 +126,7 @@ public class ModelEntity implements Model, HasRevision, PersistentObject, Serial
   public void setMetaInfo(String metaInfo) {
     this.metaInfo = metaInfo;
   }
-  
+
   public String getDeploymentId() {
     return deploymentId;
   }
@@ -138,7 +138,7 @@ public class ModelEntity implements Model, HasRevision, PersistentObject, Serial
   public String getEditorSourceValueId() {
     return editorSourceValueId;
   }
-  
+
   public void setEditorSourceValueId(String editorSourceValueId) {
     this.editorSourceValueId = editorSourceValueId;
   }
@@ -150,33 +150,33 @@ public class ModelEntity implements Model, HasRevision, PersistentObject, Serial
   public void setEditorSourceExtraValueId(String editorSourceExtraValueId) {
     this.editorSourceExtraValueId = editorSourceExtraValueId;
   }
-  
+
   public int getRevision() {
     return revision;
   }
-  
+
   public int getRevisionNext() {
     return revision + 1;
   }
-  
+
   public void setRevision(int revision) {
     this.revision = revision;
   }
 
-	public String getTenantId() {
-		return tenantId;
-	}
+  public String getTenantId() {
+    return tenantId;
+  }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
-	
-	public boolean hasEditorSource() {
-	  return this.editorSourceValueId != null;
-	}
-	
-	public boolean hasEditorSourceExtra() {
-	  return this.editorSourceExtraValueId != null;
-	}
-  
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
+
+  public boolean hasEditorSource() {
+    return this.editorSourceValueId != null;
+  }
+
+  public boolean hasEditorSourceExtra() {
+    return this.editorSourceExtraValueId != null;
+  }
+
 }

@@ -25,17 +25,17 @@ import org.activiti.bpmn.model.ExclusiveGateway;
  * @author Tijs Rademakers
  */
 public class ComplexGatewayXMLConverter extends BaseBpmnXMLConverter {
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     // complex gateway is not supported so transform it to exclusive gateway
     return ComplexGateway.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_GATEWAY_COMPLEX;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     ExclusiveGateway gateway = new ExclusiveGateway();
@@ -47,9 +47,9 @@ public class ComplexGatewayXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    
+
   }
 }

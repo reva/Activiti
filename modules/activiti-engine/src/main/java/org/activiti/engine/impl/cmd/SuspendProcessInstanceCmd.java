@@ -29,5 +29,4 @@ public class SuspendProcessInstanceCmd extends AbstractSetProcessInstanceStateCm
     return SuspensionState.SUSPENDED;
   }
 
-
 }

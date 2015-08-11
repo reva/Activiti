@@ -19,7 +19,7 @@ import java.util.Scanner;
  * @author Joram Barrez
  */
 public class DeploymentCacheTestUtil {
-  
+
   public static String readTemplateFile(String templateFile) {
     InputStream inputStream = DeploymentCacheTestUtil.class.getResourceAsStream(templateFile);
     Scanner scanner = null;
@@ -31,7 +31,7 @@ public class DeploymentCacheTestUtil {
     } finally {
       if (scanner != null) {
         scanner.close();
-       }
+      }
     }
     return null;
   }

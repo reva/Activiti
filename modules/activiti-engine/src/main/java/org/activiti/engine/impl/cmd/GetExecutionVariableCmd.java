@@ -21,7 +21,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -40,29 +39,27 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
-    if(executionId == null) {
+    if (executionId == null) {
       throw new ActivitiIllegalArgumentException("executionId is null");
     }
-    if(variableName == null) {
+    if (variableName == null) {
       throw new ActivitiIllegalArgumentException("variableName is null");
     }
-    
-    ExecutionEntity execution = commandContext
-      .getExecutionEntityManager()
-      .findExecutionById(executionId);
-    
-    if (execution==null) {
-      throw new ActivitiObjectNotFoundException("execution "+executionId+" doesn't exist", Execution.class);
+
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+
+    if (execution == null) {
+      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
-    
+
     Object value;
-    
+
     if (isLocal) {
       value = execution.getVariableLocal(variableName, false);
     } else {
       value = execution.getVariable(variableName, false);
     }
-    
+
     return value;
   }
 }

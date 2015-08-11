@@ -17,22 +17,18 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.parser.Error;
 
-
 /**
- * Special exception that can be used to throw a BPMN Error from
- * {@link JavaDelegate}s and expressions.
+ * Special exception that can be used to throw a BPMN Error from {@link JavaDelegate}s and expressions.
  * 
- * This should only be used for business faults, which shall be handled by a
- * Boundary Error Event or Error Event Sub-Process modeled in the process
- * definition. Technical errors should be represented by other exception types.
+ * This should only be used for business faults, which shall be handled by a Boundary Error Event or Error Event Sub-Process modeled in the process definition. Technical errors should be represented
+ * by other exception types.
  * 
- * This class represents an actual instance of a BPMN Error, whereas
- * {@link Error} represents an Error definition.
+ * This class represents an actual instance of a BPMN Error, whereas {@link Error} represents an Error definition.
  * 
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class BpmnError extends ActivitiException {
-  
+
   private static final long serialVersionUID = 1L;
 
   private String errorCode;
@@ -41,9 +37,9 @@ public class BpmnError extends ActivitiException {
     super("");
     setErrorCode(errorCode);
   }
-          
+
   public BpmnError(String errorCode, String message) {
-    super(message + " (errorCode='" + errorCode + "')");
+    super(message);
     setErrorCode(errorCode);
   }
 
@@ -60,9 +56,4 @@ public class BpmnError extends ActivitiException {
   public String getErrorCode() {
     return errorCode;
   }
-
-  public String toString() {
-    return super.toString() + " (errorCode='" + errorCode + "')";
-  }
-
 }

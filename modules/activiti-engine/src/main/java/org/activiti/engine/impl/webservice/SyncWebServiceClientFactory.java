@@ -22,7 +22,8 @@ public interface SyncWebServiceClientFactory {
   /**
    * Creates a {@link SyncWebServiceClient} from a WSDL
    * 
-   * @param wsdl the WSDL to be used in the {@link SyncWebServiceClient}
+   * @param wsdl
+   *          the WSDL to be used in the {@link SyncWebServiceClient}
    * @return the new instance of {@link SyncWebServiceClient}
    */
   SyncWebServiceClient create(String wsdl);

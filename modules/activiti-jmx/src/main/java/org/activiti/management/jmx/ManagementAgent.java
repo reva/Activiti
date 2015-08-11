@@ -26,8 +26,7 @@ import javax.management.ObjectName;
 public interface ManagementAgent {
 
   /**
-   * Registers object with management infrastructure with a specific name.
-   * Object must be annotated or implement standard MBean interface.
+   * Registers object with management infrastructure with a specific name. Object must be annotated or implement standard MBean interface.
    * 
    * @param obj
    *          the object to register
@@ -39,16 +38,14 @@ public interface ManagementAgent {
   void register(Object obj, ObjectName name) throws JMException;
 
   /**
-   * Registers object with management infrastructure with a specific name.
-   * Object must be annotated or implement standard MBean interface.
+   * Registers object with management infrastructure with a specific name. Object must be annotated or implement standard MBean interface.
    * 
    * @param obj
    *          the object to register
    * @param name
    *          the name
    * @param forceRegistration
-   *          if set to <tt>true</tt>, then object will be registered despite
-   *          existing object is already registered with the name.
+   *          if set to <tt>true</tt>, then object will be registered despite existing object is already registered with the name.
    * @throws JMException
    *           is thrown if the registration failed
    */
@@ -76,8 +73,7 @@ public interface ManagementAgent {
   /**
    * Get the MBeanServer which hosts managed objects.
    * <p/>
-   * <b>Notice:</b> If the JMXEnabled configuration is not set to <tt>true</tt>,
-   * this method will return <tt>null</tt>.
+   * <b>Notice:</b> If the JMXEnabled configuration is not set to <tt>true</tt>, this method will return <tt>null</tt>.
    * 
    * @return the MBeanServer
    */

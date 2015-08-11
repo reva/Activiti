@@ -12,7 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-
 /**
  * @author Tijs Rademakers
  */

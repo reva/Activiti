@@ -31,19 +31,18 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * Generic {@link TaskListener} publishing events using the cdi event
- * infrastructure.
+ * Generic {@link TaskListener} publishing events using the cdi event infrastructure.
  * 
- * @author Dimitris Mandalidis 
+ * @author Dimitris Mandalidis
  */
 public class CdiTaskListener implements TaskListener, Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected final BusinessProcessEventType type;
   protected final String transitionName;
   protected final String activityId;
@@ -61,21 +60,22 @@ public class CdiTaskListener implements TaskListener, Serializable {
   }
 
   @Override
-  public void notify(DelegateTask task) {    
-    // test whether cdi is setup correclty. (if not, just do not deliver the event)    
+  public void notify(DelegateTask task) {
+    // test whether cdi is setup correclty. (if not, just do not deliver the
+    // event)
     try {
       ProgrammaticBeanLookup.lookup(ProcessEngine.class);
-    }catch (Exception e) {
+    } catch (Exception e) {
       return;
     }
-    
+
     BusinessProcessEvent event = createEvent(task);
-    Annotation[] qualifiers = getQualifiers(event);           
-    getBeanManager().fireEvent(event, qualifiers);    
+    Annotation[] qualifiers = getQualifiers(event);
+    getBeanManager().fireEvent(event, qualifiers);
   }
 
   protected BusinessProcessEvent createEvent(DelegateTask task) {
-    ProcessDefinition processDefinition = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(task.getExecution().getProcessDefinitionId());
+    ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(task.getExecution().getProcessDefinitionId());
     return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, task, type, task.getExecution().getProcessInstanceId(), task.getExecutionId(), new Date());
   }
 
@@ -90,16 +90,16 @@ public class CdiTaskListener implements TaskListener, Serializable {
   protected Annotation[] getQualifiers(BusinessProcessEvent event) {
     Annotation businessProcessQualifier = new BusinessProcessLiteral(event.getProcessDefinition().getKey());
     if (type == BusinessProcessEventType.CREATE_TASK) {
-      return new Annotation[] {businessProcessQualifier, new CreateTaskLiteral(activityId) };
+      return new Annotation[] { businessProcessQualifier, new CreateTaskLiteral(activityId) };
     }
     if (type == BusinessProcessEventType.ASSIGN_TASK) {
-      return new Annotation[] {businessProcessQualifier, new AssignTaskLiteral(activityId) };
+      return new Annotation[] { businessProcessQualifier, new AssignTaskLiteral(activityId) };
     }
     if (type == BusinessProcessEventType.COMPLETE_TASK) {
-      return new Annotation[] {businessProcessQualifier, new CompleteTaskLiteral(activityId) };
+      return new Annotation[] { businessProcessQualifier, new CompleteTaskLiteral(activityId) };
     }
     if (type == BusinessProcessEventType.DELETE_TASK) {
-      return new Annotation[] {businessProcessQualifier, new DeleteTaskLiteral(activityId) };
+      return new Annotation[] { businessProcessQualifier, new DeleteTaskLiteral(activityId) };
     }
     return new Annotation[] {};
   }

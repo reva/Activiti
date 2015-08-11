@@ -28,36 +28,31 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DefaultFormHandler implements FormHandler {
-  
+
   protected Expression formKey;
   protected String deploymentId;
   protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
-  
+
   public void parseConfiguration(List<org.activiti.bpmn.model.FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
     this.deploymentId = deployment.getId();
-    
-    ExpressionManager expressionManager = Context
-        .getProcessEngineConfiguration()
-        .getExpressionManager();
-    
+
+    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+
     if (StringUtils.isNotEmpty(formKey)) {
       this.formKey = expressionManager.createExpression(formKey);
     }
-    
-    FormTypes formTypes = Context
-      .getProcessEngineConfiguration()
-      .getFormTypes();
-    
+
+    FormTypes formTypes = Context.getProcessEngineConfiguration().getFormTypes();
+
     for (org.activiti.bpmn.model.FormProperty formProperty : formProperties) {
       FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
       formPropertyHandler.setId(formProperty.getId());
       formPropertyHandler.setName(formProperty.getName());
-      
+
       AbstractFormType type = formTypes.parseFormPropertyType(formProperty);
       formPropertyHandler.setType(type);
       formPropertyHandler.setRequired(formProperty.isRequired());
@@ -81,7 +76,7 @@ public class DefaultFormHandler implements FormHandler {
 
   protected void initializeFormProperties(FormDataImpl formData, ExecutionEntity execution) {
     List<FormProperty> formProperties = new ArrayList<FormProperty>();
-    for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
+    for (FormPropertyHandler formPropertyHandler : formPropertyHandlers) {
       if (formPropertyHandler.isReadable()) {
         FormProperty formProperty = formPropertyHandler.createFormProperty(execution);
         formProperties.add(formProperty);
@@ -92,38 +87,39 @@ public class DefaultFormHandler implements FormHandler {
 
   public void submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
     Map<String, String> propertiesCopy = new HashMap<String, String>(properties);
-    for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
-      // submitFormProperty will remove all the keys which it takes care of
+    for (FormPropertyHandler formPropertyHandler : formPropertyHandlers) {
+      // submitFormProperty will remove all the keys which it takes care
+      // of
       formPropertyHandler.submitFormProperty(execution, propertiesCopy);
     }
-    for (String propertyId: propertiesCopy.keySet()) {
+    for (String propertyId : propertiesCopy.keySet()) {
       execution.setVariable(propertyId, propertiesCopy.get(propertyId));
     }
   }
 
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-  // getters and setters //////////////////////////////////////////////////////
-  
   public Expression getFormKey() {
     return formKey;
   }
-  
+
   public void setFormKey(Expression formKey) {
     this.formKey = formKey;
   }
-  
+
   public String getDeploymentId() {
     return deploymentId;
   }
-  
+
   public void setDeploymentId(String deploymentId) {
     this.deploymentId = deploymentId;
   }
-  
+
   public List<FormPropertyHandler> getFormPropertyHandlers() {
     return formPropertyHandlers;
   }
-  
+
   public void setFormPropertyHandlers(List<FormPropertyHandler> formPropertyHandlers) {
     this.formPropertyHandlers = formPropertyHandlers;
   }

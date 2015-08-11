@@ -40,12 +40,11 @@ public class CycleBusinessCalendar extends BusinessCalendarImpl {
 
   }
 
-
   public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
     if (endDate != null) {
       return super.validateDuedate(duedateDescription, maxIterations, endDate, newTimer);
     }
-    //end date could be part of the chron expression
+    // end date could be part of the chron expression
     try {
       if (duedateDescription != null && duedateDescription.startsWith("R")) {
         return new DurationHelper(duedateDescription, maxIterations, clockReader).isValidDate(newTimer);

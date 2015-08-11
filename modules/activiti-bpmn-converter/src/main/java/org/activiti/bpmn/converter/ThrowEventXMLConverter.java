@@ -24,16 +24,16 @@ import org.activiti.bpmn.model.ThrowEvent;
  * @author Tijs Rademakers
  */
 public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return ThrowEvent.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_EVENT_THROW;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     ThrowEvent throwEvent = new ThrowEvent();
@@ -45,7 +45,7 @@ public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
   @Override
   protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
- 
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     ThrowEvent throwEvent = (ThrowEvent) element;

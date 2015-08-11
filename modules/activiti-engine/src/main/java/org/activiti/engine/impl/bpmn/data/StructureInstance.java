@@ -29,7 +29,8 @@ public interface StructureInstance {
   /**
    * Loads this structure from array
    * 
-   * @param array the array where this structure loads data
+   * @param array
+   *          the array where this structure loads data
    */
   void loadFrom(Object[] array);
 }

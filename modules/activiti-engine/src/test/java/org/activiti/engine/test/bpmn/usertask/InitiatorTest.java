@@ -16,7 +16,6 @@ package org.activiti.engine.test.bpmn.usertask;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -30,10 +29,10 @@ public class InitiatorTest extends PluggableActivitiTestCase {
     } finally {
       identityService.setAuthenticatedUserId(null);
     }
-    
+
     assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
   }
-  
+
   // See ACT-1372
   @Deployment
   public void testInitiatorWithWhiteSpaceInExpression() {
@@ -43,8 +42,8 @@ public class InitiatorTest extends PluggableActivitiTestCase {
     } finally {
       identityService.setAuthenticatedUserId(null);
     }
-    
+
     assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
   }
-  
+
 }

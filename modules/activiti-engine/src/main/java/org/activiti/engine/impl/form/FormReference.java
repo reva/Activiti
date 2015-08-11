@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.form;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -25,10 +24,11 @@ public class FormReference {
     this.form = form;
     this.language = language;
   }
-  
+
   public String getForm() {
     return form;
   }
+
   public String getLanguage() {
     return language;
   }

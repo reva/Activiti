@@ -17,11 +17,36 @@ import java.util.List;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public abstract class FlowNode extends FlowElement {
 
+  protected Object behavior;
+
+  protected SubProcess subProcess;
+
   protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
   protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
+
+  public FlowNode() {
+
+  }
+
+  public Object getBehavior() {
+    return behavior;
+  }
+
+  public void setBehavior(Object behavior) {
+    this.behavior = behavior;
+  }
+
+  public SubProcess getSubProcess() {
+    return subProcess;
+  }
+
+  public void setSubProcess(SubProcess subProcess) {
+    this.subProcess = subProcess;
+  }
 
   public List<SequenceFlow> getIncomingFlows() {
     return incomingFlows;
@@ -38,7 +63,7 @@ public abstract class FlowNode extends FlowElement {
   public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
     this.outgoingFlows = outgoingFlows;
   }
-  
+
   public void setValues(FlowNode otherNode) {
     super.setValues(otherNode);
   }

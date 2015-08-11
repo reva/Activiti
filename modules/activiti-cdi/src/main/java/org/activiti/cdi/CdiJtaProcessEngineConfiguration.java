@@ -21,6 +21,6 @@ public class CdiJtaProcessEngineConfiguration extends JtaProcessEngineConfigurat
 
   @Override
   protected void initExpressionManager() {
-    expressionManager = new CdiExpressionManager();    
+    expressionManager = new CdiExpressionManager();
   }
 }

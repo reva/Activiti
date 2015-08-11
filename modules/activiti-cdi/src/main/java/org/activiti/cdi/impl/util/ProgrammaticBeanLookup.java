@@ -29,7 +29,7 @@ public class ProgrammaticBeanLookup {
 
   @SuppressWarnings("unchecked")
   public static <T> T lookup(Class<T> clazz, BeanManager bm) {
-    Iterator<Bean< ? >> iter = bm.getBeans(clazz).iterator();
+    Iterator<Bean<?>> iter = bm.getBeans(clazz).iterator();
     if (!iter.hasNext()) {
       throw new IllegalStateException("CDI BeanManager cannot find an instance of requested type " + clazz.getName());
     }
@@ -41,22 +41,23 @@ public class ProgrammaticBeanLookup {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static Object lookup(String name, BeanManager bm) {
-    Set<Bean< ? >> beans = bm.getBeans(name);
+    Set<Bean<?>> beans = bm.getBeans(name);
     if (beans.isEmpty()) {
       throw new IllegalStateException("CDI BeanManager cannot find an instance of requested type '" + name + "'");
     }
     Bean bean = bm.resolve(beans);
     CreationalContext ctx = bm.createCreationalContext(bean);
-    // select one beantype randomly. A bean has a non-empty set of beantypes.
+    // select one beantype randomly. A bean has a non-empty set of
+    // beantypes.
     Type type = (Type) bean.getTypes().iterator().next();
     return bm.getReference(bean, type, ctx);
   }
-  
+
   public static <T> T lookup(Class<T> clazz) {
     BeanManager bm = BeanManagerLookup.getBeanManager();
     return lookup(clazz, bm);
   }
-  
+
   public static Object lookup(String name) {
     BeanManager bm = BeanManagerLookup.getBeanManager();
     return lookup(name, bm);

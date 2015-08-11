@@ -21,14 +21,13 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
-
 /**
  * @author Daniel Meyer
  */
 public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity> implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String eventSubscriptionId;
   protected String eventName;
   protected String eventType;
@@ -40,14 +39,14 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
   public EventSubscriptionQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
-  
+
   public EventSubscriptionQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
 
   public EventSubscriptionQueryImpl eventSubscriptionId(String id) {
     if (eventSubscriptionId == null) {
-      throw new ActivitiIllegalArgumentException("Provided svent subscription id is null");
+      throw new ActivitiIllegalArgumentException("Provided event subscription id is null");
     }
     this.eventSubscriptionId = id;
     return this;
@@ -84,7 +83,7 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
     this.activityId = activityId;
     return this;
   }
-  
+
   public EventSubscriptionQueryImpl eventType(String eventType) {
     if (eventType == null) {
       throw new ActivitiIllegalArgumentException("Provided event type is null");
@@ -92,56 +91,56 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
     this.eventType = eventType;
     return this;
   }
-  
+
   public String getTenantId() {
-		return tenantId;
-	}
+    return tenantId;
+  }
 
-	public EventSubscriptionQueryImpl tenantId(String tenantId) {
-		this.tenantId = tenantId;
-		return this;
-	}
+  public EventSubscriptionQueryImpl tenantId(String tenantId) {
+    this.tenantId = tenantId;
+    return this;
+  }
 
-	public EventSubscriptionQueryImpl orderByCreated() {
+  public EventSubscriptionQueryImpl orderByCreated() {
     return orderBy(EventSubscriptionQueryProperty.CREATED);
   }
-  
-  //results //////////////////////////////////////////
+
+  // results //////////////////////////////////////////
 
   @Override
   public long executeCount(CommandContext commandContext) {
     checkQueryOk();
-    return commandContext
-      .getEventSubscriptionEntityManager()
-      .findEventSubscriptionCountByQueryCriteria(this);
+    return commandContext.getEventSubscriptionEntityManager().findEventSubscriptionCountByQueryCriteria(this);
   }
 
   @Override
   public List<EventSubscriptionEntity> executeList(CommandContext commandContext, Page page) {
     checkQueryOk();
-    return commandContext
-      .getEventSubscriptionEntityManager()
-      .findEventSubscriptionsByQueryCriteria(this,page);
+    return commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByQueryCriteria(this, page);
   }
-  
-  //getters //////////////////////////////////////////
-  
-   
+
+  // getters //////////////////////////////////////////
+
   public String getEventSubscriptionId() {
     return eventSubscriptionId;
   }
+
   public String getEventName() {
     return eventName;
   }
+
   public String getEventType() {
     return eventType;
   }
+
   public String getExecutionId() {
     return executionId;
   }
+
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+
   public String getActivityId() {
     return activityId;
   }

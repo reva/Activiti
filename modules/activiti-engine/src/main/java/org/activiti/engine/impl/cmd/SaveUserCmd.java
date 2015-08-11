@@ -19,33 +19,28 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Joram Barrez
  */
 public class SaveUserCmd implements Command<Void>, Serializable {
-  
+
   private static final long serialVersionUID = 1L;
   protected User user;
-  
+
   public SaveUserCmd(User user) {
     this.user = user;
   }
-  
+
   public Void execute(CommandContext commandContext) {
-    if(user == null) {
+    if (user == null) {
       throw new ActivitiIllegalArgumentException("user is null");
     }
     if (commandContext.getUserIdentityManager().isNewUser(user)) {
-      commandContext
-        .getUserIdentityManager()
-        .insertUser(user);
+      commandContext.getUserIdentityManager().insertUser(user);
     } else {
-      commandContext
-        .getUserIdentityManager()
-        .updateUser(user);
+      commandContext.getUserIdentityManager().updateUser(user);
     }
-    
+
     return null;
   }
 }

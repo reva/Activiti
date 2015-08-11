@@ -22,7 +22,7 @@ public class EventGateway extends Gateway {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(EventGateway otherElement) {
     super.setValues(otherElement);
   }

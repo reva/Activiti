@@ -20,28 +20,24 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.AbstractManager;
-
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class HistoricDetailEntityManager extends AbstractManager {
+public class HistoricDetailEntityManager extends AbstractEntityManager<HistoricDetailEntity> {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession()
-        .createHistoricDetailQuery()
-        .processInstanceId(historicProcessInstanceId)
-        .list();
-      
-      for (HistoricDetailEntity historicDetail: historicDetails) {
+      List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession().createHistoricDetailQuery().processInstanceId(historicProcessInstanceId).list();
+
+      for (HistoricDetailEntity historicDetail : historicDetails) {
         historicDetail.delete();
       }
     }
   }
-  
+
   public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
     return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
   }
@@ -53,10 +49,9 @@ public class HistoricDetailEntityManager extends AbstractManager {
 
   public void deleteHistoricDetailsByTaskId(String taskId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.FULL)) {
-      HistoricDetailQueryImpl detailsQuery = 
-        (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
+      HistoricDetailQueryImpl detailsQuery = (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
       List<HistoricDetail> details = detailsQuery.list();
-      for(HistoricDetail detail : details) {
+      for (HistoricDetail detail : details) {
         ((HistoricDetailEntity) detail).delete();
       }
     }

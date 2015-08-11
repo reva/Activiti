@@ -30,23 +30,23 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class TextAnnotationXMLConverter extends BaseBpmnXMLConverter {
-  
+
   protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
-  
+
   public TextAnnotationXMLConverter() {
     TextAnnotationTextParser annotationTextParser = new TextAnnotationTextParser();
     childParserMap.put(annotationTextParser.getElementName(), annotationTextParser);
   }
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return TextAnnotation.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_TEXT_ANNOTATION;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     TextAnnotation textAnnotation = new TextAnnotation();
@@ -61,7 +61,7 @@ public class TextAnnotationXMLConverter extends BaseBpmnXMLConverter {
     TextAnnotation textAnnotation = (TextAnnotation) element;
     writeDefaultAttribute(ATTRIBUTE_TEXTFORMAT, textAnnotation.getTextFormat(), xtw);
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     TextAnnotation textAnnotation = (TextAnnotation) element;

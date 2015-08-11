@@ -16,38 +16,34 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-
 /**
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
-  
+
   @Deployment
   // an event subprocesses takes precedence over a boundary event
   public void testEventSubprocessTakesPrecedence() {
     String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
     assertThatErrorHasBeenCaught(procId);
   }
-  
+
   @Deployment
   // an event subprocess with errorCode takes precedence over a catch-all handler
   public void testErrorCodeTakesPrecedence() {
     String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
-        
-    // The process will throw an error event,
-    // which is caught and escalated by a User Task
-    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery()
-            .taskDefinitionKey("taskAfterErrorCatch2") // <!>
-            .count());
+
+    // The process will throw an error event, which is caught and escalated by a User Task
+    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().taskDefinitionKey("taskAfterErrorCatch2").count());
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Escalated Task", task.getName());
-    
-    // Completing the Task will end the process instance
+
+    // Completing the task will end the process instance
     taskService.complete(task.getId());
     assertProcessEnded(procId);
-    
+
   }
-  
+
   @Deployment
   public void testCatchErrorInEmbeddedSubProcess() {
     String procId = runtimeService.startProcessInstanceByKey("CatchErrorInEmbeddedSubProcess").getId();
@@ -78,8 +74,7 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     assertThatErrorHasBeenCaught(procId);
   }
 
-  @Deployment(resources = {
-      "org/activiti/engine/test/bpmn/event/error/ErrorEventSubProcessTest.testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess.bpmn20.xml",
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/ErrorEventSubProcessTest.testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess.bpmn20.xml",
       "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByJavaDelegateOnCallActivity-child.bpmn20.xml" })
   public void testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess() {
     String procId = runtimeService.startProcessInstanceByKey("testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess").getId();
@@ -92,7 +87,7 @@ public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
     assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Escalated Task", task.getName());
-    
+
     // Completing the Task will end the process instance
     taskService.complete(task.getId());
     assertProcessEnded(procId);

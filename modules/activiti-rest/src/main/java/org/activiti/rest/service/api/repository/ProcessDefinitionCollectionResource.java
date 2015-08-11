@@ -35,9 +35,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ProcessDefinitionCollectionResource {
-  
+
   private static final Map<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
-  
+
   static {
     properties.put("id", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
     properties.put("key", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_KEY);
@@ -47,17 +47,17 @@ public class ProcessDefinitionCollectionResource {
     properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
     properties.put("tenantId", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_TENANT_ID);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected RepositoryService repositoryService;
-  
-  @RequestMapping(value="/repository/process-definitions", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getProcessDefinitions(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+
+  @RequestMapping(value = "/repository/process-definitions", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getProcessDefinitions(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
-    
+
     // Populate filter-parameters
     if (allRequestParams.containsKey("category")) {
       processDefinitionQuery.processDefinitionCategory(allRequestParams.get("category"));
@@ -117,8 +117,7 @@ public class ProcessDefinitionCollectionResource {
     if (allRequestParams.containsKey("tenantIdLike")) {
       processDefinitionQuery.processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
-    
-    return new ProcessDefinitionsPaginateList(restResponseFactory)
-        .paginateList(allRequestParams, processDefinitionQuery, "name", properties);
+
+    return new ProcessDefinitionsPaginateList(restResponseFactory).paginateList(allRequestParams, processDefinitionQuery, "name", properties);
   }
 }

@@ -37,7 +37,7 @@ public class CollaborationExport implements BpmnXMLConstants {
         }
         xtw.writeEndElement();
       }
-      
+
       for (MessageFlow messageFlow : model.getMessageFlows().values()) {
         xtw.writeStartElement(ELEMENT_MESSAGE_FLOW);
         xtw.writeAttribute(ATTRIBUTE_ID, messageFlow.getId());
@@ -55,7 +55,7 @@ public class CollaborationExport implements BpmnXMLConstants {
         }
         xtw.writeEndElement();
       }
-      
+
       xtw.writeEndElement();
     }
   }

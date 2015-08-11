@@ -22,7 +22,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -32,12 +31,10 @@ public class GetPropertiesCmd implements Command<Map<String, String>>, Serializa
 
   @SuppressWarnings("unchecked")
   public Map<String, String> execute(CommandContext commandContext) {
-    List<PropertyEntity> propertyEntities = commandContext
-      .getDbSqlSession()
-      .selectList("selectProperties");
-    
+    List<PropertyEntity> propertyEntities = commandContext.getDbSqlSession().selectList("selectProperties");
+
     Map<String, String> properties = new HashMap<String, String>();
-    for (PropertyEntity propertyEntity: propertyEntities) {
+    for (PropertyEntity propertyEntity : propertyEntities) {
       properties.put(propertyEntity.getName(), propertyEntity.getValue());
     }
     return properties;

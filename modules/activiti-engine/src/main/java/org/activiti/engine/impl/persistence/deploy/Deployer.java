@@ -16,10 +16,6 @@ import java.util.Map;
 
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 
-
-
-
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez

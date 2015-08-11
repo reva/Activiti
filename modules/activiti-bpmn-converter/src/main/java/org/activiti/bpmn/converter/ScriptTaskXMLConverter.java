@@ -30,23 +30,23 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
-  
+
   protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
-  
-	public ScriptTaskXMLConverter() {
-		ScriptTextParser scriptTextParser = new ScriptTextParser();
-		childParserMap.put(scriptTextParser.getElementName(), scriptTextParser);
-	}
-	
+
+  public ScriptTaskXMLConverter() {
+    ScriptTextParser scriptTextParser = new ScriptTextParser();
+    childParserMap.put(scriptTextParser.getElementName(), scriptTextParser);
+  }
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return ScriptTask.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_TASK_SCRIPT;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     ScriptTask scriptTask = new ScriptTask();
@@ -71,7 +71,7 @@ public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
     writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_RESULTVARIABLE, scriptTask.getResultVariable(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_TASK_SCRIPT_AUTO_STORE_VARIABLE, String.valueOf(scriptTask.isAutoStoreVariables()), xtw);
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     ScriptTask scriptTask = (ScriptTask) element;

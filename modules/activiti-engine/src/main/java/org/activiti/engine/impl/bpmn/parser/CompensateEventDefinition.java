@@ -15,7 +15,6 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
-
 /**
  * @author Daniel Meyer
  */

@@ -29,8 +29,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.ISODateTimeFormat;
 
 /**
- * helper class for parsing ISO8601 duration format (also recurring) and
- * computing next timer date
+ * helper class for parsing ISO8601 duration format (also recurring) and computing next timer date
  */
 public class DurationHelper {
 
@@ -81,7 +80,7 @@ public class DurationHelper {
     }
     if (expression.get(0).startsWith("R")) {
       isRepeat = true;
-      times = expression.get(0).length() == 1 ? Integer.MAX_VALUE-1 : Integer.parseInt(expression.get(0).substring(1));
+      times = expression.get(0).length() == 1 ? Integer.MAX_VALUE - 1 : Integer.parseInt(expression.get(0).substring(1));
       expression = expression.subList(1, expression.size());
     }
 
@@ -104,7 +103,7 @@ public class DurationHelper {
   }
 
   public DurationHelper(String expressionS, ClockReader clockReader) throws Exception {
-    this(expressionS,-1,clockReader);
+    this(expressionS, -1, clockReader);
   }
 
   public Calendar getCalendarAfter() {
@@ -123,7 +122,7 @@ public class DurationHelper {
   }
 
   public Boolean isValidDate(Date newTimer) {
-    return end==null || end.getTime().after(newTimer) || end.getTime().equals(newTimer);
+    return end == null || end.getTime().after(newTimer) || end.getTime().equals(newTimer);
   }
 
   public Date getDateAfter() {
@@ -132,21 +131,21 @@ public class DurationHelper {
     return date == null ? null : date.getTime();
   }
 
-  private Calendar getDateAfterRepeat(Calendar date) {
-
+  protected Calendar getDateAfterRepeat(Calendar date) {
+    
     Calendar cur = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
     int maxLoops = times;
     if (maxIterations > 0) {
       maxLoops = maxIterations - times;
     }
-    for (int i = 0; i < maxLoops+1 && !cur.after(date); i++) {
+    for (int i = 0; i < maxLoops + 1 && !cur.after(date); i++) {
       cur = add(cur, period);
     }
-
+    
     return cur.before(date) ? date : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
   }
 
-  private Calendar add(Calendar date, Duration duration) {
+  protected Calendar add(Calendar date, Duration duration) {
     Calendar calendar = (Calendar) date.clone();
 
     // duration.addTo does not account for daylight saving time (xerces),
@@ -161,15 +160,15 @@ public class DurationHelper {
     return calendar;
   }
 
-  private Calendar parseDate(String date) throws Exception {
+  protected Calendar parseDate(String date) throws Exception {
     return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(date).toCalendar(null);
   }
 
-  private Duration parsePeriod(String period) throws Exception {
+  protected Duration parsePeriod(String period) throws Exception {
     return datatypeFactory.newDuration(period);
   }
 
-  private boolean isDuration(String time) {
+  protected boolean isDuration(String time) {
     return time.startsWith("P");
   }
 

@@ -13,8 +13,8 @@
 package org.activiti.examples.processdefinitions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,11 +41,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 1' />" + "</definitions>")));
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='EN' name='Expense Note 2' />" + "</definitions>")));
 
-    List<ProcessDefinition> processDefinitions = repositoryService
-      .createProcessDefinitionQuery()
-      .orderByProcessDefinitionKey().asc()
-      .orderByProcessDefinitionVersion().desc()
-      .list();
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().orderByProcessDefinitionVersion().desc().list();
 
     assertNotNull(processDefinitions);
 
@@ -80,40 +76,37 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     assertEquals("Insurance Damage Report 1", processDefinition.getName());
     assertTrue(processDefinition.getId().startsWith("IDR:1"));
     assertEquals(1, processDefinition.getVersion());
-    
+
     Set<String> queryDeploymentIds = new HashSet<String>();
     queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
     queryDeploymentIds.add(processDefinitions.get(1).getDeploymentId());
-    List<ProcessDefinition> queryProcessDefinitions = repositoryService.createProcessDefinitionQuery()
-        .deploymentIds(queryDeploymentIds)
-        .orderByProcessDefinitionKey().asc()
-        .orderByProcessDefinitionVersion().desc()
-        .list();
+    List<ProcessDefinition> queryProcessDefinitions = repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).orderByProcessDefinitionKey().asc()
+        .orderByProcessDefinitionVersion().desc().list();
     assertEquals(2, queryProcessDefinitions.size());
-    
+
     processDefinition = queryProcessDefinitions.get(0);
     assertEquals("EN", processDefinition.getKey());
     assertEquals("Expense Note 2", processDefinition.getName());
-    
+
     processDefinition = queryProcessDefinitions.get(1);
     assertEquals("EN", processDefinition.getKey());
     assertEquals("Expense Note 1", processDefinition.getName());
-    
+
     queryDeploymentIds = new HashSet<String>();
     queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
     queryDeploymentIds.add(processDefinitions.get(3).getDeploymentId());
     queryDeploymentIds.add(processDefinitions.get(4).getDeploymentId());
     queryProcessDefinitions = repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).list();
     assertEquals(3, queryProcessDefinitions.size());
-    
+
     processDefinition = queryProcessDefinitions.get(0);
     assertEquals("EN", processDefinition.getKey());
     assertEquals("Expense Note 2", processDefinition.getName());
-    
+
     processDefinition = processDefinitions.get(3);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report 2", processDefinition.getName());
-    
+
     processDefinition = processDefinitions.get(4);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report 1", processDefinition.getName());
@@ -126,11 +119,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
     deploymentIds.add(deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='IDR' name='Insurance Damage Report' />" + "</definitions>")));
 
-    List<ProcessDefinition> processDefinitions = repositoryService
-      .createProcessDefinitionQuery()
-      .orderByProcessDefinitionKey().asc()
-      .orderByProcessDefinitionVersion().desc()
-      .list();
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().orderByProcessDefinitionKey().asc().orderByProcessDefinitionVersion().desc().list();
 
     assertNotNull(processDefinitions);
     assertEquals(2, processDefinitions.size());
@@ -146,23 +135,23 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     assertEquals("Insurance Damage Report", processDefinition.getName());
     assertTrue(processDefinition.getId().startsWith("IDR:1"));
     assertEquals(1, processDefinition.getVersion());
-    
+
     deleteDeployments(deploymentIds);
   }
-  
+
   public void testProcessDefinitionDescription() {
     String deploymentId = deployProcessString(("<definitions " + NAMESPACE + " " + TARGET_NAMESPACE + ">" + "  <process id='test' name='test'><documentation>This is a test</documentation></process></definitions>"));
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deploymentId).singleResult();
     assertEquals("This is a test", processDefinition.getDescription());
-    
-    deleteDeployments(Arrays.asList(deploymentId));
+
+    deleteDeployments(Collections.singletonList(deploymentId));
   }
-  
+
   private String deployProcessString(String processString) {
     String resourceName = "xmlString." + BpmnDeployer.BPMN_RESOURCE_SUFFIXES[0];
     return repositoryService.createDeployment().addString(resourceName, processString).deploy().getId();
   }
-  
+
   private void deleteDeployments(Collection<String> deploymentIds) {
     for (String deploymentId : deploymentIds) {
       repositoryService.deleteDeployment(deploymentId);

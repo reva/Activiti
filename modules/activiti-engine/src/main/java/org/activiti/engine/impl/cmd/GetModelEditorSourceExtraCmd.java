@@ -18,15 +18,14 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class GetModelEditorSourceExtraCmd implements Command<byte[]>, Serializable {
-  
+
   private static final long serialVersionUID = 1L;
   protected String modelId;
-  
+
   public GetModelEditorSourceExtraCmd(String modelId) {
     this.modelId = modelId;
   }
@@ -35,12 +34,10 @@ public class GetModelEditorSourceExtraCmd implements Command<byte[]>, Serializab
     if (modelId == null) {
       throw new ActivitiIllegalArgumentException("modelId is null");
     }
-    
-    byte[] bytes = commandContext
-      .getModelEntityManager()
-      .findEditorSourceExtraByModelId(modelId);
-    
+
+    byte[] bytes = commandContext.getModelEntityManager().findEditorSourceExtraByModelId(modelId);
+
     return bytes;
   }
-  
+
 }

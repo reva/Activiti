@@ -20,7 +20,6 @@ import org.activiti.engine.history.NativeHistoricProcessInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-
 public class NativeHistoricProcessInstanceQueryImpl extends AbstractNativeQuery<NativeHistoricProcessInstanceQuery, HistoricProcessInstance> implements NativeHistoricProcessInstanceQuery {
 
   private static final long serialVersionUID = 1L;
@@ -33,19 +32,14 @@ public class NativeHistoricProcessInstanceQueryImpl extends AbstractNativeQuery<
     super(commandExecutor);
   }
 
+  // results ////////////////////////////////////////////////////////////////
 
- //results ////////////////////////////////////////////////////////////////
-  
   public List<HistoricProcessInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext
-      .getHistoricProcessInstanceEntityManager()
-      .findHistoricProcessInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+    return commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
-  
+
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext
-      .getHistoricProcessInstanceEntityManager()
-      .findHistoricProcessInstanceCountByNativeQuery(parameterMap);
+    return commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstanceCountByNativeQuery(parameterMap);
   }
 
 }

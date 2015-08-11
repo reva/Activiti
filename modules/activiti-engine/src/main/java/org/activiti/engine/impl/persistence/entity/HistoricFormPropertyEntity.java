@@ -22,17 +22,18 @@ import org.activiti.engine.impl.context.Context;
 public class HistoricFormPropertyEntity extends HistoricDetailEntity implements HistoricFormProperty {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String propertyId;
   protected String propertyValue;
-  
+
   public HistoricFormPropertyEntity() {
+    this.detailType = "FormProperty";
   }
 
   public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue) {
     this(execution, propertyId, propertyValue, null);
   }
-  
+
   public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue, String taskId) {
     this.processInstanceId = execution.getProcessInstanceId();
     this.executionId = execution.getId();
@@ -40,25 +41,27 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
     this.propertyId = propertyId;
     this.propertyValue = propertyValue;
     this.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    this.detailType = "FormProperty";
 
-    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution);
-    if (historicActivityInstance!=null) {
+    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution, true, false);
+    if (historicActivityInstance != null) {
       this.activityInstanceId = historicActivityInstance.getId();
     }
+    
   }
 
   public String getPropertyId() {
     return propertyId;
   }
-  
+
   public void setPropertyId(String propertyId) {
     this.propertyId = propertyId;
   }
-  
+
   public String getPropertyValue() {
     return propertyValue;
   }
-  
+
   public void setPropertyValue(String propertyValue) {
     this.propertyValue = propertyValue;
   }

@@ -42,9 +42,9 @@ import org.slf4j.LoggerFactory;
  */
 
 public class DefaultManagementAgent implements ManagementAgent {
-  
+
   private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementAgent.class);
-  
+
   protected MBeanServer server;
   protected final ConcurrentMap<ObjectName, ObjectName> mbeansRegistered = new ConcurrentHashMap<ObjectName, ObjectName>();
   protected JMXConfigurator jmxConfigurator;
@@ -87,7 +87,8 @@ public class DefaultManagementAgent implements ManagementAgent {
         LOG.info("ForceRegistration enabled, unregistering existing MBean with ObjectName: {}", name);
         server.unregisterMBean(name);
       } else {
-        // okay ignore we do not want to force it and it could be a shared
+        // okay ignore we do not want to force it and it could be a
+        // shared
         // instance
         LOG.debug("MBean already registered with ObjectName: {}", name);
       }
@@ -137,10 +138,9 @@ public class DefaultManagementAgent implements ManagementAgent {
   public void doStart() {
     createMBeanServer();
   }
-  
 
   protected void createMBeanServer() {
-    
+
     server = findOrCreateMBeanServer();
     try {
       // Create the connector if we need
@@ -176,10 +176,11 @@ public class DefaultManagementAgent implements ManagementAgent {
 
   @Override
   public void findAndRegisterMbeans() throws Exception {
-	  register(new ProcessDefinitionsMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "Deployments"));
-	  register(new JobExecutorMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "JobExecutor"));
+    register(new ProcessDefinitionsMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "Deployments"));
+    register(new JobExecutorMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "JobExecutor"));
 
   }
+
   public void createJmxConnector(String host) throws IOException {
 
     String serviceUrlPath = jmxConfigurator.getServiceUrlPath();
@@ -198,7 +199,8 @@ public class DefaultManagementAgent implements ManagementAgent {
       registry = LocateRegistry.createRegistry(registryPort);
       LOG.debug("Created JMXConnector RMI registry on port {}", registryPort);
     } catch (RemoteException ex) {
-      // The registry may had been created, we could get the registry instead
+      // The registry may had been created, we could get the registry
+      // instead
     }
 
     // must start with leading slash
@@ -225,7 +227,7 @@ public class DefaultManagementAgent implements ManagementAgent {
           LOG.info("JMX Connector thread started and listening at: {}", url);
         } catch (IOException ioe) {
           if (ioe.getCause() instanceof javax.naming.NameAlreadyBoundException) {
-              LOG.warn("JMX connection:" + url + " already exists.");
+            LOG.warn("JMX connection:" + url + " already exists.");
           } else {
             LOG.warn("Could not start JMXConnector thread at: " + url + ". JMX Connector not in use.", ioe);
           }

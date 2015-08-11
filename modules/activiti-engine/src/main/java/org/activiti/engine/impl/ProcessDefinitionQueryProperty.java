@@ -19,18 +19,17 @@ import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
-
 /**
  * Contains the possible properties that can be used in a {@link ProcessDefinitionQuery}.
  * 
  * @author Joram Barrez
  */
 public class ProcessDefinitionQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
-  
+
   public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_KEY = new ProcessDefinitionQueryProperty("RES.KEY_");
   public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_CATEGORY = new ProcessDefinitionQueryProperty("RES.CATEGORY_");
   public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_ID = new ProcessDefinitionQueryProperty("RES.ID_");
@@ -49,7 +48,7 @@ public class ProcessDefinitionQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static ProcessDefinitionQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

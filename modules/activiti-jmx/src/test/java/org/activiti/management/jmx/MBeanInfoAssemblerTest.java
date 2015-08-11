@@ -53,13 +53,15 @@ public class MBeanInfoAssemblerTest {
     // mbean should be not null
     assertNull(mbeanInfoAssembler.getMBeanInfo(testMbean, testMbean, null));
 
-    // it should return something if at least one of the first paramaters are
+    // it should return something if at least one of the first paramaters
+    // are
     // not null
     NotManagedMBean notManagedMbean = new NotManagedMBean();
     assertNotNull(mbeanInfoAssembler.getMBeanInfo(null, notManagedMbean, "someName"));
     assertNotNull(mbeanInfoAssembler.getMBeanInfo(notManagedMbean, null, "someName"));
 
   }
+
   @Test
   public void testReadAtributeInfoHappyPath() throws JMException {
     ModelMBeanInfo beanInfo = mbeanInfoAssembler.getMBeanInfo(testMbean, null, "someName");

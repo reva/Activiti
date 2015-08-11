@@ -19,9 +19,7 @@ import java.util.List;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 
 /**
- * Modified to add a "completed" flag, which lets the caller know if the process instance
- *   has run to completion without encountering a wait state or experiencing an error/
- *   exception.
+ * Modified to add a "completed" flag, which lets the caller know if the process instance has run to completion without encountering a wait state or experiencing an error/ exception.
  * 
  * @author Frederik Heremans
  * @author Ryan Johnston (@rjfsu)
@@ -37,42 +35,42 @@ public class ProcessInstanceResponse {
   protected String activityId;
   protected List<RestVariable> variables = new ArrayList<RestVariable>();
   protected String tenantId;
-  
-  //Added by Ryan Johnston
+
+  // Added by Ryan Johnston
   protected boolean completed;
-  
+
   public String getId() {
     return id;
   }
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getUrl() {
     return url;
   }
-  
+
   public void setUrl(String url) {
     this.url = url;
   }
-  
+
   public String getBusinessKey() {
     return businessKey;
   }
-  
+
   public void setBusinessKey(String businessKey) {
     this.businessKey = businessKey;
   }
-  
+
   public boolean isSuspended() {
     return suspended;
   }
-  
+
   public void setSuspended(boolean suspended) {
     this.suspended = suspended;
   }
-  
+
   public boolean isEnded() {
     return ended;
   }
@@ -92,46 +90,46 @@ public class ProcessInstanceResponse {
   public String getProcessDefinitionUrl() {
     return processDefinitionUrl;
   }
-  
+
   public void setProcessDefinitionUrl(String processDefinitionUrl) {
     this.processDefinitionUrl = processDefinitionUrl;
   }
-  
+
   public String getActivityId() {
     return activityId;
   }
-  
+
   public void setActivityId(String activityId) {
     this.activityId = activityId;
   }
-  
+
   public List<RestVariable> getVariables() {
     return variables;
   }
-  
+
   public void setVariables(List<RestVariable> variables) {
     this.variables = variables;
   }
-  
+
   public void addVariable(RestVariable variable) {
     variables.add(variable);
   }
-  
+
   public void setTenantId(String tenantId) {
-	  this.tenantId = tenantId;
+    this.tenantId = tenantId;
   }
-  
+
   public String getTenantId() {
-	  return tenantId;
+    return tenantId;
   }
-  
-  //Added by Ryan Johnston
+
+  // Added by Ryan Johnston
   public boolean isCompleted() {
-	  return completed;
+    return completed;
   }
-  
-  //Added by Ryan Johnston
+
+  // Added by Ryan Johnston
   public void setCompleted(boolean completed) {
-	  this.completed = completed;
+    this.completed = completed;
   }
 }

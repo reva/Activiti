@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -30,46 +31,44 @@ import org.activiti.engine.runtime.Execution;
  * @author Joram Barrez
  */
 public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void> {
-    
+
   protected final String executionId;
-  
 
   public AbstractSetProcessInstanceStateCmd(String executionId) {
     this.executionId = executionId;
   }
 
   public Void execute(CommandContext commandContext) {
-    
-    if(executionId == null) {
+
+    if (executionId == null) {
       throw new ActivitiIllegalArgumentException("ProcessInstanceId cannot be null.");
     }
-    
-    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager()
-      .findExecutionById(executionId);
 
-    if(executionEntity == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '"+executionId+"'.", Execution.class);
+    ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(executionId);
+
+    if (executionEntity == null) {
+      throw new ActivitiObjectNotFoundException("Cannot find processInstance for id '" + executionId + "'.", Execution.class);
     }
-    if(!executionEntity.isProcessInstanceType()) {
-      throw new ActivitiException("Cannot set suspension state for execution '"+executionId+"': not a process instance.");
+    if (!executionEntity.isProcessInstanceType()) {
+      throw new ActivitiException("Cannot set suspension state for execution '" + executionId + "': not a process instance.");
     }
-    
+
     SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
-    
+
     // All child executions are suspended
-    List<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(executionId);
+    Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(executionId);
     for (ExecutionEntity childExecution : childExecutions) {
       if (!childExecution.getId().equals(executionId)) {
         SuspensionStateUtil.setSuspensionState(childExecution, getNewState());
       }
     }
-    
+
     // All tasks are suspended
     List<TaskEntity> tasks = commandContext.getTaskEntityManager().findTasksByProcessInstanceId(executionId);
     for (TaskEntity taskEntity : tasks) {
       SuspensionStateUtil.setSuspensionState(taskEntity, getNewState());
     }
-    
+
     return null;
   }
 

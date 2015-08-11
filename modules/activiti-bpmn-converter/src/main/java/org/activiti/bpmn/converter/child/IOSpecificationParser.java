@@ -27,15 +27,16 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class IOSpecificationParser extends BaseChildElementParser {
-  
+
   public String getElementName() {
     return ELEMENT_IOSPECIFICATION;
   }
-  
+
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    
-    if (parentElement instanceof Activity == false && parentElement instanceof Process == false) return;
-    
+
+    if (parentElement instanceof Activity == false && parentElement instanceof Process == false)
+      return;
+
     IOSpecification ioSpecification = new IOSpecification();
     BpmnXMLUtil.addXMLLocation(ioSpecification, xtr);
     boolean readyWithIOSpecification = false;
@@ -57,19 +58,19 @@ public class IOSpecificationParser extends BaseChildElementParser {
           dataSpec.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
           dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF), model));
           ioSpecification.getDataOutputs().add(dataSpec);
-          
+
         } else if (xtr.isStartElement() && ELEMENT_DATA_INPUT_REFS.equalsIgnoreCase(xtr.getLocalName())) {
           String dataInputRefs = xtr.getElementText();
           if (StringUtils.isNotEmpty(dataInputRefs)) {
             ioSpecification.getDataInputRefs().add(dataInputRefs.trim());
           }
-          
+
         } else if (xtr.isStartElement() && ELEMENT_DATA_OUTPUT_REFS.equalsIgnoreCase(xtr.getLocalName())) {
           String dataOutputRefs = xtr.getElementText();
           if (StringUtils.isNotEmpty(dataOutputRefs)) {
             ioSpecification.getDataOutputRefs().add(dataOutputRefs.trim());
           }
-          
+
         } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
           readyWithIOSpecification = true;
         }
@@ -77,14 +78,14 @@ public class IOSpecificationParser extends BaseChildElementParser {
     } catch (Exception e) {
       LOGGER.warn("Error parsing ioSpecification child elements", e);
     }
-    
+
     if (parentElement instanceof Process) {
       ((Process) parentElement).setIoSpecification(ioSpecification);
     } else {
       ((Activity) parentElement).setIoSpecification(ioSpecification);
     }
   }
-  
+
   protected String parseItemSubjectRef(String itemSubjectRef, BpmnModel model) {
     String result = null;
     if (StringUtils.isNotEmpty(itemSubjectRef)) {

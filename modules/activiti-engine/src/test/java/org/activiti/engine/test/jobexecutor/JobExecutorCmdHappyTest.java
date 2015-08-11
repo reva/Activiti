@@ -32,7 +32,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithMessage() {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    
+
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -42,10 +42,10 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
       }
     });
 
-    Job job  = managementService.createJobQuery().singleResult();
+    Job job = managementService.createJobQuery().singleResult();
     assertNotNull(job);
     assertEquals(jobId, job.getId());
-    
+
     assertEquals(0, tweetHandler.getMessages().size());
 
     managementService.executeJob(job.getId());
@@ -62,7 +62,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME));
 
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    
+
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {

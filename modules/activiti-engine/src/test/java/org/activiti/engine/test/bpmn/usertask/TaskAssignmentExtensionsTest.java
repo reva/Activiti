@@ -52,10 +52,7 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testAssigneeExtension() {
     runtimeService.startProcessInstanceByKey("assigneeExtension");
-    List<Task> tasks = taskService
-      .createTaskQuery()
-      .taskAssignee("kermit")
-      .list();
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
   }
@@ -64,19 +61,16 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
     try {
       String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
       repositoryService.createDeployment().addClasspathResource(resource).deploy();
-      fail("Invalid BPMN 2.0 process should not parse, but it gets parsed sucessfully");
+      fail("Invalid BPMN 2.0 process should not parse, but it gets parsed successfully");
     } catch (XMLException e) {
       // Exception is to be expected
     }
   }
-  
+
   @Deployment
   public void testOwnerExtension() {
     runtimeService.startProcessInstanceByKey("ownerExtension");
-    List<Task> tasks = taskService
-      .createTaskQuery()
-      .taskOwner("gonzo")
-      .list();
+    List<Task> tasks = taskService.createTaskQuery().taskOwner("gonzo").list();
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
   }

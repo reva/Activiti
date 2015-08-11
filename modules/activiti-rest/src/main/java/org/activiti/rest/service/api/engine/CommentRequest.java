@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.engine;
 
-
 /**
  * @author Henry Yan
  */
@@ -25,35 +24,35 @@ public class CommentRequest {
   private String message;
   private String type;
   private boolean saveProcessInstanceId;
-  
+
   public void setId(String id) {
     this.id = id;
   }
-  
+
   public String getId() {
     return id;
   }
-  
+
   public String getUrl() {
     return url;
   }
-  
+
   public void setUrl(String url) {
     this.url = url;
   }
-  
+
   public String getAuthor() {
     return author;
   }
-  
+
   public void setAuthor(String author) {
     this.author = author;
   }
-  
+
   public String getMessage() {
     return message;
   }
-  
+
   public void setMessage(String message) {
     this.message = message;
   }

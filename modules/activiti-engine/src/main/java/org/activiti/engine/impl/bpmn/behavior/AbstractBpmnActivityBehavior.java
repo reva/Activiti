@@ -13,63 +13,95 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.PvmScope;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
- * Denotes an 'activity' in the sense of BPMN 2.0: 
- * a parent class for all tasks, subprocess and callActivity. 
+ * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and callActivity.
  * 
  * @author Joram Barrez
  */
 public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
-  
+
+  private static final long serialVersionUID = 1L;
+
   protected MultiInstanceActivityBehavior multiInstanceActivityBehavior;
-  
+
   /**
-   * Subclasses that call leave() will first pass through this method, before
-   * the regular {@link FlowNodeActivityBehavior#leave(ActivityExecution)} is
-   * called. This way, we can check if the activity has loop characteristics,
-   * and delegate to the behavior if this is the case.
+   * Subclasses that call leave() will first pass through this method, before the regular {@link FlowNodeActivityBehavior#leave(ActivityExecution)} is called. This way, we can check if the activity
+   * has loop characteristics, and delegate to the behavior if this is the case.
    */
-  protected void leave(ActivityExecution execution) {
-    if(hasCompensationHandler(execution)) {
-      createCompensateEventSubscription(execution);
+  public void leave(ActivityExecution execution) {
+    FlowElement currentFlowElement = execution.getCurrentFlowElement();
+    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);
+    if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+      executeCompensateBoundaryEvents(boundaryEvents, execution);
     }
     if (!hasLoopCharacteristics()) {
       super.leave(execution);
-    } else if (hasMultiInstanceCharacteristics()){
+    } else if (hasMultiInstanceCharacteristics()) {
       multiInstanceActivityBehavior.leave(execution);
     }
   }
   
-  protected boolean hasCompensationHandler(ActivityExecution execution) {
-    return execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID) != null;
+  protected void executeCompensateBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ActivityExecution execution) {
+
+    // The parent execution becomes a scope, and a child execution is created for each of the boundary events
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+
+      if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+        continue;
+      }
+      
+      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition == false) {
+        continue;
+      }
+
+      ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
+      childExecutionEntity.setParentId(execution.getId());
+      childExecutionEntity.setCurrentFlowElement(boundaryEvent);
+      childExecutionEntity.setScope(false);
+
+      ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+      boundaryEventBehavior.execute(childExecutionEntity);
+    }
+
+  }
+  
+  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {
+    Process process = getProcessDefinition(processDefinitionId);
+
+    // This could be cached or could be done at parsing time
+    List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
+    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
+        results.add(boundaryEvent);
+      }
+    }
+    return results;
   }
 
-  protected void createCompensateEventSubscription(ActivityExecution execution) {
-    String compensationHandlerId = (String) execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID);
-    
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;    
-    ActivityImpl compensationHandlder = executionEntity.getProcessDefinition().findActivity(compensationHandlerId);
-    PvmScope scopeActivitiy = compensationHandlder.getParent(); 
-    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope(executionEntity, scopeActivitiy);      
-
-    CompensateEventSubscriptionEntity compensateEventSubscriptionEntity = CompensateEventSubscriptionEntity.createAndInsert(scopeExecution);
-    compensateEventSubscriptionEntity.setActivity(compensationHandlder);        
+  protected Process getProcessDefinition(String processDefinitionId) {
+    // TODO: must be extracted / cache should be accessed in another way
+    return ProcessDefinitionUtil.getProcess(processDefinitionId);
   }
 
   protected boolean hasLoopCharacteristics() {
     return hasMultiInstanceCharacteristics();
   }
-  
+
   protected boolean hasMultiInstanceCharacteristics() {
     return multiInstanceActivityBehavior != null;
   }
@@ -77,35 +109,9 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
   public MultiInstanceActivityBehavior getMultiInstanceActivityBehavior() {
     return multiInstanceActivityBehavior;
   }
-  
+
   public void setMultiInstanceActivityBehavior(MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
     this.multiInstanceActivityBehavior = multiInstanceActivityBehavior;
-  }
-  
-  @Override
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    if("compensationDone".equals(signalName)) {
-      signalCompensationDone(execution, signalData);
-    } else {
-      super.signal(execution, signalName, signalData);
-    }
-  }
-
-  protected void signalCompensationDone(ActivityExecution execution, Object signalData) {
-    // default behavior is to join compensating executions and propagate the signal if all executions 
-    // have compensated
-    
-    // join compensating executions    
-    if(execution.getExecutions().isEmpty()) {
-      if(execution.getParent() != null) {
-        ActivityExecution parent = execution.getParent();
-        ((InterpretableExecution)execution).remove();
-        ((InterpretableExecution)parent).signal("compensationDone", signalData);
-      }      
-    } else {      
-      ((ExecutionEntity)execution).forceUpdate();  
-    }
-    
   }
 
 }

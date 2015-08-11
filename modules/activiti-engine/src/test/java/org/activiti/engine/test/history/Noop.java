@@ -13,19 +13,18 @@
 
 package org.activiti.engine.test.history;
 
-import org.activiti.engine.impl.pvm.PvmTransition;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class Noop implements ActivityBehavior {
+public class Noop implements JavaDelegate {
 
-  public void execute(ActivityExecution execution) throws Exception {
-    PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
-    execution.take(transition);
+  @Override
+  public void execute(DelegateExecution execution) {
+    // TODO Auto-generated method stub
+
   }
 
 }

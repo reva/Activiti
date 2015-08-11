@@ -22,7 +22,7 @@ public class CancelEventDefinition extends EventDefinition {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(CancelEventDefinition otherDefinition) {
     super.setValues(otherDefinition);
   }

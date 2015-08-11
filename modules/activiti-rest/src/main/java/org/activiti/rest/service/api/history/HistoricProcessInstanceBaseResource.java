@@ -45,14 +45,14 @@ public class HistoricProcessInstanceBaseResource {
     allowedSortProperties.put("duration", HistoricProcessInstanceQueryProperty.DURATION);
     allowedSortProperties.put("tenantId", HistoricProcessInstanceQueryProperty.TENANT_ID);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Map<String,String> allRequestParams) {
+  protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Map<String, String> allRequestParams) {
     HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
 
     // Populate query based on request
@@ -110,21 +110,20 @@ public class HistoricProcessInstanceBaseResource {
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());
     }
-    
+
     if (queryRequest.getTenantId() != null) {
-    	query.processInstanceTenantId(queryRequest.getTenantId());
-    }
-    
-    if (queryRequest.getTenantIdLike() != null) {
-    	query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
-    }
-    
-    if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
-    	query.processInstanceWithoutTenantId();
+      query.processInstanceTenantId(queryRequest.getTenantId());
     }
 
-    return new HistoricProcessInstancePaginateList(restResponseFactory).paginateList(
-        allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
+    if (queryRequest.getTenantIdLike() != null) {
+      query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
+    }
+
+    if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+      query.processInstanceWithoutTenantId();
+    }
+
+    return new HistoricProcessInstancePaginateList(restResponseFactory).paginateList(allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 
   protected void addVariables(HistoricProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
@@ -159,28 +158,26 @@ public class HistoricProcessInstanceBaseResource {
         if (actualValue instanceof String) {
           processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
         } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                  + actualValue.getClass().getName());
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
         }
         break;
 
       case NOT_EQUALS:
         processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
         break;
-        
+
       case LIKE:
         if (actualValue instanceof String) {
           processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
         } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: "
-                  + actualValue.getClass().getName());
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: " + actualValue.getClass().getName());
         }
         break;
-        
+
       case GREATER_THAN:
         processInstanceQuery.variableValueGreaterThan(variable.getName(), actualValue);
         break;
-        
+
       case GREATER_THAN_OR_EQUALS:
         processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
         break;
@@ -188,7 +185,7 @@ public class HistoricProcessInstanceBaseResource {
       case LESS_THAN:
         processInstanceQuery.variableValueLessThan(variable.getName(), actualValue);
         break;
-        
+
       case LESS_THAN_OR_EQUALS:
         processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
         break;

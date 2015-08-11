@@ -1,11 +1,11 @@
 package org.activiti.bpmn.model;
 
 public class DataStoreReference extends FlowElement {
-  
+
   protected String dataState;
   protected String itemSubjectRef;
   protected String dataStoreRef;
-  
+
   public String getDataState() {
     return dataState;
   }
@@ -35,7 +35,7 @@ public class DataStoreReference extends FlowElement {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(DataStoreReference otherElement) {
     super.setValues(otherElement);
     setDataState(otherElement.getDataState());

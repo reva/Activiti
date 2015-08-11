@@ -14,24 +14,24 @@ import org.activiti.bpmn.model.UserTask;
 import org.junit.Test;
 
 public class ScopedConverterTest extends AbstractConverterTest {
-  
+
   @Test
   public void connvertJsonToModel() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     validateModel(bpmnModel);
   }
-  
-  @Test 
+
+  @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "test.scopedmodel.json";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("outerSubProcess");
     assertNotNull(flowElement);
@@ -42,7 +42,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
     assertEquals(1, eventList.size());
     BoundaryEvent boundaryEvent = eventList.get(0);
     assertEquals("outerBoundaryEvent", boundaryEvent.getId());
-    
+
     FlowElement subElement = outerSubProcess.getFlowElement("innerSubProcess");
     assertNotNull(subElement);
     assertTrue(subElement instanceof SubProcess);
@@ -52,7 +52,7 @@ public class ScopedConverterTest extends AbstractConverterTest {
     assertEquals(1, eventList.size());
     boundaryEvent = eventList.get(0);
     assertEquals("innerBoundaryEvent", boundaryEvent.getId());
-    
+
     FlowElement taskElement = innerSubProcess.getFlowElement("usertask");
     assertNotNull(taskElement);
     assertTrue(taskElement instanceof UserTask);

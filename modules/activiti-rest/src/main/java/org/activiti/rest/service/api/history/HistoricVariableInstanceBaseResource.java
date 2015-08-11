@@ -38,23 +38,23 @@ public class HistoricVariableInstanceBaseResource {
     allowedSortProperties.put("processInstanceId", HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
     allowedSortProperties.put("variableName", HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
   }
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String,String> allRequestParams) {
+  protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String, String> allRequestParams) {
     HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
 
     // Populate query based on request
-    if(queryRequest.getExcludeTaskVariables() != null) {
+    if (queryRequest.getExcludeTaskVariables() != null) {
       if (queryRequest.getExcludeTaskVariables()) {
         query.excludeTaskVariables();
       }
     }
-    
+
     if (queryRequest.getTaskId() != null) {
       query.taskId(queryRequest.getTaskId());
     }
@@ -66,23 +66,23 @@ public class HistoricVariableInstanceBaseResource {
     if (queryRequest.getProcessInstanceId() != null) {
       query.processInstanceId(queryRequest.getProcessInstanceId());
     }
-    
+
     if (queryRequest.getVariableName() != null) {
       query.variableName(queryRequest.getVariableName());
     }
-    
+
     if (queryRequest.getVariableNameLike() != null) {
-      query.variableNameLike(queryRequest.getVariableNameLike() );
+      query.variableNameLike(queryRequest.getVariableNameLike());
+
     }
-    
+
     if (queryRequest.getVariables() != null) {
       addVariables(query, queryRequest.getVariables());
     }
-    
-    return new HistoricVariableInstancePaginateList(restResponseFactory).paginateList(
-        allRequestParams, query, "variableName", allowedSortProperties);
+
+    return new HistoricVariableInstancePaginateList(restResponseFactory).paginateList(allRequestParams, query, "variableName", allowedSortProperties);
   }
-  
+
   protected void addVariables(HistoricVariableInstanceQuery variableInstanceQuery, List<QueryVariable> variables) {
     for (QueryVariable variable : variables) {
       if (variable.getVariableOperation() == null) {

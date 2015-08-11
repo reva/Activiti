@@ -25,12 +25,12 @@ public class HistoricTaskInstancePaginateList extends AbstractPaginateList {
 
   protected RestResponseFactory restResponseFactory;
   protected String serverRootUrl;
-  
+
   public HistoricTaskInstancePaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
     this.restResponseFactory = restResponseFactory;
     this.serverRootUrl = serverRootUrl;
   }
-  
+
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {

@@ -27,42 +27,42 @@ public class SignalEventReceivedRequest {
   private List<RestVariable> variables;
   private String tenantId;
   private boolean async = false;
-  
+
   public void setTenantId(String tenantId) {
-	  this.tenantId = tenantId;
+    this.tenantId = tenantId;
   }
-  
+
   public String getTenantId() {
-	  return tenantId;
+    return tenantId;
   }
-  
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=RestVariable.class)  
+
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = RestVariable.class)
   public List<RestVariable> getVariables() {
     return variables;
   }
-  
+
   public void setVariables(List<RestVariable> variables) {
     this.variables = variables;
   }
-  
+
   @JsonIgnore
   public boolean isCustomTenantSet() {
-  	return tenantId != null && !StringUtils.isEmpty(tenantId);
+    return tenantId != null && !StringUtils.isEmpty(tenantId);
   }
-  
+
   public String getSignalName() {
-	  return signalName;
+    return signalName;
   }
-  
+
   public void setSignalName(String signalName) {
-	  this.signalName = signalName;
+    this.signalName = signalName;
   }
-  
+
   public void setAsync(boolean async) {
-	  this.async = async;
+    this.async = async;
   }
-  
+
   public boolean isAsync() {
-	  return async;
+    return async;
   }
 }

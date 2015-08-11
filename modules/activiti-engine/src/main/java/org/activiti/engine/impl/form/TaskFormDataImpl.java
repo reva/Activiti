@@ -16,18 +16,18 @@ package org.activiti.engine.impl.form;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  */
 public class TaskFormDataImpl extends FormDataImpl implements TaskFormData {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected Task task;
 
-  // getters and setters //////////////////////////////////////////////////////
-  
+  // getters and setters
+  // //////////////////////////////////////////////////////
+
   public Task getTask() {
     return task;
   }

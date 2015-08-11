@@ -21,27 +21,27 @@ import org.activiti.engine.test.Deployment;
  * @author Joram Barrez
  */
 public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase {
-  
+
   public CustomActivityBehaviorFactoryTest() {
     super("org/activiti/standalone/parsing/custom.activitybehaviorfactory.activiti.cfg.xml");
   }
-  
+
   // The custom activity factory will change this value
   public static AtomicInteger COUNTER = new AtomicInteger(0);
-  
+
   @Override
   protected void setUp() throws Exception {
     super.setUp();
     COUNTER.set(0);
   }
-  
+
   @Deployment
   public void testCustomActivityBehaviorFactory() {
     int nrOfProcessInstances = 6;
-    for (int i=0; i<nrOfProcessInstances; i++) {
+    for (int i = 0; i < nrOfProcessInstances; i++) {
       runtimeService.startProcessInstanceByKey("oneTaskProcess");
     }
-    
+
     assertEquals(nrOfProcessInstances, COUNTER.get());
   }
 

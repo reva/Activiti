@@ -27,28 +27,33 @@ public class BoundaryEvent extends Event {
   public Activity getAttachedToRef() {
     return attachedToRef;
   }
+
   public void setAttachedToRef(Activity attachedToRef) {
     this.attachedToRef = attachedToRef;
   }
+
   public String getAttachedToRefId() {
     return attachedToRefId;
   }
+
   public void setAttachedToRefId(String attachedToRefId) {
     this.attachedToRefId = attachedToRefId;
   }
+
   public boolean isCancelActivity() {
     return cancelActivity;
   }
+
   public void setCancelActivity(boolean cancelActivity) {
     this.cancelActivity = cancelActivity;
   }
-  
+
   public BoundaryEvent clone() {
     BoundaryEvent clone = new BoundaryEvent();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(BoundaryEvent otherEvent) {
     super.setValues(otherEvent);
     setAttachedToRefId(otherEvent.getAttachedToRefId());

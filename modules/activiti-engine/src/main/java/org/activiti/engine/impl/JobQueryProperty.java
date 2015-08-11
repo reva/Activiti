@@ -25,7 +25,7 @@ import org.activiti.engine.runtime.JobQuery;
  * @author Joram Barrez
  */
 public class JobQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, JobQueryProperty> properties = new HashMap<String, JobQueryProperty>();
@@ -47,7 +47,7 @@ public class JobQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static JobQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

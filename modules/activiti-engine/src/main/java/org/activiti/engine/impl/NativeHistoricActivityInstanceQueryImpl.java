@@ -20,7 +20,6 @@ import org.activiti.engine.history.NativeHistoricActivityInstanceQuery;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-
 public class NativeHistoricActivityInstanceQueryImpl extends AbstractNativeQuery<NativeHistoricActivityInstanceQuery, HistoricActivityInstance> implements NativeHistoricActivityInstanceQuery {
 
   private static final long serialVersionUID = 1L;
@@ -33,19 +32,14 @@ public class NativeHistoricActivityInstanceQueryImpl extends AbstractNativeQuery
     super(commandExecutor);
   }
 
+  // results ////////////////////////////////////////////////////////////////
 
- //results ////////////////////////////////////////////////////////////////
-  
   public List<HistoricActivityInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext
-      .getHistoricActivityInstanceEntityManager()
-      .findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
   }
-  
+
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext
-      .getHistoricActivityInstanceEntityManager()
-      .findHistoricActivityInstanceCountByNativeQuery(parameterMap);
+    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstanceCountByNativeQuery(parameterMap);
   }
 
 }

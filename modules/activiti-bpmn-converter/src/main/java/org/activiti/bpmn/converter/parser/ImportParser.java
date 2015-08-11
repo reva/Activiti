@@ -23,7 +23,7 @@ import org.activiti.bpmn.model.Import;
  * @author Tijs Rademakers
  */
 public class ImportParser implements BpmnXMLConstants {
-  
+
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     Import importObject = new Import();
     BpmnXMLUtil.addXMLLocation(importObject, xtr);

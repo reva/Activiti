@@ -11,7 +11,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti.engine.impl.test;
 
 import java.util.Timer;
@@ -25,38 +24,33 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.test.ActivitiRule;
 
-
-
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
  * @author Saeid Mirzaei
  */
 
-// This helper class helps sharing the same code for jobExector test helpers, between Junit3 and junit 4 test support classes
+// This helper class helps sharing the same code for jobExecutor test helpers,
+// between Junit3 and junit 4 test support classes
 public class JobTestHelper {
 
   public static void waitForJobExecutorToProcessAllJobs(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
-    waitForJobExecutorToProcessAllJobs(activitiRule.getProcessEngine().getProcessEngineConfiguration(), 
-        activitiRule.getManagementService(), maxMillisToWait, intervalMillis);
-  }
-  
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, 
-      ManagementService managementService, long maxMillisToWait, long intervalMillis) {
-   
-  	waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
-   
+    waitForJobExecutorToProcessAllJobs(activitiRule.getProcessEngine().getProcessEngineConfiguration(), activitiRule.getManagementService(), maxMillisToWait, intervalMillis);
   }
 
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, 
-      ManagementService managementService, long maxMillisToWait, long intervalMillis, boolean shutdownExecutorWhenFinished) {
-    
+  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
+    waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
+  }
+
+  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
+      boolean shutdownExecutorWhenFinished) {
+
     JobExecutor jobExecutor = null;
     AsyncExecutor asyncExecutor = null;
     if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
       jobExecutor = processEngineConfiguration.getJobExecutor();
       jobExecutor.start();
-      
+
     } else {
       asyncExecutor = processEngineConfiguration.getAsyncExecutor();
       asyncExecutor.start();
@@ -72,7 +66,7 @@ public class JobTestHelper {
           Thread.sleep(intervalMillis);
           try {
             areJobsAvailable = areJobsAvailable(managementService);
-          } catch(Throwable t) {
+          } catch (Throwable t) {
             // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
             // isolation level doesn't allow READ of the table
           }
@@ -87,29 +81,28 @@ public class JobTestHelper {
       }
 
     } finally {
-    	if (shutdownExecutorWhenFinished) {
-	      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-	        jobExecutor.shutdown();
-	      } else {
-	        asyncExecutor.shutdown();
-	      }
-    	}
+      if (shutdownExecutorWhenFinished) {
+        if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+          jobExecutor.shutdown();
+        } else {
+          asyncExecutor.shutdown();
+        }
+      }
     }
   }
 
   public static void waitForJobExecutorOnCondition(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
     waitForJobExecutorOnCondition(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis, condition);
   }
-  
-  public static void waitForJobExecutorOnCondition(ProcessEngineConfiguration processEngineConfiguration, 
-      long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    
+
+  public static void waitForJobExecutorOnCondition(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
+
     JobExecutor jobExecutor = null;
     AsyncExecutor asyncExecutor = null;
     if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
       jobExecutor = processEngineConfiguration.getJobExecutor();
       jobExecutor.start();
-      
+
     } else {
       asyncExecutor = processEngineConfiguration.getAsyncExecutor();
       asyncExecutor.start();
@@ -128,11 +121,11 @@ public class JobTestHelper {
       } catch (InterruptedException e) {
         // ignore
       } catch (Exception e) {
-        throw new ActivitiException("Exception while waiting on condition: "+e.getMessage(), e);
+        throw new ActivitiException("Exception while waiting on condition: " + e.getMessage(), e);
       } finally {
         timer.cancel();
       }
-      
+
       if (conditionIsViolated) {
         throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
       }
@@ -145,18 +138,18 @@ public class JobTestHelper {
       }
     }
   }
-  
+
   public static void executeJobExecutorForTime(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
     executeJobExecutorForTime(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis);
   }
-  
+
   public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
     JobExecutor jobExecutor = null;
     AsyncExecutor asyncExecutor = null;
     if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
       jobExecutor = processEngineConfiguration.getJobExecutor();
       jobExecutor.start();
-      
+
     } else {
       asyncExecutor = processEngineConfiguration.getAsyncExecutor();
       asyncExecutor.start();
@@ -187,7 +180,7 @@ public class JobTestHelper {
 
   public static boolean areJobsAvailable(ActivitiRule activitiRule) {
     return areJobsAvailable(activitiRule.getManagementService());
-    
+
   }
 
   public static boolean areJobsAvailable(ManagementService managementService) {
@@ -196,15 +189,17 @@ public class JobTestHelper {
 
   private static class InteruptTask extends TimerTask {
 
-    protected boolean timeLimitExceeded = false;
+    protected boolean timeLimitExceeded;
     protected Thread thread;
 
     public InteruptTask(Thread thread) {
       this.thread = thread;
     }
+
     public boolean isTimeLimitExceeded() {
       return timeLimitExceeded;
     }
+
     public void run() {
       timeLimitExceeded = true;
       thread.interrupt();

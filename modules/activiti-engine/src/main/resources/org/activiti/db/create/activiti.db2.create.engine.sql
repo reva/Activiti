@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.18.0.0', 1);
+values ('schema.version', '6.0.0.0', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.18.0.0)', 1);
+values ('schema.history', 'create(6.0.0.0)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -30,6 +30,7 @@ create table ACT_RE_DEPLOYMENT (
     CATEGORY_ varchar(255),
     TENANT_ID_ varchar(255) default '',
     DEPLOY_TIME_ timestamp,
+    ENGINE_VERSION_ varchar(255),
     primary key (ID_)
 );
 
@@ -58,6 +59,7 @@ create table ACT_RU_EXECUTION (
     PARENT_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     SUPER_EXEC_ varchar(64),
+    ROOT_PROC_INST_ID_ varchar(64),
     ACT_ID_ varchar(255),
     IS_ACTIVE_ smallint check(IS_ACTIVE_ in (1,0)),
     IS_CONCURRENT_ smallint check(IS_CONCURRENT_ in (1,0)),
@@ -107,6 +109,7 @@ create table ACT_RE_PROCDEF (
     HAS_GRAPHICAL_NOTATION_ smallint check(HAS_GRAPHICAL_NOTATION_ in (1,0)),
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) not null default '',
+    ENGINE_VERSION_ varchar(255),
     primary key (ID_)
 );
 
@@ -193,6 +196,7 @@ create table ACT_EVT_LOG (
 );
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
+create index ACT_IDC_EXEC_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
@@ -238,7 +242,7 @@ alter table ACT_RU_EXECUTION
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
-    references ACT_RU_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_);  
     
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 

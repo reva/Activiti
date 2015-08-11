@@ -22,7 +22,7 @@ public class EndEvent extends Event {
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(EndEvent otherEvent) {
     super.setValues(otherEvent);
   }

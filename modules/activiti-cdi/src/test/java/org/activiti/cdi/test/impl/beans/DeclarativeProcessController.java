@@ -38,7 +38,7 @@ public class DeclarativeProcessController {
   @CompleteTask(endConversation = false)
   public void completeTask() {
   }
-  
+
   @CompleteTask(endConversation = true)
   public void completeTaskEndConversation() {
   }

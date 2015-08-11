@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.cfg;
 
-
 /**
  * @author Tom Baeyens
  */

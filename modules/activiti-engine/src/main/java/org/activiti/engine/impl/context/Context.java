@@ -15,15 +15,16 @@ package org.activiti.engine.impl.context;
 
 import java.util.Stack;
 
+import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
-
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class Context {
 
@@ -38,6 +39,10 @@ public class Context {
       return null;
     }
     return stack.peek();
+  }
+
+  public static Agenda getAgenda() {
+    return getCommandContext().getAgenda();
   }
 
   public static void setCommandContext(CommandContext commandContext) {
@@ -67,10 +72,10 @@ public class Context {
   public static ExecutionContext getExecutionContext() {
     return getStack(executionContextStackThreadLocal).peek();
   }
-  
+
   public static boolean isExecutionContextActive() {
-  	Stack<ExecutionContext> stack = executionContextStackThreadLocal.get();
-  	return stack != null && !stack.isEmpty();
+    Stack<ExecutionContext> stack = executionContextStackThreadLocal.get();
+    return stack != null && !stack.isEmpty();
   }
 
   public static void setExecutionContext(InterpretableExecution execution) {
@@ -83,21 +88,21 @@ public class Context {
 
   protected static <T> Stack<T> getStack(ThreadLocal<Stack<T>> threadLocal) {
     Stack<T> stack = threadLocal.get();
-    if (stack==null) {
+    if (stack == null) {
       stack = new Stack<T>();
       threadLocal.set(stack);
     }
     return stack;
   }
-  
+
   public static JobExecutorContext getJobExecutorContext() {
     return jobExecutorContextThreadLocal.get();
   }
-  
+
   public static void setJobExecutorContext(JobExecutorContext jobExecutorContext) {
     jobExecutorContextThreadLocal.set(jobExecutorContext);
   }
-  
+
   public static void removeJobExecutorContext() {
     jobExecutorContextThreadLocal.remove();
   }

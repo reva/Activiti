@@ -29,12 +29,12 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
   public Class<? extends BaseElement> getBpmnElementType() {
     return DataStoreReference.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_DATA_STORE_REFERENCE;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     DataStoreReference dataStoreRef = new DataStoreReference();
@@ -49,12 +49,12 @@ public class DataStoreReferenceXMLConverter extends BaseBpmnXMLConverter {
     if (StringUtils.isNotEmpty(dataStoreRef.getDataStoreRef())) {
       xtw.writeAttribute(ATTRIBUTE_DATA_STORE_REF, dataStoreRef.getDataStoreRef());
     }
-    
+
     if (StringUtils.isNotEmpty(dataStoreRef.getItemSubjectRef())) {
       xtw.writeAttribute(ATTRIBUTE_ITEM_SUBJECT_REF, dataStoreRef.getItemSubjectRef());
     }
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     DataStoreReference dataStoreRef = (DataStoreReference) element;

@@ -27,12 +27,10 @@ import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
 import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
-
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 
 /**
- * {@link ActivityBehavior} used when 'delegateExpression' is used
- * for a serviceTask.
+ * {@link ActivityBehavior} used when 'delegateExpression' is used for a serviceTask.
  * 
  * @author Joram Barrez
  * @author Josh Long
@@ -40,7 +38,7 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  * @author Falko Menge
  */
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
-  
+
   protected Expression expression;
   protected Expression skipExpression;
   private final List<FieldDeclaration> fieldDeclarations;
@@ -52,43 +50,39 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   }
 
   @Override
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     Object delegate = expression.getValue(execution);
-    if( delegate instanceof SignallableActivityBehavior){
+    if (delegate instanceof TriggerableActivityBehavior) {
       ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-      ((SignallableActivityBehavior) delegate).signal( execution , signalName , signalData);
+      ((TriggerableActivityBehavior) delegate).trigger(execution, signalName, signalData);
     }
   }
 
-	public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
 
     try {
-      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression); 
-      if (!isSkipExpressionEnabled || 
-              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
-        
+      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+      if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+
         // Note: we can't cache the result of the expression, because the
-        // execution can change: eg.
-        // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
+        // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
         Object delegate = expression.getValue(execution);
         ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
 
         if (delegate instanceof ActivityBehavior) {
 
-          if(delegate instanceof AbstractBpmnActivityBehavior){
+          if (delegate instanceof AbstractBpmnActivityBehavior) {
             ((AbstractBpmnActivityBehavior) delegate).setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
           }
 
-          Context.getProcessEngineConfiguration().getDelegateInterceptor()
-                  .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
+          Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
 
         } else if (delegate instanceof JavaDelegate) {
           Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
           leave(execution);
 
         } else {
-          throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did neither resolve to an implementation of "
-                  + ActivityBehavior.class + " nor " + JavaDelegate.class);
+          throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did neither resolve to an implementation of " + ActivityBehavior.class + " nor " + JavaDelegate.class);
         }
       } else {
         leave(execution);
@@ -108,7 +102,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
       if (error != null) {
         ErrorPropagation.propagateError(error, execution);
       } else {
-        throw exc;
+        throw new RuntimeException(exc);
       }
 
     }

@@ -29,21 +29,20 @@ import org.apache.http.entity.StringEntity;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
 /**
  * @author Frederik Heremans
  */
 public class ModelResourceTest extends BaseSpringRestTestCase {
 
-  @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
+  @Deployment(resources = { "org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml" })
   public void testGetModel() throws Exception {
-    
+
     Model model = null;
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
       processEngineConfiguration.getClock().setCurrentTime(now.getTime());
-      
+
       model = repositoryService.newModel();
       model.setCategory("Model category");
       model.setKey("Model key");
@@ -53,14 +52,13 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       model.setDeploymentId(deploymentId);
       model.setTenantId("myTenant");
       repositoryService.saveModel(model);
-      
+
       repositoryService.addModelEditorSource(model.getId(), "This is the editor source".getBytes());
       repositoryService.addModelEditorSourceExtra(model.getId(), "This is the extra editor source".getBytes());
-      
-      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
-      
+
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       closeResponse(response);
       assertNotNull(responseNode);
@@ -72,39 +70,37 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       assertEquals(deploymentId, responseNode.get("deploymentId").textValue());
       assertEquals(model.getId(), responseNode.get("id").textValue());
       assertEquals("myTenant", responseNode.get("tenantId").textValue());
-      
+
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
-      
+
       assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
       assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
-      
+
       assertTrue(responseNode.get("sourceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId())));
       assertTrue(responseNode.get("sourceExtraUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId())));
-      
-    } finally
-    {
+
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
-      } catch(Throwable ignore) {
+      } catch (Throwable ignore) {
         // Ignore, model might not be created
       }
     }
   }
-  
+
   public void testGetUnexistingModel() throws Exception {
-    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
     closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
   }
-  
+
   public void testDeleteModel() throws Exception {
     Model model = null;
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
       processEngineConfiguration.getClock().setCurrentTime(now.getTime());
-      
+
       model = repositoryService.newModel();
       model.setCategory("Model category");
       model.setKey("Model key");
@@ -112,41 +108,39 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       model.setName("Model name");
       model.setVersion(2);
       repositoryService.saveModel(model);
-      
-      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
-      
+
       // Check if the model is really gone
       assertNull(repositoryService.createModelQuery().modelId(model.getId()).singleResult());
-      
+
       model = null;
-    } finally
-    {
-      if(model != null) {
+    } finally {
+      if (model != null) {
         try {
           repositoryService.deleteModel(model.getId());
-        } catch(Throwable ignore) {
+        } catch (Throwable ignore) {
           // Ignore, model might not be created
         }
       }
     }
   }
+
   public void testDeleteUnexistingModel() throws Exception {
-    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
     closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
   }
-  
-  @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
+
+  @Deployment(resources = { "org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml" })
   public void testUpdateModel() throws Exception {
-    
+
     Model model = null;
     try {
       Calendar createTime = Calendar.getInstance();
       createTime.set(Calendar.MILLISECOND, 0);
       processEngineConfiguration.getClock().setCurrentTime(createTime.getTime());
-      
+
       model = repositoryService.newModel();
       model.setCategory("Model category");
       model.setKey("Model key");
@@ -154,13 +148,12 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       model.setName("Model name");
       model.setVersion(2);
       repositoryService.saveModel(model);
-      
-      
+
       Calendar updateTime = Calendar.getInstance();
       updateTime.set(Calendar.MILLISECOND, 0);
       updateTime.add(Calendar.HOUR, 1);
       processEngineConfiguration.getClock().setCurrentTime(updateTime.getTime());
-      
+
       // Create update request
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("name", "Updated name");
@@ -170,12 +163,11 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       requestNode.put("deploymentId", deploymentId);
       requestNode.put("version", 3);
       requestNode.put("tenantId", "myTenant");
-      
-      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
       CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
-      
+
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       closeResponse(response);
       assertNotNull(responseNode);
@@ -187,24 +179,23 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       assertEquals(deploymentId, responseNode.get("deploymentId").textValue());
       assertEquals(model.getId(), responseNode.get("id").textValue());
       assertEquals("myTenant", responseNode.get("tenantId").textValue());
-      
+
       assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
       assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
-      
+
       assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
       assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
-      
-    } finally
-    {
+
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
-      } catch(Throwable ignore) {
+      } catch (Throwable ignore) {
         // Ignore, model might not be created
       }
     }
   }
-  
-  @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
+
+  @Deployment(resources = { "org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml" })
   public void testUpdateModelOverrideWithNull() throws Exception {
     Model model = null;
     try {
@@ -220,11 +211,11 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       model.setTenantId("myTenant");
       model.setVersion(2);
       repositoryService.saveModel(model);
-      
+
       Calendar updateTime = Calendar.getInstance();
       updateTime.set(Calendar.MILLISECOND, 0);
       processEngineConfiguration.getClock().setCurrentTime(updateTime.getTime());
-      
+
       // Create update request
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("name", (String) null);
@@ -234,9 +225,8 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       requestNode.put("deploymentId", (String) null);
       requestNode.put("version", (String) null);
       requestNode.put("tenantId", (String) null);
-      
-      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
       CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
@@ -250,12 +240,12 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       assertNull(responseNode.get("deploymentId").textValue());
       assertNull(responseNode.get("tenantId").textValue());
       assertEquals(model.getId(), responseNode.get("id").textValue());
-      
+
       assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
       assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
-      
+
       assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
-      
+
       model = repositoryService.getModel(model.getId());
       assertNull(model.getName());
       assertNull(model.getKey());
@@ -263,25 +253,25 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       assertNull(model.getMetaInfo());
       assertNull(model.getDeploymentId());
       assertEquals("", model.getTenantId());
-      
+
     } finally {
       try {
         repositoryService.deleteModel(model.getId());
-      } catch(Throwable ignore) {
+      } catch (Throwable ignore) {
         // Ignore, model might not be created
       }
     }
   }
-  
-  @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
+
+  @Deployment(resources = { "org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml" })
   public void testUpdateModelNoFields() throws Exception {
-    
+
     Model model = null;
     try {
       Calendar now = Calendar.getInstance();
       now.set(Calendar.MILLISECOND, 0);
       processEngineConfiguration.getClock().setCurrentTime(now.getTime());
-      
+
       model = repositoryService.newModel();
       model.setCategory("Model category");
       model.setKey("Model key");
@@ -290,12 +280,11 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       model.setVersion(2);
       model.setDeploymentId(deploymentId);
       repositoryService.saveModel(model);
-      
+
       // Use empty request-node, nothing should be changed after update
       ObjectNode requestNode = objectMapper.createObjectNode();
-      
-      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
       CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
@@ -308,25 +297,24 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       assertEquals("Model metainfo", responseNode.get("metaInfo").textValue());
       assertEquals(deploymentId, responseNode.get("deploymentId").textValue());
       assertEquals(model.getId(), responseNode.get("id").textValue());
-      
+
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
       assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
-      
+
       assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
       assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
-      
+
     } finally {
       try {
         repositoryService.deleteModel(model.getId());
-      } catch(Throwable ignore) {
+      } catch (Throwable ignore) {
         // Ignore, model might not be created
       }
     }
   }
-  
+
   public void testUpdateUnexistingModel() throws Exception {
-    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
     httpPut.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
     closeResponse(executeRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }

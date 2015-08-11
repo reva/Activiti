@@ -15,15 +15,13 @@ package org.activiti.engine.impl.form;
 
 import org.activiti.engine.form.AbstractFormType;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public class LongFormType extends AbstractFormType {
 
   private static final long serialVersionUID = 1L;
-  
+
   public String getName() {
     return "long";
   }
@@ -33,14 +31,14 @@ public class LongFormType extends AbstractFormType {
   }
 
   public Object convertFormValueToModelValue(String propertyValue) {
-    if (propertyValue==null || "".equals(propertyValue)) {
+    if (propertyValue == null || "".equals(propertyValue)) {
       return null;
     }
     return new Long(propertyValue);
   }
 
   public String convertModelValueToFormValue(Object modelValue) {
-    if (modelValue==null) {
+    if (modelValue == null) {
       return null;
     }
     return modelValue.toString();

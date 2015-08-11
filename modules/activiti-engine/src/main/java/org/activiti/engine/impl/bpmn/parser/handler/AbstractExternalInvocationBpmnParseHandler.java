@@ -24,23 +24,21 @@ import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataInputAssociat
 import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Joram Barrez
  */
 public abstract class AbstractExternalInvocationBpmnParseHandler<T extends FlowNode> extends AbstractActivityBpmnParseHandler<T> {
-  
+
   public AbstractDataAssociation createDataInputAssociation(BpmnParse bpmnParse, DataAssociation dataAssociationElement) {
     if (dataAssociationElement.getAssignments().isEmpty()) {
       return new MessageImplicitDataInputAssociation(dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
     } else {
-      SimpleDataInputAssociation dataAssociation = new SimpleDataInputAssociation(
-          dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
+      SimpleDataInputAssociation dataAssociation = new SimpleDataInputAssociation(dataAssociationElement.getSourceRef(), dataAssociationElement.getTargetRef());
 
-      for (org.activiti.bpmn.model.Assignment assigmentElement : dataAssociationElement.getAssignments()) {
-        if (StringUtils.isNotEmpty(assigmentElement.getFrom()) && StringUtils.isNotEmpty(assigmentElement.getTo())) {
-          Expression from = bpmnParse.getExpressionManager().createExpression(assigmentElement.getFrom());
-          Expression to = bpmnParse.getExpressionManager().createExpression(assigmentElement.getTo());
+      for (org.activiti.bpmn.model.Assignment assignmentElement : dataAssociationElement.getAssignments()) {
+        if (StringUtils.isNotEmpty(assignmentElement.getFrom()) && StringUtils.isNotEmpty(assignmentElement.getTo())) {
+          Expression from = bpmnParse.getExpressionManager().createExpression(assignmentElement.getFrom());
+          Expression to = bpmnParse.getExpressionManager().createExpression(assignmentElement.getTo());
           Assignment assignment = new Assignment(from, to);
           dataAssociation.addAssignment(assignment);
         }
@@ -48,7 +46,7 @@ public abstract class AbstractExternalInvocationBpmnParseHandler<T extends FlowN
       return dataAssociation;
     }
   }
-  
+
   public AbstractDataAssociation createDataOutputAssociation(BpmnParse bpmnParse, DataAssociation dataAssociationElement) {
     if (StringUtils.isNotEmpty(dataAssociationElement.getSourceRef())) {
       return new MessageImplicitDataOutputAssociation(dataAssociationElement.getTargetRef(), dataAssociationElement.getSourceRef());
@@ -58,6 +56,5 @@ public abstract class AbstractExternalInvocationBpmnParseHandler<T extends FlowN
       return dataOutputAssociation;
     }
   }
-
 
 }

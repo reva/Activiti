@@ -24,5 +24,5 @@ public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigura
   protected CommandInterceptor createTransactionInterceptor() {
     return null;
   }
-  
+
 }

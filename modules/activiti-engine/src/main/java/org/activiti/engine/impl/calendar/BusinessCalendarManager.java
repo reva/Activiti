@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.impl.calendar;
 
-
 /**
  * @author Tom Baeyens
  */

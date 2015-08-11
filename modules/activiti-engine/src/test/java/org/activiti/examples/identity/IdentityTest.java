@@ -180,6 +180,7 @@ public class IdentityTest extends PluggableActivitiTestCase {
     }
     return groupIds;
   }
+
   public Set<String> getUserIds(List<User> users) {
     Set<String> userIds = new HashSet<String>();
     for (User user : users) {

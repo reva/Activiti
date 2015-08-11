@@ -19,15 +19,14 @@ import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
+public class SubmitTaskFormCmd extends AbstractCompleteTaskCmd {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String taskId;
   protected Map<String, String> properties;
   protected boolean completeTask;
@@ -38,24 +37,23 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
     this.properties = properties;
     this.completeTask = completeTask;
   }
-  
-  protected Object execute(CommandContext commandContext, TaskEntity task) {
-    commandContext.getHistoryManager()
-      .reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
-    
+
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
+    commandContext.getHistoryManager().recordFormPropertiesSubmitted(task.getExecution(), properties, taskId);
+
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
     taskFormHandler.submitFormProperties(properties, task.getExecution());
 
     if (completeTask) {
-      task.complete(properties, false);
+      executeTaskComplete(commandContext, task, null, false);
     }
 
     return null;
   }
-  
+
   @Override
   protected String getSuspendedTaskException() {
     return "Cannot submit a form to a suspended task";
   }
-  
+
 }

@@ -32,7 +32,7 @@ import org.activiti.engine.impl.identity.Authentication;
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected String endActivityId;
   protected String businessKey;
   protected String startUserId;
@@ -54,14 +54,13 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     startUserId = Authentication.getAuthenticatedUserId();
     startActivityId = processInstance.getActivityId();
     superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
-    
+
     // Inherit tenant id (if applicable)
     if (processInstance.getTenantId() != null) {
-    	tenantId = processInstance.getTenantId();
+      tenantId = processInstance.getTenantId();
     }
   }
 
-  
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
     persistentState.put("endTime", endTime);
@@ -75,12 +74,13 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     return persistentState;
   }
 
-  // getters and setters //////////////////////////////////////////////////////
-  
-  
+  // getters and setters
+  // //////////////////////////////////////////////////////
+
   public String getEndActivityId() {
     return endActivityId;
   }
+
   public void setEndActivityId(String endActivityId) {
     this.endActivityId = endActivityId;
   }
@@ -88,51 +88,55 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   public String getBusinessKey() {
     return businessKey;
   }
+
   public void setBusinessKey(String businessKey) {
     this.businessKey = businessKey;
   }
-  
+
   public String getStartUserId() {
     return startUserId;
   }
+
   public void setStartUserId(String startUserId) {
     this.startUserId = startUserId;
   }
-  
+
   public String getStartActivityId() {
     return startActivityId;
   }
+
   public void setStartActivityId(String startUserId) {
     this.startActivityId = startUserId;
   }
-  
+
   public String getSuperProcessInstanceId() {
     return superProcessInstanceId;
   }
+
   public void setSuperProcessInstanceId(String superProcessInstanceId) {
     this.superProcessInstanceId = superProcessInstanceId;
   }
-  
-  public String getTenantId() {
-		return tenantId;
-	}
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
-	
-	public String getName() {
-      return name;
-    }
-	
-	public void setName(String name) {
-      this.name = name;
-    }
-	
-	public Map<String, Object> getProcessVariables() {
+  public String getTenantId() {
+    return tenantId;
+  }
+
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
-      for (HistoricVariableInstanceEntity variableInstance: queryVariables) {
+      for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
         if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
           variables.put(variableInstance.getName(), variableInstance.getValue());
         }
@@ -140,19 +144,19 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     }
     return variables;
   }
-  
+
   public List<HistoricVariableInstanceEntity> getQueryVariables() {
-    if(queryVariables == null && Context.getCommandContext() != null) {
+    if (queryVariables == null && Context.getCommandContext() != null) {
       queryVariables = new HistoricVariableInitializingList();
     }
     return queryVariables;
   }
-  
+
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
 
-  // common methods  //////////////////////////////////////////////////////////
+  // common methods //////////////////////////////////////////////////////////
 
   @Override
   public String toString() {

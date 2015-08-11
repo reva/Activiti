@@ -47,7 +47,7 @@ public interface HistoricActivityInstance extends HistoricData {
 
   /** The corresponding task in case of task activity */
   String getTaskId();
-  
+
   /** The called process instance in case of call activity */
   String getCalledProcessInstanceId();
 
@@ -60,9 +60,9 @@ public interface HistoricActivityInstance extends HistoricData {
   /** Time when the activity instance ended */
   Date getEndTime();
 
-  /** Difference between {@link #getEndTime()} and {@link #getStartTime()}.  */
+  /** Difference between {@link #getEndTime()} and {@link #getStartTime()}. */
   Long getDurationInMillis();
-  
+
   /** Returns the tenant identifier for the historic activity */
   String getTenantId();
 }

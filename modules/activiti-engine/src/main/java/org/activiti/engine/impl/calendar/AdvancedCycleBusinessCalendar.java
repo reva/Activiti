@@ -11,17 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An Activiti BusinessCalendar for cycle based schedules that takes into
- * account a different daylight savings time zone than the one that the server
- * is configured for.
+ * An Activiti BusinessCalendar for cycle based schedules that takes into account a different daylight savings time zone than the one that the server is configured for.
  * <p>
- * For CRON strings DSTZONE is used as the time zone that the CRON schedule
- * refers to. Leave it out to use the server time zone.
+ * For CRON strings DSTZONE is used as the time zone that the CRON schedule refers to. Leave it out to use the server time zone.
  * <p>
- * For ISO strings the time zone offset for the date/time specified is part of
- * the string itself. DSTZONE is used to determine what the offset should be
- * NOW, which may be different than when the workflow was scheduled if it is
- * scheduled to run across a DST event.
+ * For ISO strings the time zone offset for the date/time specified is part of the string itself. DSTZONE is used to determine what the offset should be NOW, which may be different than when the
+ * workflow was scheduled if it is scheduled to run across a DST event.
  * 
  * <pre>
  *   For example:
@@ -33,12 +28,10 @@ import org.slf4j.LoggerFactory;
  *      0 30 20 ? * MON,TUE,WED,THU,FRI * DSTZONE:US/Arizona
  * </pre>
  * 
- * Removing the DSTZONE key will cause Activiti to use the server's time zone.
- * This is the original behavior.
+ * Removing the DSTZONE key will cause Activiti to use the server's time zone. This is the original behavior.
  * <p>
- * Schedule strings are versioned. Version 1 strings will use the original
- * Activiti CycleBusinessCalendar. All new properties are ignored. Version 2
- * strings will use the new daylight saving time logic.
+ * Schedule strings are versioned. Version 1 strings will use the original Activiti CycleBusinessCalendar. All new properties are ignored. Version 2 strings will use the new daylight saving time
+ * logic.
  * 
  * <pre>
  *   For example:
@@ -46,8 +39,7 @@ import org.slf4j.LoggerFactory;
  *      0 30 20 ? * MON,TUE,WED,THU,FRI * VER:1 DSTZONE:US/Arizona
  * </pre>
  * 
- * By default (if no VER key is included in the string), it assumes version 2.
- * This can be changed by modifying the defaultScheduleVersion property.
+ * By default (if no VER key is included in the string), it assumes version 2. This can be changed by modifying the defaultScheduleVersion property.
  * <p>
  * 
  * @author mseiden
@@ -92,7 +84,8 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
     String timeZone = getValueFrom("DSTZONE", duedateDescription);
     String version = getValueFrom("VER", duedateDescription);
 
-    // START is a legacy value that is no longer used, but may still exist in
+    // START is a legacy value that is no longer used, but may still exist
+    // in
     // deployed job schedules
     // Could be used in the future as a start date for a CRON job
     // String startDate = getValueFrom("START", duedateDescription);
@@ -103,7 +96,7 @@ public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
       logger.info("Base Due Date: " + duedateDescription);
 
       Date date = resolvers.get(version == null ? getDefaultScheduleVersion() : Integer.valueOf(version)).resolve(duedateDescription, clockReader,
-              timeZone == null ? clockReader.getCurrentTimeZone() : TimeZone.getTimeZone(timeZone));
+          timeZone == null ? clockReader.getCurrentTimeZone() : TimeZone.getTimeZone(timeZone));
 
       logger.info("Calculated Date: " + (date == null ? "Will Not Run Again" : date));
 

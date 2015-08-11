@@ -21,7 +21,7 @@ import org.activiti.engine.impl.javax.el.ValueExpression;
  * @author Daniel Meyer
  */
 public class ExpressionSetInvocation extends ExpressionInvocation {
-    
+
   protected final Object value;
   protected ELContext elContext;
 
@@ -29,11 +29,11 @@ public class ExpressionSetInvocation extends ExpressionInvocation {
     super(valueExpression);
     this.value = value;
     this.elContext = elContext;
-    this.invocationParameters = new Object[] {value};
+    this.invocationParameters = new Object[] { value };
   }
 
   @Override
-  protected void invoke() throws Exception {
+  protected void invoke() {
     valueExpression.setValue(elContext, value);
   }
 

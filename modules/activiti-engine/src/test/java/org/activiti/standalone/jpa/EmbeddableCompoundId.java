@@ -44,13 +44,13 @@ public class EmbeddableCompoundId implements Serializable {
   public void setIdPart2(String idPart2) {
     this.idPart2 = idPart2;
   }
-  
+
   @Override
   public boolean equals(Object obj) {
     EmbeddableCompoundId other = (EmbeddableCompoundId) obj;
     return idPart1 == other.idPart1 && idPart2.equals(other.idPart2);
   }
-  
+
   @Override
   public int hashCode() {
     return (idPart1 + idPart2).hashCode();

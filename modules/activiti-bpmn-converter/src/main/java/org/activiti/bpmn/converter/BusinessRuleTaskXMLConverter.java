@@ -25,16 +25,16 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return BusinessRuleTask.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_TASK_BUSINESSRULE;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     BusinessRuleTask businessRuleTask = new BusinessRuleTask();
@@ -72,7 +72,7 @@ public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
       writeQualifiedAttribute(ATTRIBUTE_TASK_RULE_EXCLUDE, ATTRIBUTE_VALUE_TRUE, xtw);
     }
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }

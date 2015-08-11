@@ -17,7 +17,7 @@ package org.activiti.engine.impl.variable;
  * Interface to abstract the JPA cacheable setting
  * 
  * @author Tijs Rademakers
- *
+ * 
  */
 public interface CacheableVariable {
 

@@ -27,7 +27,8 @@ public class RulesAgendaFilter implements AgendaFilter {
   protected List<String> suffixList = new ArrayList<String>();
   protected boolean accept;
 
-  public RulesAgendaFilter() {}
+  public RulesAgendaFilter() {
+  }
 
   public boolean accept(Activation activation) {
     String ruleName = activation.getRule().getName();
@@ -38,11 +39,11 @@ public class RulesAgendaFilter implements AgendaFilter {
     }
     return !this.accept;
   }
-  
+
   public void addSuffic(String suffix) {
     this.suffixList.add(suffix);
   }
-  
+
   public void setAccept(boolean accept) {
     this.accept = accept;
   }

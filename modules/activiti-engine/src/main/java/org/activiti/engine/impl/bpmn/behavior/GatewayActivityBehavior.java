@@ -12,9 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-
 
 /**
  * super class for all gateway activity implementations.
@@ -22,15 +23,23 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Joram Barrez
  */
 public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
-  
-  protected void lockConcurrentRoot(ActivityExecution execution) {
-    ActivityExecution concurrentRoot = null; 
-    if (execution.isConcurrent()) {
-      concurrentRoot = execution.getParent();
-    } else {
-      concurrentRoot = execution;
+
+  protected void lockFirstParentScope(ActivityExecution execution) {
+    
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    
+    boolean found = false;
+    ExecutionEntity parentScopeExecution = null;
+    ExecutionEntity currentExecution = (ExecutionEntity) execution;
+    while (!found && currentExecution != null && currentExecution.getParentId() != null) {
+      parentScopeExecution = executionEntityManager.findExecutionById(currentExecution.getParentId());
+      if (parentScopeExecution != null && parentScopeExecution.isScope()) {
+        found = true;
+      }
+      currentExecution = parentScopeExecution;
     }
-    ((ExecutionEntity)concurrentRoot).forceUpdate();
+    
+    parentScopeExecution.forceUpdate();
   }
 
 }

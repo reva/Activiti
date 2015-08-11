@@ -17,13 +17,12 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 
-
 /**
  * @author Joram Barrez
  */
 public class MembershipEntityManagerFactory implements SessionFactory {
 
-  public Class< ? > getSessionType() {
+  public Class<?> getSessionType() {
     return MembershipIdentityManager.class;
   }
 

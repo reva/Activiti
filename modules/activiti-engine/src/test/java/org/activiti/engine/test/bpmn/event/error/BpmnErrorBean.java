@@ -28,7 +28,7 @@ public class BpmnErrorBean implements Serializable {
   public void throwBpmnError() {
     throw new BpmnError("23", "This is a business fault, which can be caught by a BPMN Error Event.");
   }
-  
+
   public JavaDelegate getDelegate() {
     return new ThrowBpmnErrorDelegate();
   }

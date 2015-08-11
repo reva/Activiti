@@ -21,7 +21,6 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -30,13 +29,13 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
   private static final long serialVersionUID = 1L;
 
   protected String processInstanceId;
-  
+
   protected String userId;
-  
+
   protected String groupId;
-  
+
   protected String type;
-  
+
   public DeleteIdentityLinkForProcessInstanceCmd(String processInstanceId, String userId, String groupId, String type) {
     validateParams(userId, groupId, processInstanceId, type);
     this.processInstanceId = processInstanceId;
@@ -44,33 +43,33 @@ public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>,
     this.groupId = groupId;
     this.type = type;
   }
-  
+
   protected void validateParams(String userId, String groupId, String processInstanceId, String type) {
-    if(processInstanceId == null) {
+    if (processInstanceId == null) {
       throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
-    
+
     if (type == null) {
-        throw new ActivitiIllegalArgumentException("type is required when deleting a process identity link");
-      }
-    
+      throw new ActivitiIllegalArgumentException("type is required when deleting a process identity link");
+    }
+
     if (userId == null && groupId == null) {
       throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
     }
   }
-  
+
   public Void execute(CommandContext commandContext) {
-	  ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
-      
+    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Cannot find process instance with id " + processInstanceId, ExecutionEntity.class);
     }
-    
+
     processInstance.deleteIdentityLink(userId, groupId, type);
-    
+
     commandContext.getHistoryManager().createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, false);
-    
-    return null;  
+
+    return null;
   }
-  
+
 }

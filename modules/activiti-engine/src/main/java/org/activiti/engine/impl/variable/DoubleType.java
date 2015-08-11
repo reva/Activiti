@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-
-
 /**
  * @author Tom Baeyens
  */
@@ -34,11 +32,11 @@ public class DoubleType implements VariableType {
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    valueFields.setDoubleValue( (Double) value );
+    valueFields.setDoubleValue((Double) value);
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return true;
     }
     return Double.class.isAssignableFrom(value.getClass());

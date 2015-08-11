@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-
-
 /**
  * @author Martin Grofcik
  */
@@ -21,14 +19,16 @@ public class LongStringType extends SerializableType {
 
   private final int minLength;
 
-  public LongStringType(int minLength) {this.minLength = minLength;}
+  public LongStringType(int minLength) {
+    this.minLength = minLength;
+  }
 
   public String getTypeName() {
     return "longString";
   }
 
   public boolean isAbleToStore(Object value) {
-    if (value==null) {
+    if (value == null) {
       return false;
     }
     if (String.class.isAssignableFrom(value.getClass())) {

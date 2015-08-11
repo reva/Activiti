@@ -28,12 +28,12 @@ public class TweetHandler implements JobHandler {
   public String getType() {
     return "tweet";
   }
-  
+
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
     messages.add(configuration);
     Assert.assertNotNull(commandContext);
   }
-  
+
   public List<String> getMessages() {
     return messages;
   }

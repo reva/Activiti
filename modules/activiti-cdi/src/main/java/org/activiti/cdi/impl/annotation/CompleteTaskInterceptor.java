@@ -35,7 +35,8 @@ public class CompleteTaskInterceptor implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  @Inject BusinessProcess businessProcess;
+  @Inject
+  BusinessProcess businessProcess;
 
   @AroundInvoke
   public Object invoke(InvocationContext ctx) throws Exception {
@@ -43,12 +44,12 @@ public class CompleteTaskInterceptor implements Serializable {
       Object result = ctx.proceed();
 
       CompleteTask completeTaskAnnotation = ctx.getMethod().getAnnotation(CompleteTask.class);
-      boolean endConversation = completeTaskAnnotation.endConversation();    
-      businessProcess.completeTask(endConversation);     
+      boolean endConversation = completeTaskAnnotation.endConversation();
+      businessProcess.completeTask(endConversation);
 
       return result;
     } catch (InvocationTargetException e) {
-      throw new ActivitiCdiException("Error while completing task: "+e.getCause().getMessage(), e.getCause());
+      throw new ActivitiCdiException("Error while completing task: " + e.getCause().getMessage(), e.getCause());
     }
   }
 

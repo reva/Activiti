@@ -24,10 +24,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Frederik Heremans
  */
 public class BaseGroupResource {
-  
+
   @Autowired
   protected RestResponseFactory restResponseFactory;
-  
+
   @Autowired
   protected IdentityService identityService;
 

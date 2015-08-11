@@ -20,7 +20,6 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -32,9 +31,7 @@ public class DbSchemaUpdate {
     CommandConfig config = new CommandConfig().transactionNotSupported();
     commandExecutor.execute(config, new Command<Object>() {
       public Object execute(CommandContext commandContext) {
-        commandContext
-          .getSession(DbSqlSession.class)
-          .dbSchemaUpdate();
+        commandContext.getSession(DbSqlSession.class).dbSchemaUpdate();
         return null;
       }
     });

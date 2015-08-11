@@ -67,7 +67,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
     this.engineServiceTracker = new ServiceTracker(context, ProcessEngine.class.getName(), this);
     this.bundleTracker = new BundleTracker(context, Bundle.RESOLVED | Bundle.STARTING | Bundle.ACTIVE, this);
   }
-  
+
   public static BundleContext getBundleContext() {
     return context;
   }
@@ -83,7 +83,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
   public Object addingService(ServiceReference reference) {
     new Thread() {
       public void run() {
-          bundleTracker.open();
+        bundleTracker.open();
       }
     }.start();
     return context.getService(reference);
@@ -108,13 +108,14 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
     }
 
     checkBundleScriptEngines(bundle);
-    
+
     return bundle;
   }
 
   public void modifiedBundle(Bundle bundle, BundleEvent event, Object arg2) {
     if (event == null) {
-      // cannot think of why we would be interested in a modified bundle with no bundle event
+      // cannot think of why we would be interested in a modified bundle
+      // with no bundle event
       return;
     }
     bundleChanged(event);
@@ -132,18 +133,15 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
     }
   }
 
-
-
   /**
-   * this method checks the initial bundle that are installed/active before
-   * bundle tracker is opened.
-   *
-   * @param b the bundle to check
+   * this method checks the initial bundle that are installed/active before bundle tracker is opened.
+   * 
+   * @param b
+   *          the bundle to check
    */
   private void checkInitialBundle(Bundle b) {
     // If the bundle is active, check it
-    if (b.getState() == Bundle.RESOLVED || b.getState() == Bundle.STARTING
-            || b.getState() == Bundle.ACTIVE) {
+    if (b.getState() == Bundle.RESOLVED || b.getState() == Bundle.STARTING || b.getState() == Bundle.ACTIVE) {
       checkBundle(b);
     }
   }
@@ -156,7 +154,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       checkBundleScriptEngines(bundle);
     }
   }
-  
+
   private void checkBundleScriptEngines(Bundle bundle) {
     List<BundleScriptEngineResolver> r = new ArrayList<BundleScriptEngineResolver>();
     registerScriptEngines(bundle, r);
@@ -199,7 +197,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       }
 
       if (!pathList.isEmpty()) {
-        LOGGER.debug("Found activiti process in bundle {} with paths: {}", bundle.getSymbolicName(),  pathList);
+        LOGGER.debug("Found activiti process in bundle {} with paths: {}", bundle.getSymbolicName(), pathList);
 
         ProcessEngine engine = (ProcessEngine) engineServiceTracker.waitForService(timeout);
         if (engine == null) {
@@ -212,12 +210,12 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
         for (URL url : pathList) {
           InputStream is = url.openStream();
           if (is == null) {
-              throw new IOException("Error opening url: " + url);
+            throw new IOException("Error opening url: " + url);
           }
           try {
-              builder.addInputStream(getPath(url), is);
+            builder.addInputStream(getPath(url), is);
           } finally {
-              is.close();
+            is.close();
           }
         }
         builder.enableDuplicateFiltering();
@@ -232,7 +230,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
 
   private void addEntry(Bundle bundle, String path, List<URL> pathList) {
     URL override = getOverrideURL(bundle, path);
-    if(override == null) {
+    if (override == null) {
       URL url = bundle.getEntry(path);
       pathList.add(url);
     } else {
@@ -246,69 +244,69 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
     while (e != null && e.hasMoreElements()) {
       URL u = (URL) e.nextElement();
       URL override = getOverrideURL(bundle, u, path);
-      if(override == null) {
-          pathList.add(u);
+      if (override == null) {
+        pathList.add(u);
       } else {
-          pathList.add(override);
+        pathList.add(override);
       }
     }
   }
 
   private boolean hasWildcards(String path) {
-      return path.indexOf("*") >= 0;
+    return path.indexOf("*") >= 0;
   }
 
   private String getFilePart(URL url) {
-      String path = url.getPath();
-      int index = path.lastIndexOf('/');
-      return path.substring(index + 1);
+    String path = url.getPath();
+    int index = path.lastIndexOf('/');
+    return path.substring(index + 1);
   }
 
   private String cachePath(Bundle bundle, String filePath) {
     return Integer.toHexString(bundle.hashCode()) + "/" + filePath;
   }
 
-  private URL getOverrideURLForCachePath(String privatePath){
+  private URL getOverrideURLForCachePath(String privatePath) {
     URL override = null;
     File privateDataVersion = context.getDataFile(privatePath);
-    if (privateDataVersion != null
-            && privateDataVersion.exists()) {
+    if (privateDataVersion != null && privateDataVersion.exists()) {
       try {
-          override = privateDataVersion.toURI().toURL();
+        override = privateDataVersion.toURI().toURL();
       } catch (MalformedURLException e) {
-          LOGGER.error("Unexpected URL Conversion Issue", e);
+        LOGGER.error("Unexpected URL Conversion Issue", e);
       }
     }
     return override;
   }
 
-  private URL getOverrideURL(Bundle bundle, String path){
-      String cachePath = cachePath(bundle, path);
-      return getOverrideURLForCachePath(cachePath);
+  private URL getOverrideURL(Bundle bundle, String path) {
+    String cachePath = cachePath(bundle, path);
+    return getOverrideURLForCachePath(cachePath);
   }
 
-  private URL getOverrideURL(Bundle bundle, URL path, String basePath){
-      String cachePath = cachePath(bundle, basePath + getFilePart(path));
-      return getOverrideURLForCachePath(cachePath);
+  private URL getOverrideURL(Bundle bundle, URL path, String basePath) {
+    String cachePath = cachePath(bundle, basePath + getFilePart(path));
+    return getOverrideURLForCachePath(cachePath);
   }
 
-  //remove bundle protocol specific part, so that resource can be accessed by path relative to bundle root
+  // remove bundle protocol specific part, so that resource can be accessed by
+  // path relative to bundle root
   private static String getPath(URL url) {
-      String path = url.toExternalForm();
-      return path.replaceAll(url.getProtocol() + "://[^/]*/", "");
+    String path = url.toExternalForm();
+    return path.replaceAll(url.getProtocol() + "://[^/]*/", "");
   }
 
   // script engine part
-  
+
   public static ScriptEngine resolveScriptEngine(String scriptEngineName) throws InvalidSyntaxException {
     ServiceReference[] refs = context.getServiceReferences(ScriptEngineResolver.class.getName(), null);
     if (refs == null) {
       LOGGER.info("No OSGi script engine resolvers available!");
       return null;
     }
-    
+
     LOGGER.debug("Found {} OSGi ScriptEngineResolver services", refs.length);
-    
+
     for (ServiceReference ref : refs) {
       ScriptEngineResolver resolver = (ScriptEngineResolver) context.getService(ref);
       ScriptEngine engine = resolver.resolveScriptEngine(scriptEngineName);
@@ -328,10 +326,10 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       configURL = (URL) e.nextElement();
     }
     if (configURL != null) {
-      LOGGER.info("Found ScriptEngineFactory in {}",bundle.getSymbolicName());
+      LOGGER.info("Found ScriptEngineFactory in {}", bundle.getSymbolicName());
       resolvers.add(new BundleScriptEngineResolver(bundle, configURL));
     }
-  } 
+  }
 
   public static interface ScriptEngineResolver {
     ScriptEngine resolveScriptEngine(String name);
@@ -346,18 +344,19 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
       this.bundle = bundle;
       this.configFile = configFile;
     }
+
     public void register() {
-      if(bundle.getBundleContext() != null) {
-        reg = bundle.getBundleContext().registerService(ScriptEngineResolver.class.getName(), 
-                                                        this, null);
+      if (bundle.getBundleContext() != null) {
+        reg = bundle.getBundleContext().registerService(ScriptEngineResolver.class.getName(), this, null);
       }
     }
+
     public void unregister() {
-      if(reg != null) {
+      if (reg != null) {
         reg.unregister();
       }
     }
-    
+
     @SuppressWarnings({ "rawtypes" })
     public ScriptEngine resolveScriptEngine(String name) {
       try {
@@ -366,7 +365,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
         in.close();
         Class cls = bundle.loadClass(className);
         if (!ScriptEngineFactory.class.isAssignableFrom(cls)) {
-            throw new IllegalStateException("Invalid ScriptEngineFactory: " + cls.getName());
+          throw new IllegalStateException("Invalid ScriptEngineFactory: " + cls.getName());
         }
         ScriptEngineFactory factory = (ScriptEngineFactory) cls.newInstance();
         List<String> names = factory.getNames();
@@ -375,7 +374,8 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
             ClassLoader old = Thread.currentThread().getContextClassLoader();
             ScriptEngine engine;
             try {
-              // JRuby seems to require the correct TCCL to call getScriptEngine
+              // JRuby seems to require the correct TCCL to call
+              // getScriptEngine
               Thread.currentThread().setContextClassLoader(factory.getClass().getClassLoader());
               engine = factory.getScriptEngine();
             } finally {

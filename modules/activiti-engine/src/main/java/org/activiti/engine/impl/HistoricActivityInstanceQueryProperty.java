@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.query.QueryProperty;
 
-
 /**
  * Contains the possible properties which can be used in a {@link HistoricActivityInstanceQuery}.
  * 
@@ -53,7 +52,7 @@ public class HistoricActivityInstanceQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static HistoricActivityInstanceQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

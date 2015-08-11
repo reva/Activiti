@@ -27,17 +27,17 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  */
 public class InterfaceParser implements BpmnXMLConstants {
-  
+
   protected static final Logger LOGGER = LoggerFactory.getLogger(InterfaceParser.class.getName());
-  
+
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    
+
     Interface interfaceObject = new Interface();
     BpmnXMLUtil.addXMLLocation(interfaceObject, xtr);
     interfaceObject.setId(model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID));
     interfaceObject.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
     interfaceObject.setImplementationRef(parseMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_IMPLEMENTATION_REF), model));
-    
+
     boolean readyWithInterface = false;
     Operation operation = null;
     try {
@@ -55,18 +55,18 @@ public class InterfaceParser implements BpmnXMLConstants {
           if (operation != null && StringUtils.isNotEmpty(inMessageRef)) {
             operation.setInMessageRef(parseMessageRef(inMessageRef.trim(), model));
           }
-          
+
         } else if (xtr.isStartElement() && ELEMENT_OUT_MESSAGE.equals(xtr.getLocalName())) {
           String outMessageRef = xtr.getElementText();
           if (operation != null && StringUtils.isNotEmpty(outMessageRef)) {
             operation.setOutMessageRef(parseMessageRef(outMessageRef.trim(), model));
           }
-          
+
         } else if (xtr.isEndElement() && ELEMENT_OPERATION.equalsIgnoreCase(xtr.getLocalName())) {
           if (operation != null && StringUtils.isNotEmpty(operation.getImplementationRef())) {
             interfaceObject.getOperations().add(operation);
           }
-          
+
         } else if (xtr.isEndElement() && ELEMENT_INTERFACE.equals(xtr.getLocalName())) {
           readyWithInterface = true;
         }
@@ -74,10 +74,10 @@ public class InterfaceParser implements BpmnXMLConstants {
     } catch (Exception e) {
       LOGGER.warn("Error parsing interface child elements", e);
     }
-    
+
     model.getInterfaces().add(interfaceObject);
   }
-  
+
   protected String parseMessageRef(String messageRef, BpmnModel model) {
     String result = null;
     if (StringUtils.isNotEmpty(messageRef)) {
@@ -88,11 +88,15 @@ public class InterfaceParser implements BpmnXMLConstants {
         messageRef = messageRef.substring(indexOfP + 1);
 
         if (resolvedNamespace == null) {
-          // if it's an invalid prefix will consider this is not a namespace prefix so will be used as part of the stringReference
+          // if it's an invalid prefix will consider this is not a
+          // namespace prefix so will be used as part of the
+          // stringReference
           messageRef = prefix + ":" + messageRef;
         } else if (!resolvedNamespace.equalsIgnoreCase(model.getTargetNamespace())) {
-          //  if it's a valid namespace prefix but it's not the targetNamespace then we'll use it as a valid namespace
-          // (even out editor does not support defining namespaces it is still a valid xml file)
+          // if it's a valid namespace prefix but it's not the
+          // targetNamespace then we'll use it as a valid namespace
+          // (even out editor does not support defining namespaces it
+          // is still a valid xml file)
           messageRef = resolvedNamespace + ":" + messageRef;
         }
       }

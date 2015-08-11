@@ -67,21 +67,21 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   public void testMergingInclusiveGateway() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveGwMerging", CollectionUtil.singletonMap("input", 2));
     assertEquals(1, taskService.createTaskQuery().count());
-    
+
     runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
   }
-  
+
   @Deployment
   public void testPartialMergingInclusiveGateway() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("partialInclusiveGwMerging", CollectionUtil.singletonMap("input", 2));
     Task partialTask = taskService.createTaskQuery().singleResult();
     assertEquals("partialTask", partialTask.getTaskDefinitionKey());
-    
+
     taskService.complete(partialTask.getId());
-    
+
     Task fullTask = taskService.createTaskQuery().singleResult();
     assertEquals("theTask", fullTask.getTaskDefinitionKey());
-    
+
     runtimeService.deleteProcessInstance(pi.getId(), "testing deletion");
   }
 
@@ -91,7 +91,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
       runtimeService.startProcessInstanceByKey("inclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
       fail();
     } catch (ActivitiException e) {
-      assertTextPresent("No outgoing sequence flow of the inclusive gateway 'inclusiveGw' could be selected for continuing the process", e.getMessage());
+      // Exception expected
     }
   }
 
@@ -101,43 +101,45 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParentActivationOnNonJoiningEnd() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("parentActivationOnNonJoiningEnd");
-    
+
     List<Execution> executionsBefore = runtimeService.createExecutionQuery().list();
     assertEquals(3, executionsBefore.size());
-    
+
     // start first round of tasks
     List<Task> firstTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    
     assertEquals(2, firstTasks.size());
-    
-    for (Task t: firstTasks) {
+
+    for (Task t : firstTasks) {
       taskService.complete(t.getId());
     }
-    
-    // start first round of tasks
+
+    // start second round of tasks
     List<Task> secondTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-    
     assertEquals(2, secondTasks.size());
-    
+
     // complete one task
     Task task = secondTasks.get(0);
     taskService.complete(task.getId());
-    
-    // should have merged last child execution into parent
+
     List<Execution> executionsAfter = runtimeService.createExecutionQuery().list();
-    assertEquals(1, executionsAfter.size());
-    
-    Execution execution = executionsAfter.get(0);
-    
+    assertEquals(2, executionsAfter.size());
+
+    Execution execution = null;
+    for (Execution e : executionsAfter) {
+      if (e.getParentId() != null) {
+        execution = e;
+      }
+    }
+
     // and should have one active activity
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(execution.getId());
     assertEquals(1, activeActivityIds.size());
-    
+
     // Completing last task should finish the process instance
-    
+
     Task lastTask = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(lastTask.getId());
-    
+
     assertEquals(0l, runtimeService.createProcessInstanceQuery().active().count());
   }
 
@@ -146,7 +148,8 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testWhitespaceInExpression() {
-    // Starting a process instance will lead to an exception if whitespace are
+    // Starting a process instance will lead to an exception if whitespace
+    // are
     // incorrectly handled
     runtimeService.startProcessInstanceByKey("inclusiveWhiteSpaceInExpression", CollectionUtil.singletonMap("input", 1));
   }
@@ -188,7 +191,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
       runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
       fail();
     } catch (ActivitiException e) {
-      // expect an exception to be thrown here
+      // expect an exception to be thrown here as there is
     }
 
     orders.set(1, new InclusiveGatewayTestOrder(175));
@@ -229,14 +232,12 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testDecideBasedOnBeanMethod() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod",
-            CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(200)));
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(200)));
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertNotNull(task);
     assertEquals(BEAN_TASK3_NAME, task.getName());
 
-    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod",
-            CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(125)));
+    pi = runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnBeanMethod", CollectionUtil.singletonMap("order", new InclusiveGatewayTestOrder(125)));
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).list();
     assertEquals(2, tasks.size());
     List<String> expectedNames = new ArrayList<String>();
@@ -310,133 +311,130 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     }
     assertEquals(0, expectedNames.size());
   }
-  
-  /** This test the isReachable() check thaty is done to check if 
-   * upstream tokens can reach the inclusive gateway.
+
+  /**
+   * This test the isReachable() check that is done to check if upstream tokens can reach the inclusive gateway.
    * 
-   * In case of loops, special care needs to be taken in the algorithm,
-   * or else stackoverflows will happen very quickly.
+   * In case of loops, special care needs to be taken in the algorithm, or else stackoverflows will happen very quickly.
    */
   @Deployment
   public void testLoop() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveTestLoop", 
-            CollectionUtil.singletonMap("counter", 1));
-    
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("inclusiveTestLoop", CollectionUtil.singletonMap("counter", 1));
+
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("task C", task.getName());
-    
+
     taskService.complete(task.getId());
     assertEquals(0, taskService.createTaskQuery().count());
-    
 
     for (Execution execution : runtimeService.createExecutionQuery().list()) {
       System.out.println(execution.getActivityId());
     }
-    
+
     assertEquals("Found executions: " + runtimeService.createExecutionQuery().list(), 0, runtimeService.createExecutionQuery().count());
     assertProcessEnded(pi.getId());
   }
-  
-  @Deployment	
+
+  @Deployment
   public void testJoinAfterSubprocesses() {
-	  // Test case to test act-1204
-		Map<String, Object> variableMap = new HashMap<String, Object>();
-		variableMap.put("a", 1);
-		variableMap.put("b", 1);
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
-		assertNotNull(processInstance.getId());
-		
-		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-		assertEquals(2, taskService.createTaskQuery().count());
+    // Test case to test act-1204
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("a", 1);
+    variableMap.put("b", 1);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
+    assertNotNull(processInstance.getId());
 
-		taskService.complete(tasks.get(0).getId());
-		assertEquals(1, taskService.createTaskQuery().count());
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+    assertEquals(2, taskService.createTaskQuery().count());
 
-		taskService.complete(tasks.get(1).getId());
+    taskService.complete(tasks.get(0).getId());
+    assertEquals(1, taskService.createTaskQuery().count());
 
-		Task task = taskService.createTaskQuery().taskAssignee("c").singleResult();
-		assertNotNull(task);
-		taskService.complete(task.getId());
-		
-		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-		assertNull(processInstance);
-		
-		variableMap = new HashMap<String, Object>();
+    taskService.complete(tasks.get(1).getId());
+
+    Task task = taskService.createTaskQuery().taskAssignee("c").singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
+
+    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNull(processInstance);
+
+    variableMap = new HashMap<String, Object>();
     variableMap.put("a", 1);
     variableMap.put("b", 2);
     processInstance = runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
     assertNotNull(processInstance.getId());
-    
+
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
     assertEquals(1, taskService.createTaskQuery().count());
-    
+
     task = tasks.get(0);
     assertEquals("a", task.getAssignee());
     taskService.complete(task.getId());
-    
+
     task = taskService.createTaskQuery().taskAssignee("c").singleResult();
     assertNotNull(task);
     taskService.complete(task.getId());
-    
+
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNull(processInstance);
-    
+
     variableMap = new HashMap<String, Object>();
     variableMap.put("a", 2);
     variableMap.put("b", 2);
     try {
       runtimeService.startProcessInstanceByKey("InclusiveGateway", variableMap);
       fail();
-    } catch(ActivitiException e) {
+    } catch (ActivitiException e) {
       assertTrue(e.getMessage().contains("No outgoing sequence flow"));
     }
-	}
-  
-  @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCall.bpmn20.xml",
-		                 "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml"})	
-  public void testJoinAfterCall() {
-	  // Test case to test act-1026
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterCall");
-		assertNotNull(processInstance.getId());
-		assertEquals(3, taskService.createTaskQuery().count());
-		
-		// now complete task A and check number of remaining tasks. 
-		// inclusive gateway should wait for the "Task B" and "Task C"
-		Task taskA = taskService.createTaskQuery().taskName("Task A").singleResult();
-		assertNotNull(taskA);
-		taskService.complete(taskA.getId());
-		assertEquals(2, taskService.createTaskQuery().count());
-		
-		// now complete task B and check number of remaining tasks
-		// inclusive gateway should wait for "Task C"
-		Task taskB = taskService.createTaskQuery().taskName("Task B").singleResult();
-		assertNotNull(taskB);
-		taskService.complete(taskB.getId());
-		assertEquals(1, taskService.createTaskQuery().count());
+  }
 
-		// now complete task C. Gateway activates and "Task C" remains
-		Task taskC = taskService.createTaskQuery().taskName("Task C").singleResult();
-		assertNotNull(taskC);
-		taskService.complete(taskC.getId());
-		assertEquals(1, taskService.createTaskQuery().count());
-	
-		// check that remaining task is in fact task D
-		Task taskD = taskService.createTaskQuery().taskName("Task D").singleResult();
-		assertNotNull(taskD);
-		assertEquals("Task D", taskD.getName());
-		taskService.complete(taskD.getId());
-		
-		processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
-		assertNull(processInstance);
-	}
-  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCall.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testJoinAfterCallSubProcess.bpmn20.xml" })
+  public void testJoinAfterCall() {
+    // Test case to test act-1026
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterCall");
+    assertNotNull(processInstance.getId());
+    assertEquals(3, taskService.createTaskQuery().count());
+
+    // now complete task A and check number of remaining tasks.
+    // inclusive gateway should wait for the "Task B" and "Task C"
+    Task taskA = taskService.createTaskQuery().taskName("Task A").singleResult();
+    assertNotNull(taskA);
+    taskService.complete(taskA.getId());
+    assertEquals(2, taskService.createTaskQuery().count());
+
+    // now complete task B and check number of remaining tasks
+    // inclusive gateway should wait for "Task C"
+    Task taskB = taskService.createTaskQuery().taskName("Task B").singleResult();
+    assertNotNull(taskB);
+    taskService.complete(taskB.getId());
+    assertEquals(1, taskService.createTaskQuery().count());
+
+    // now complete task C. Gateway activates and "Task C" remains
+    Task taskC = taskService.createTaskQuery().taskName("Task C").singleResult();
+    assertNotNull(taskC);
+    taskService.complete(taskC.getId());
+    assertEquals(1, taskService.createTaskQuery().count());
+
+    // check that remaining task is in fact task D
+    Task taskD = taskService.createTaskQuery().taskName("Task D").singleResult();
+    assertNotNull(taskD);
+    assertEquals("Task D", taskD.getName());
+    taskService.complete(taskD.getId());
+
+    processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNull(processInstance);
+  }
+
   @Deployment
   public void testAsyncBehavior() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
-    waitForJobExecutorToProcessAllJobs(10000, 500);
+    waitForJobExecutorToProcessAllJobs(5000L, 250);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
-  
+
   @Deployment
   public void testDirectSequenceFlow() {
     Map<String, Object> varMap = new HashMap<String, Object>();
@@ -447,7 +445,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertEquals("theTask1", task.getTaskDefinitionKey());
     taskService.complete(task.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    
+
     varMap = new HashMap<String, Object>();
     varMap.put("input", 3);
     processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwDirectSequenceFlow", varMap);
@@ -456,13 +454,13 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    
+
     varMap = new HashMap<String, Object>();
     varMap.put("input", 0);
     processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwDirectSequenceFlow", varMap);
     assertTrue(processInstance.isEnded());
   }
-  
+
   @Deployment
   public void testSkipExpression() {
     Map<String, Object> varMap = new HashMap<String, Object>();
@@ -474,7 +472,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertEquals("theTask1", task.getTaskDefinitionKey());
     taskService.complete(task.getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    
+
     varMap = new HashMap<String, Object>();
     varMap.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     varMap.put("input", 30);
@@ -484,55 +482,55 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    
+
     varMap = new HashMap<String, Object>();
     varMap.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     varMap.put("input", 3);
     processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwSkipExpression", varMap);
-    assertTrue(processInstance.isEnded());    
+    assertTrue(processInstance.isEnded());
   }
-  
-  /*@Deployment
-  public void testAsyncBehavior() {
-    for (int i = 0; i < 100; i++) {
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
-    }
-    assertEquals(200, managementService.createJobQuery().count());
-    waitForJobExecutorToProcessAllJobs(120000, 5000);
-    assertEquals(0, managementService.createJobQuery().count());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-  }*/
 
-//  /* This test case is related to ACT-1877 */
-//  
-//  @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testWithSignalBoundaryEvent.bpmn20.xml"})	
-//  public void testJoinAfterBoudarySignalEvent() {
-//		
-//	
-//		ProcessInstance processInstanceId = runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterSignalBoundaryEvent");
-//		
-//		/// Gets the execution waiting for a message notification*/
-//		String subcriptedExecutionId = runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).messageEventSubscriptionName("MyMessage").singleResult().getId();
-//	
-//		/*Notify message received: this makes one execution to go on*/
-//		runtimeService.messageEventReceived("MyMessage", subcriptedExecutionId);
-//	
-//		/*The other execution goes on*/
-//		Task userTask = taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
-//		assertEquals("There's still an active execution waiting in the first task",
-//				"usertask1",userTask.getTaskDefinitionKey());
-//		
-//		taskService.complete( userTask.getId());
-//		
-//		/*The two executions become one because of Inclusive Gateway*/
-//		/*The process ends*/
-//		userTask = taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
-//		assertEquals("Only when both executions reach the inclusive gateway, flow arrives to the last user task",
-//				"usertask2",userTask.getTaskDefinitionKey());
-//		taskService.complete(userTask.getId());
-//		
-//		long nExecutions = runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).count();
-//		assertEquals(0, nExecutions);
-//  
-//  }
+  /*
+   * @Deployment public void testAsyncBehavior() { for (int i = 0; i < 100; i++) { ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async"); } assertEquals(200,
+   * managementService.createJobQuery().count()); waitForJobExecutorToProcessAllJobs(120000, 5000); assertEquals(0, managementService.createJobQuery().count()); assertEquals(0,
+   * runtimeService.createProcessInstanceQuery().count()); }
+   */
+
+  // /* This test case is related to ACT-1877 */
+  //
+  // @Deployment(resources={"org/activiti/engine/test/bpmn/gateway/InclusiveGatewayTest.testWithSignalBoundaryEvent.bpmn20.xml"})
+  // public void testJoinAfterBoudarySignalEvent() {
+  //
+  //
+  // ProcessInstance processInstanceId =
+  // runtimeService.startProcessInstanceByKey("InclusiveGatewayAfterSignalBoundaryEvent");
+  //
+  // /// Gets the execution waiting for a message notification*/
+  // String subcriptedExecutionId =
+  // runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).messageEventSubscriptionName("MyMessage").singleResult().getId();
+  //
+  // /*Notify message received: this makes one execution to go on*/
+  // runtimeService.messageEventReceived("MyMessage", subcriptedExecutionId);
+  //
+  // /*The other execution goes on*/
+  // Task userTask =
+  // taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
+  // assertEquals("There's still an active execution waiting in the first task",
+  // "usertask1",userTask.getTaskDefinitionKey());
+  //
+  // taskService.complete( userTask.getId());
+  //
+  // /*The two executions become one because of Inclusive Gateway*/
+  // /*The process ends*/
+  // userTask =
+  // taskService.createTaskQuery().processInstanceId(processInstanceId.getId()).singleResult();
+  // assertEquals("Only when both executions reach the inclusive gateway, flow arrives to the last user task",
+  // "usertask2",userTask.getTaskDefinitionKey());
+  // taskService.complete(userTask.getId());
+  //
+  // long nExecutions =
+  // runtimeService.createExecutionQuery().processInstanceId(processInstanceId.getId()).count();
+  // assertEquals(0, nExecutions);
+  //
+  // }
 }

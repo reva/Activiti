@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.variable;
 
-
-
 /**
  * @author Tom Baeyens
  */
@@ -34,7 +32,7 @@ public class NullType implements VariableType {
   }
 
   public boolean isAbleToStore(Object value) {
-    return (value==null);
+    return (value == null);
   }
 
   public void setValue(Object value, ValueFields valueFields) {

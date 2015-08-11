@@ -17,7 +17,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
-
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * @author Tom Baeyens
@@ -25,11 +25,11 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 public class ExecutionContext {
 
   protected ExecutionEntity execution;
-  
+
   public ExecutionContext(InterpretableExecution execution) {
     this.execution = (ExecutionEntity) execution;
   }
-  
+
   public ExecutionEntity getExecution() {
     return execution;
   }
@@ -39,15 +39,12 @@ public class ExecutionContext {
   }
 
   public ProcessDefinitionEntity getProcessDefinition() {
-    return (ProcessDefinitionEntity) execution.getProcessDefinition();
+    return ProcessDefinitionUtil.getProcessDefinitionEntity(execution.getProcessDefinitionId());
   }
 
   public DeploymentEntity getDeployment() {
     String deploymentId = getProcessDefinition().getDeploymentId();
-    DeploymentEntity deployment = Context
-      .getCommandContext()
-      .getDeploymentEntityManager()
-      .findDeploymentById(deploymentId);
+    DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
     return deployment;
   }
 }

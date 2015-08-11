@@ -12,25 +12,21 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 
 /**
  * @author Joram Barrez
  */
 public class ExclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandler<ExclusiveGateway> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
+
+  public Class<? extends BaseElement> getHandledType() {
     return ExclusiveGateway.class;
   }
-  
+
   protected void executeParse(BpmnParse bpmnParse, ExclusiveGateway gateway) {
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EXCLUSIVE);
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
+    gateway.setBehavior(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
   }
 
 }

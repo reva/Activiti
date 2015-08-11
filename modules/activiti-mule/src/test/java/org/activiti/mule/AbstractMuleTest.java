@@ -16,18 +16,17 @@ import org.mule.tck.junit4.FunctionalTestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public abstract class AbstractMuleTest extends FunctionalTestCase {
-  
+
   protected static Logger log = LoggerFactory.getLogger(AbstractMuleTest.class);
-  
+
   protected static final String EMPTY_LINE = "                                                                                           ";
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
-  
-  /** Each test is assumed to clean up all DB content it entered.
-   * After a test method executed, this method scans all tables to see if the DB is completely clean. 
-   * It throws AssertionFailed in case the DB is not clean.
-   * If the DB is not clean, it is cleaned by performing a create a drop. */
+
+  /**
+   * Each test is assumed to clean up all DB content it entered. After a test method executed, this method scans all tables to see if the DB is completely clean. It throws AssertionFailed in case the
+   * DB is not clean. If the DB is not clean, it is cleaned by performing a create a drop.
+   */
   protected void assertAndEnsureCleanDb(ProcessEngine processEngine) throws Exception {
     log.debug("verifying that db is clean after test");
     Map<String, Long> tableCounts = processEngine.getManagementService().getTableCount();
@@ -36,8 +35,8 @@ public abstract class AbstractMuleTest extends FunctionalTestCase {
       String tableNameWithoutPrefix = tableName.replace(processEngine.getProcessEngineConfiguration().getDatabaseTablePrefix(), "");
       if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableNameWithoutPrefix)) {
         Long count = tableCounts.get(tableName);
-        if (count!=0L) {
-          outputMessage.append("  "+tableName + ": " + count + " record(s) ");
+        if (count != 0L) {
+          outputMessage.append("  " + tableName + ": " + count + " record(s) ");
         }
       }
     }
@@ -45,9 +44,9 @@ public abstract class AbstractMuleTest extends FunctionalTestCase {
       outputMessage.insert(0, "DB NOT CLEAN: \n");
       log.error(EMPTY_LINE);
       log.error(outputMessage.toString());
-      
+
       log.info("dropping and recreating db");
-      
+
       CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
       CommandConfig config = new CommandConfig().transactionNotSupported();
       commandExecutor.execute(config, new Command<Object>() {
@@ -60,7 +59,7 @@ public abstract class AbstractMuleTest extends FunctionalTestCase {
       });
 
       Assert.fail(outputMessage.toString());
-      
+
     } else {
       log.info("database was clean");
     }

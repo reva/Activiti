@@ -31,13 +31,11 @@ import java.util.Map;
 
 import org.activiti.engine.query.QueryProperty;
 
-
-
 /**
  * @author Bassam Al-Sarori
  */
 public class AttachmentQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, AttachmentQueryProperty> properties = new HashMap<String, AttachmentQueryProperty>();
@@ -51,7 +49,7 @@ public class AttachmentQueryProperty implements QueryProperty {
   public static final AttachmentQueryProperty TASK_ID = new AttachmentQueryProperty("RES.TASK_ID_");
   public static final AttachmentQueryProperty TYPE = new AttachmentQueryProperty("RES.TYPE_");
   public static final AttachmentQueryProperty URL = new AttachmentQueryProperty("RES.URL_");
-  
+
   private String name;
 
   public AttachmentQueryProperty(String name) {
@@ -62,7 +60,7 @@ public class AttachmentQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static AttachmentQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }

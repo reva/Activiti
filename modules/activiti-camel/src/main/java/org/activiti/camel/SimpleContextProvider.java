@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class SimpleContextProvider implements ContextProvider {
 
   private Map<String, CamelContext> contexts = new HashMap<String, CamelContext>();

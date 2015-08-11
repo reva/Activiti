@@ -35,46 +35,46 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 @RestController
 public class ProcessDefinitionPropertiesResource {
-  
+
   @Autowired
   protected FormService formService;
-  
+
   @Autowired
   protected ObjectMapper objectMapper;
-  
-  @RequestMapping(value="/process-definition/{processDefinitionId}/properties", method = RequestMethod.GET, produces="application/json")
+
+  @RequestMapping(value = "/process-definition/{processDefinitionId}/properties", method = RequestMethod.GET, produces = "application/json")
   public ObjectNode getStartFormProperties(@PathVariable String processDefinitionId) {
     StartFormData startFormData = formService.getStartFormData(processDefinitionId);
-    
+
     ObjectNode responseJSON = objectMapper.createObjectNode();
-    
+
     ArrayNode propertiesJSON = objectMapper.createArrayNode();
-    
-    if(startFormData != null) {
-    
+
+    if (startFormData != null) {
+
       List<FormProperty> properties = startFormData.getFormProperties();
-      
+
       for (FormProperty property : properties) {
         ObjectNode propertyJSON = objectMapper.createObjectNode();
         propertyJSON.put("id", property.getId());
         propertyJSON.put("name", property.getName());
-        
+
         if (property.getValue() != null) {
           propertyJSON.put("value", property.getValue());
         } else {
           propertyJSON.putNull("value");
         }
-        
-        if(property.getType() != null) {
+
+        if (property.getType() != null) {
           propertyJSON.put("type", property.getType().getName());
-          
+
           if (property.getType() instanceof EnumFormType) {
             @SuppressWarnings("unchecked")
             Map<String, String> valuesMap = (Map<String, String>) property.getType().getInformation("values");
             if (valuesMap != null) {
               ArrayNode valuesArray = objectMapper.createArrayNode();
               propertyJSON.put("enumValues", valuesArray);
-              
+
               for (String key : valuesMap.keySet()) {
                 ObjectNode valueJSON = objectMapper.createObjectNode();
                 valueJSON.put("id", key);
@@ -83,19 +83,19 @@ public class ProcessDefinitionPropertiesResource {
               }
             }
           }
-          
+
         } else {
           propertyJSON.put("type", "String");
         }
-        
+
         propertyJSON.put("required", property.isRequired());
         propertyJSON.put("readable", property.isReadable());
         propertyJSON.put("writable", property.isWritable());
-  
+
         propertiesJSON.add(propertyJSON);
       }
     }
-  
+
     responseJSON.put("data", propertiesJSON);
     return responseJSON;
   }

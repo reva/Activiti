@@ -23,8 +23,7 @@ import org.activiti.engine.test.Deployment;
 import org.junit.Test;
 
 /**
- * Testcase for assuring that the {@link CompleteTaskInterceptor} works as
- * expected
+ * Testcase for assuring that the {@link CompleteTaskInterceptor} works as expected
  * 
  * @author Daniel Meyer
  */
@@ -39,7 +38,7 @@ public class CompleteTaskTest extends CdiActivitiTestCase {
     businessProcess.startProcessByKey("keyOfTheProcess");
 
     Task task = taskService.createTaskQuery().singleResult();
-    
+
     // associate current unit of work with the task:
     businessProcess.startTask(task.getId());
 
@@ -49,5 +48,4 @@ public class CompleteTaskTest extends CdiActivitiTestCase {
     assertNull(taskService.createTaskQuery().singleResult());
   }
 
-  
 }

@@ -15,22 +15,22 @@ package org.activiti.engine.repository;
 
 /**
  * Stores position and dimensions of a diagram node.
- *
+ * 
  * @author Falko Menge
  */
 public class DiagramNode extends DiagramElement {
 
   private static final long serialVersionUID = 1L;
 
-  private Double x = null;
-  private Double y = null;
-  private Double width = null;
-  private Double height = null;
+  private Double x;
+  private Double y;
+  private Double width;
+  private Double height;
 
   public DiagramNode() {
     super();
   }
-  
+
   public DiagramNode(String id) {
     super(id);
   }
@@ -74,7 +74,7 @@ public class DiagramNode extends DiagramElement {
   public void setHeight(Double height) {
     this.height = height;
   }
-  
+
   @Override
   public String toString() {
     return super.toString() + ", x=" + getX() + ", y=" + getY() + ", width=" + getWidth() + ", height=" + getHeight();

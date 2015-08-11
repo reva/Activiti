@@ -35,33 +35,33 @@ public interface UserIdentityManager {
   void updateUser(User updatedUser);
 
   User findUserById(String userId);
-  
+
   void deleteUser(String userId);
-  
+
   List<User> findUserByQueryCriteria(UserQueryImpl query, Page page);
-  
+
   long findUserCountByQueryCriteria(UserQueryImpl query);
-  
+
   List<Group> findGroupsByUser(String userId);
-  
+
   UserQuery createNewUserQuery();
-  
+
   IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key);
-  
+
   List<String> findUserInfoKeysByUserIdAndType(String userId, String type);
-  
+
   Boolean checkPassword(String userId, String password);
-  
+
   List<User> findPotentialStarterUsers(String proceDefId);
-  
+
   List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
-  
+
   long findUserCountByNativeQuery(Map<String, Object> parameterMap);
 
-	boolean isNewUser(User user);
-	
-	Picture getUserPicture(String userId);
-	
-	void setUserPicture(String userId, Picture picture);
-  
+  boolean isNewUser(User user);
+
+  Picture getUserPicture(String userId);
+
+  void setUserPicture(String userId, Picture picture);
+
 }

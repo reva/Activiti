@@ -13,13 +13,13 @@ import org.activiti.bpmn.model.IOParameter;
 import org.junit.Test;
 
 public class CallActivityConverterTest extends AbstractConverterTest {
-  
+
   @Test
   public void connvertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
@@ -27,11 +27,11 @@ public class CallActivityConverterTest extends AbstractConverterTest {
     validateModel(parsedModel);
     deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "callactivity.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("callactivity");
     assertNotNull(flowElement);
@@ -39,9 +39,9 @@ public class CallActivityConverterTest extends AbstractConverterTest {
     CallActivity callActivity = (CallActivity) flowElement;
     assertEquals("callactivity", callActivity.getId());
     assertEquals("Call activity", callActivity.getName());
-    
+
     assertEquals("processId", callActivity.getCalledElement());
-    
+
     List<IOParameter> parameters = callActivity.getInParameters();
     assertEquals(2, parameters.size());
     IOParameter parameter = parameters.get(0);
@@ -50,7 +50,7 @@ public class CallActivityConverterTest extends AbstractConverterTest {
     parameter = parameters.get(1);
     assertEquals("${test}", parameter.getSourceExpression());
     assertEquals("test", parameter.getTarget());
-    
+
     parameters = callActivity.getOutParameters();
     assertEquals(1, parameters.size());
     parameter = parameters.get(0);

@@ -48,11 +48,9 @@ public class ActivitiMapExceptionParser extends BaseChildElementParser {
       hasChildrenBool = true;
     else
       throw new XMLException("'" + andChildren + "' is not valid boolean in mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
-    
+
     if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(errorCode.trim()))
       throw new XMLException("No errorCode defined mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
-
-
 
     ((Activity) parentElement).getMapExceptions().add(new MapExceptionEntry(errorCode, exceptionClass, hasChildrenBool));
 

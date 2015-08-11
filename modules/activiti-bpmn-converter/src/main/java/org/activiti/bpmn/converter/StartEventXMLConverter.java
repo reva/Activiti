@@ -26,16 +26,16 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class StartEventXMLConverter extends BaseBpmnXMLConverter {
-  
+
   public Class<? extends BaseElement> getBpmnElementType() {
     return StartEvent.class;
   }
-  
+
   @Override
   protected String getXMLElementName() {
     return ELEMENT_EVENT_START;
   }
-  
+
   @Override
   protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     String formKey = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_FORM_FORMKEY);
@@ -50,27 +50,34 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     }
     BpmnXMLUtil.addXMLLocation(startEvent, xtr);
     startEvent.setInitiator(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_EVENT_START_INITIATOR));
+    boolean interrupting = true;
+    String interruptingAttribute = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_EVENT_START_INTERRUPTING);
+    if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(interruptingAttribute)) {
+      interrupting = false;
+    }
+    startEvent.setInterrupting(interrupting);
     startEvent.setFormKey(formKey);
-    
+
     parseChildElements(getXMLElementName(), startEvent, model, xtr);
-    
+
     return startEvent;
   }
-  
+
   @Override
   protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     StartEvent startEvent = (StartEvent) element;
     writeQualifiedAttribute(ATTRIBUTE_EVENT_START_INITIATOR, startEvent.getInitiator(), xtw);
     writeQualifiedAttribute(ATTRIBUTE_FORM_FORMKEY, startEvent.getFormKey(), xtw);
+    writeQualifiedAttribute(ATTRIBUTE_EVENT_START_INTERRUPTING, String.valueOf(startEvent.isInterrupting()), xtw);
   }
-  
+
   @Override
   protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
     StartEvent startEvent = (StartEvent) element;
     didWriteExtensionStartElement = writeFormProperties(startEvent, didWriteExtensionStartElement, xtw);
     return didWriteExtensionStartElement;
   }
-  
+
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     StartEvent startEvent = (StartEvent) element;

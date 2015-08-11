@@ -11,7 +11,7 @@ import java.util.Map;
 public class NativeModelQueryImpl extends AbstractNativeQuery<NativeModelQuery, Model> implements NativeModelQuery {
 
   private static final long serialVersionUID = 1L;
-  
+
   public NativeModelQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
@@ -20,18 +20,14 @@ public class NativeModelQueryImpl extends AbstractNativeQuery<NativeModelQuery, 
     super(commandExecutor);
   }
 
- //results ////////////////////////////////////////////////////////////////
-  
+  // results ////////////////////////////////////////////////////////////////
+
   public List<Model> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext
-      .getModelEntityManager()
-      .findModelsByNativeQuery(parameterMap, firstResult, maxResults);
+    return commandContext.getModelEntityManager().findModelsByNativeQuery(parameterMap, firstResult, maxResults);
   }
-  
+
   public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext
-      .getModelEntityManager()
-      .findModelCountByNativeQuery(parameterMap);
+    return commandContext.getModelEntityManager().findModelCountByNativeQuery(parameterMap);
   }
 
 }

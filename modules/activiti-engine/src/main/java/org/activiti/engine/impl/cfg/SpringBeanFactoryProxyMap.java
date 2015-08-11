@@ -20,27 +20,26 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.springframework.beans.factory.BeanFactory;
 
-
 /**
  * @author Tom Baeyens
  */
 public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
 
   protected BeanFactory beanFactory;
-  
+
   public SpringBeanFactoryProxyMap(BeanFactory beanFactory) {
     this.beanFactory = beanFactory;
   }
 
   public Object get(Object key) {
-    if ( (key==null) || (!String.class.isAssignableFrom(key.getClass())) ) {
+    if ((key == null) || (!String.class.isAssignableFrom(key.getClass()))) {
       return null;
     }
     return beanFactory.getBean((String) key);
   }
 
   public boolean containsKey(Object key) {
-    if ( (key==null) || (!String.class.isAssignableFrom(key.getClass())) ) {
+    if ((key == null) || (!String.class.isAssignableFrom(key.getClass()))) {
       return false;
     }
     return beanFactory.containsBean((String) key);
@@ -48,8 +47,9 @@ public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
 
   public Set<Object> keySet() {
     throw new ActivitiException("unsupported operation on configuration beans");
-//    List<String> beanNames = Arrays.asList(beanFactory.getBeanDefinitionNames());
-//    return new HashSet<Object>(beanNames);
+    // List<String> beanNames =
+    // Arrays.asList(beanFactory.getBeanDefinitionNames());
+    // return new HashSet<Object>(beanNames);
   }
 
   public void clear() {
@@ -72,7 +72,7 @@ public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
     throw new ActivitiException("unsupported operation on configuration beans");
   }
 
-  public void putAll(Map< ? extends Object, ? extends Object> m) {
+  public void putAll(Map<? extends Object, ? extends Object> m) {
     throw new ActivitiException("unsupported operation on configuration beans");
   }
 

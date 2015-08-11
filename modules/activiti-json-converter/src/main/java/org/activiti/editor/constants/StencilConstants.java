@@ -17,7 +17,7 @@ package org.activiti.editor.constants;
  */
 public interface StencilConstants {
 
-//stencil items
+  // stencil items
   final String STENCIL_EVENT_START_NONE = "StartNoneEvent";
   final String STENCIL_EVENT_START_TIMER = "StartTimerEvent";
   final String STENCIL_EVENT_START_MESSAGE = "StartMessageEvent";
@@ -26,6 +26,7 @@ public interface StencilConstants {
 
   final String STENCIL_EVENT_END_NONE = "EndNoneEvent";
   final String STENCIL_EVENT_END_ERROR = "EndErrorEvent";
+  final String STENCIL_EVENT_END_CANCEL = "EndCancelEvent";
 
   final String STENCIL_SUB_PROCESS = "SubProcess";
   final String STENCIL_EVENT_SUB_PROCESS = "EventSubProcess";
@@ -121,7 +122,7 @@ public interface StencilConstants {
   final String PROPERTY_LISTENER_EXPRESSION = "expression";
   final String PROPERTY_LISTENER_DELEGATE_EXPRESSION = "delegateExpression";
   final String PROPERTY_LISTENER_FIELDS = "fields";
-  
+
   final String PROPERTY_EVENT_LISTENERS = "eventlisteners";
   final String PROPERTY_EVENTLISTENER_VALUE = "eventListeners";
   final String PROPERTY_EVENTLISTENER_EVENTS = "events";
@@ -173,7 +174,7 @@ public interface StencilConstants {
   final String PROPERTY_FORM_READABLE = "readable";
   final String PROPERTY_FORM_WRITABLE = "writable";
   final String PROPERTY_FORM_ENUM_VALUES = "enumValues";
-  
+
   final String PROPERTY_DATA_PROPERTIES = "dataproperties";
   final String PROPERTY_DATA_ID = "dataproperty_id";
   final String PROPERTY_DATA_NAME = "dataproperty_name";
@@ -204,13 +205,13 @@ public interface StencilConstants {
   final String PROPERTY_IOPARAMETER_SOURCE = "source";
   final String PROPERTY_IOPARAMETER_SOURCE_EXPRESSION = "sourceExpression";
   final String PROPERTY_IOPARAMETER_TARGET = "target";
-  
+
   final String PROPERTY_CAMELTASK_CAMELCONTEXT = "cameltaskcamelcontext";
-  
-  final String PROPERTY_MULETASK_ENDPOINT_URL= "muletaskendpointurl";
-  final String PROPERTY_MULETASK_LANGUAGE= "muletasklanguage";
-  final String PROPERTY_MULETASK_PAYLOAD_EXPRESSION= "muletaskpayloadexpression";
-  final String PROPERTY_MULETASK_RESULT_VARIABLE= "muletaskresultvariable";
+
+  final String PROPERTY_MULETASK_ENDPOINT_URL = "muletaskendpointurl";
+  final String PROPERTY_MULETASK_LANGUAGE = "muletasklanguage";
+  final String PROPERTY_MULETASK_PAYLOAD_EXPRESSION = "muletaskpayloadexpression";
+  final String PROPERTY_MULETASK_RESULT_VARIABLE = "muletaskresultvariable";
 
   final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";
   final String PROPERTY_SEQUENCEFLOW_ORDER = "sequencefloworder";

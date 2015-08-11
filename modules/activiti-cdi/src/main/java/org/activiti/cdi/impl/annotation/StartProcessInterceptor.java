@@ -33,13 +33,14 @@ import org.activiti.engine.ActivitiException;
  * 
  * @author Daniel Meyer
  */
-@Interceptor 
+@Interceptor
 @StartProcess("")
 public class StartProcessInterceptor implements Serializable {
 
   private static final long serialVersionUID = 1L;
-  
-  @Inject BusinessProcess businessProcess;
+
+  @Inject
+  BusinessProcess businessProcess;
 
   @AroundInvoke
   public Object invoke(InvocationContext ctx) throws Exception {
@@ -52,7 +53,7 @@ public class StartProcessInterceptor implements Serializable {
       String key = startProcessAnnotation.value();
 
       Map<String, Object> variables = extractVariables(startProcessAnnotation, ctx);
-      
+
       if (name.length() > 0) {
         businessProcess.startProcessByName(name, variables);
       } else {
@@ -62,13 +63,13 @@ public class StartProcessInterceptor implements Serializable {
       return result;
     } catch (InvocationTargetException e) {
       Throwable cause = e.getCause();
-      if(cause instanceof Exception) {
+      if (cause instanceof Exception) {
         throw (Exception) cause;
       } else {
         throw e;
       }
     } catch (Exception e) {
-      throw new ActivitiException("Error while starting process using @StartProcess on method  '"+ctx.getMethod()+"': " + e.getMessage(), e);
+      throw new ActivitiException("Error while starting process using @StartProcess on method  '" + ctx.getMethod() + "': " + e.getMessage(), e);
     }
   }
 

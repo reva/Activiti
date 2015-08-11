@@ -19,15 +19,13 @@ import java.util.Map;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.query.QueryProperty;
 
-
-
 /**
  * Contains the possible properties that can be used by the {@link GroupQuery}.
  * 
  * @author Joram Barrez
  */
 public class GroupQueryProperty implements QueryProperty {
-  
+
   private static final long serialVersionUID = 1L;
 
   private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
@@ -35,7 +33,7 @@ public class GroupQueryProperty implements QueryProperty {
   public static final GroupQueryProperty GROUP_ID = new GroupQueryProperty("RES.ID_");
   public static final GroupQueryProperty NAME = new GroupQueryProperty("RES.NAME_");
   public static final GroupQueryProperty TYPE = new GroupQueryProperty("RES.TYPE_");
-  
+
   private String name;
 
   public GroupQueryProperty(String name) {
@@ -46,7 +44,7 @@ public class GroupQueryProperty implements QueryProperty {
   public String getName() {
     return name;
   }
-  
+
   public static GroupQueryProperty findByName(String propertyName) {
     return properties.get(propertyName);
   }
